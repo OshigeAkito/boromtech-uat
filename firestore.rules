@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function email() { return request.auth.token.email.lower(); }
+    function isAdminEmail() { return signedIn() && request.auth.token.email_verified && email() in ['pongwasin@gmail.com']; }
+    function isMember() { return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)); }
+    function isAdmin() { return isMember() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'; }
+    function changes(keys) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys); }
+
+    match /users/{uid} {
+      allow read: if isMember();
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.email == email()
+        && ((request.resource.data.role == 'admin' && isAdminEmail())
+          || (request.resource.data.role == 'freelancer'
+              && exists(/databases/$(database)/documents/invites/$(email()))));
+      allow update: if isAdmin();
+    }
+
+    match /invites/{inviteEmail} {
+      allow read: if isAdmin() || (signedIn() && inviteEmail == email());
+      allow write: if isAdmin();
+    }
+
+    match /jobs/{id} {
+      allow read: if isMember();
+      allow write: if isAdmin();
+    }
+
+    match /tasks/{id} {
+      allow read: if isMember();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin()
+        || (isMember() && resource.data.status == 'open'
+            && request.resource.data.status == 'assigned'
+            && request.resource.data.assigneeUid == request.auth.uid
+            && changes(['status', 'assigneeUid', 'assigneeName']))
+        || (resource.data.assigneeUid == request.auth.uid
+            && resource.data.status == 'assigned'
+            && request.resource.data.status == 'submitted'
+            && changes(['status', 'submissionUrl', 'submissionNote', 'submittedAt']));
+    }
+  }
+}
