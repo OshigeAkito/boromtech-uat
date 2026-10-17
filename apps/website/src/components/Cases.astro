@@ -2,6 +2,8 @@
 import { Picture } from 'astro:assets'
 import sathorn from '../assets/photos/sathorn-unique-tower-ii.jpg'
 import { site, symptoms } from '../data/site'
+
+const verdict = 'ทุกเคสเริ่มที่ออดิต 5 วันทำการ พร้อมใบเสนอราคาฟิกซ์ไพรซ์ก่อนเริ่มงาน'
 ---
 
 <section class="chapter cases" id="cases" aria-labelledby="cases-title">
@@ -35,10 +37,8 @@ import { site, symptoms } from '../data/site'
       }
     </ul>
     <div class="verdict" aria-live="polite">
-      <p class="verdict-line" id="verdict-line" data-default={`ทุกเคสเริ่มที่ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ ${site.auditPrice} หักคืนเต็มจำนวนเมื่อทำระบบต่อกับเรา`}>
-        ทุกเคสเริ่มที่ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ {site.auditPrice} หักคืนเต็มจำนวนเมื่อทำระบบต่อกับเรา
-      </p>
-      <a class="button" id="verdict-send" href="#contact" data-mail={site.email} data-price={site.auditPrice}>ส่งเคสนี้ให้เราดู</a>
+      <p class="verdict-line" id="verdict-line" data-default={verdict}>{verdict}</p>
+      <a class="button" id="verdict-send" href="#contact" data-mail={site.email}>ส่งเคสนี้ให้เราดู</a>
     </div>
   </div>
 </section>

@@ -1,0 +1,182 @@
+<section class="chapter audit-scope" aria-labelledby="audit-scope-title">
+  <header class="audit-scope-heading">
+    <h2 id="audit-scope-title" class="reveal"><span>ออดิต</span><wbr /><span>ครบทุกชั้น</span></h2>
+    <p class="reveal">ห้าวันทำการ เราเปิดดูซิสเต็มของคุณทีละชั้น ตั้งแต่หน้าจอจนถึงคนที่ดูแล</p>
+  </header>
+
+  <dl class="audit-layers">
+    <div class="audit-layer layer-interface">
+      <dt>หน้าจอและฟีเจอร์</dt>
+      <dd>ทุกฟีเจอร์ในสัญญาใช้งานได้จริงหรือไม่</dd>
+    </div>
+    <div class="audit-layer layer-code">
+      <dt>โค้ด</dt>
+      <dd>ซอร์สโค้ดตรงกับที่รันอยู่ไหม โครงสร้างแก้ต่อได้หรือเปล่า</dd>
+    </div>
+    <div class="audit-layer layer-data">
+      <dt>ดาต้าเบส</dt>
+      <dd>ข้อมูลถูกต้อง มีแบ็กอัป และกู้คืนได้จริง</dd>
+    </div>
+    <div class="audit-layer layer-infrastructure">
+      <dt>เซิร์ฟเวอร์และคลาวด์</dt>
+      <dd>เวอร์ชันหมดซัพพอร์ตหรือยัง ใครถือรหัสผ่านอยู่</dd>
+    </div>
+    <div class="audit-layer layer-security">
+      <dt>ความปลอดภัย</dt>
+      <dd>ช่องโหว่ที่รู้จัก รหัสผ่านในโค้ด และสิทธิ์ที่เปิดเกิน</dd>
+    </div>
+    <div class="audit-layer layer-knowledge">
+      <dt>คนและความรู้</dt>
+      <dd>ใครรู้อะไร และอะไรที่ยังไม่มีใครจดไว้</dd>
+    </div>
+  </dl>
+
+  <footer class="audit-scope-closing">
+    <p class="reveal">ผลลัพธ์คือออดิตรีพอร์ตที่บอกว่าอะไรพัง อะไรเสี่ยง และควรแก้อะไรก่อน</p>
+  </footer>
+</section>
+
+<style>
+  .chapter.audit-scope {
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--f-text);
+    font-size: var(--t-body);
+    line-height: 1.7;
+    border-radius: 0;
+  }
+
+  .audit-scope-heading,
+  .audit-layer,
+  .audit-scope-closing {
+    padding-inline-start: max(var(--m), env(safe-area-inset-left));
+    padding-inline-end: max(var(--m), env(safe-area-inset-right));
+  }
+
+  .audit-scope-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px var(--gap);
+    align-items: end;
+    padding-block: clamp(96px, 12vw, 180px) 64px;
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-size: var(--t-l);
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.025em;
+  }
+
+  h2 span {
+    white-space: nowrap;
+  }
+
+  .audit-scope-heading p {
+    max-width: 30em;
+    color: var(--muted);
+  }
+
+  .audit-layers,
+  .audit-layer dd,
+  p {
+    margin: 0;
+  }
+
+  .audit-layers {
+    padding: 0;
+  }
+
+  .audit-layer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: var(--gap);
+    align-items: center;
+    padding-block: 28px;
+    border-radius: 0;
+  }
+
+  .audit-layer dt {
+    min-width: 0;
+    font-family: var(--f-display);
+    font-size: var(--t-m);
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+
+  .audit-layer dd {
+    min-width: 0;
+    max-width: 30em;
+    font-size: var(--t-body);
+    line-height: 1.7;
+  }
+
+  .layer-interface {
+    min-height: 112px;
+    background: var(--night);
+    color: var(--on-dark);
+  }
+
+  .layer-code {
+    min-height: 152px;
+    background: var(--soft);
+    color: var(--ink);
+  }
+
+  .layer-data {
+    min-height: 128px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .layer-infrastructure {
+    min-height: 184px;
+    background: var(--sunken);
+    color: var(--ink);
+  }
+
+  .layer-security {
+    min-height: 144px;
+    background: var(--orange);
+    color: var(--ink);
+  }
+
+  .layer-knowledge {
+    min-height: 168px;
+    background: var(--ink);
+    color: var(--on-dark);
+  }
+
+  .audit-scope-closing {
+    padding-block: 48px clamp(96px, 12vw, 180px);
+  }
+
+  .audit-scope-closing p {
+    max-width: 44em;
+  }
+
+  @media (max-width: 900px) {
+    .audit-scope-heading {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+      padding-block-end: 48px;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .audit-layer {
+      grid-template-columns: minmax(0, 1fr);
+      align-content: center;
+      row-gap: 10px;
+      padding-block: 28px;
+    }
+
+    .audit-scope-closing {
+      padding-block-start: 36px;
+    }
+  }
+</style>

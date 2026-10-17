@@ -25,7 +25,6 @@ const mailto = (subject, body) => `mailto:${send.dataset.mail}?subject=${encodeU
 const boxes = [...document.querySelectorAll('#symptoms input')]
 const verdictLine = document.getElementById('verdict-line')
 const send = document.getElementById('verdict-send')
-const { price } = send.dataset
 
 function updateVerdict() {
   const picked = boxes.filter((b) => b.checked).map((b) => b.closest('label').querySelector('.symptom').textContent)
@@ -34,7 +33,7 @@ function updateVerdict() {
     send.href = '#contact'
     return
   }
-  verdictLine.textContent = `${picked.length} อาการ · ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ ${price} ครอบคลุมทั้งหมดที่คุณเลือก และหักคืนเต็มจำนวนเมื่อทำระบบต่อกับเรา`
+  verdictLine.textContent = `${picked.length} อาการ · ออดิต 5 วันทำการ ครอบคลุมทั้งหมดที่คุณเลือก พร้อมใบเสนอราคาฟิกซ์ไพรซ์ก่อนเริ่มงาน`
   send.href = mailto('นัดออดิตซิสเต็ม', `สวัสดีครับ/ค่ะ\n\nซิสเต็มของเรามีอาการดังนี้\n${picked.map((p) => `• ${p}`).join('\n')}\n\nชื่อซิสเต็ม / โปรเจกต์:\nเทคโนโลยีที่ใช้ (ถ้าทราบ):\nเบอร์ติดต่อ:\n`)
 }
 boxes.forEach((b) => b.addEventListener('change', updateVerdict))

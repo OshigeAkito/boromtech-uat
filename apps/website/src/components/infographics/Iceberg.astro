@@ -1,0 +1,209 @@
+<section class="chapter iceberg" aria-labelledby="iceberg-title">
+  <header class="iceberg-heading">
+    <h2 id="iceberg-title"><span>ส่วนที่</span><wbr /><span>มองไม่เห็น</span></h2>
+  </header>
+
+  <div class="iceberg-cross-section">
+
+    <div class="iceberg-surface">
+      <svg class="ice ice-tip" viewBox="0 0 600 270" aria-hidden="true" focusable="false">
+        <polygon class="f-light" points="300,0 250,95 215,205 170,270 290,270 305,140" />
+        <polygon class="f-mid" points="300,0 340,80 355,160 305,140" />
+        <polygon class="f-deep" points="305,140 355,160 395,215 430,270 290,270" />
+      </svg>
+      <div class="iceberg-copy">
+        <h3>ที่เห็น</h3>
+        <ul role="list">
+          <li>หน้าจอที่ใช้งานได้</li>
+          <li>ฟีเจอร์ที่เดโมผ่าน</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="iceberg-depth">
+      <svg class="ice ice-mass" viewBox="0 270 600 630" aria-hidden="true" focusable="false">
+        <polygon class="f-deep" points="170,270 290,270 250,470 45,390" />
+        <polygon class="f-rust" points="290,270 430,270 560,350 400,430 250,470" />
+        <polygon class="f-rust" points="45,390 250,470 220,650 0,560" />
+        <polygon class="f-deep" points="250,470 400,430 560,350 600,520 430,640 220,650" />
+        <polygon class="f-dark" points="0,560 220,650 220,900 80,770" />
+        <polygon class="f-rust" points="220,650 430,640 545,700 410,880 220,900" />
+        <polygon class="f-dark" points="430,640 600,520 545,700" />
+      </svg>
+      <div class="iceberg-copy">
+        <h3>ที่ต้องมีคนดูแล</h3>
+        <ul role="list">
+          <li>แบ็กอัปที่กู้คืนได้จริง</li>
+          <li>ความปลอดภัยและการอัปเดตแพตช์</li>
+          <li>มอนิเตอริงและการแจ้งเตือนเมื่อระบบล่ม</li>
+          <li>ด็อกคิวเมนต์ที่คนถัดไปอ่านเข้าใจ</li>
+          <li>การอัปเกรดเวอร์ชันก่อนหมดซัพพอร์ต</li>
+          <li>คนที่รับโทรศัพท์ตอนตีสาม</li>
+        </ul>
+        <p class="iceberg-closing">BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพื่อให้ส่วนที่อยู่เหนือน้ำใช้งานได้ทุกวัน</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .chapter.iceberg {
+    padding: 0;
+    background: var(--soft);
+    color: var(--ink);
+    font-family: var(--f-text);
+    font-size: var(--t-body);
+    line-height: 1.65;
+    border-radius: 0;
+  }
+
+  .iceberg-heading {
+    padding: clamp(96px, 12vw, 180px) max(var(--m), env(safe-area-inset-right)) 48px max(var(--m), env(safe-area-inset-left));
+  }
+
+  .iceberg h2,
+  .iceberg h3 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 700;
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .iceberg h2 {
+    font-size: var(--t-l);
+  }
+
+  .iceberg h2 span {
+    white-space: nowrap;
+  }
+
+  .iceberg h3 {
+    margin-bottom: 20px;
+    font-size: var(--t-m);
+  }
+
+  .iceberg-cross-section {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .iceberg-cross-section {
+    --ice-width: 40%;
+    --ice-light: #f3a07c;
+    --ice-dark: #8f3816;
+    overflow: hidden;
+  }
+
+  .ice {
+    position: absolute;
+    z-index: 1;
+    left: 4%;
+    width: var(--ice-width);
+    height: auto;
+    pointer-events: none;
+  }
+
+  .ice-tip {
+    bottom: 0;
+  }
+
+  .ice-mass {
+    top: 0;
+  }
+
+  .f-light { fill: var(--ice-light); }
+  .f-mid { fill: var(--orange); }
+  .f-deep { fill: var(--orange-deep); }
+  .f-rust { fill: var(--rust); }
+  .f-dark { fill: var(--ice-dark); }
+
+  .iceberg-surface,
+  .iceberg-depth {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding-right: max(var(--m), env(safe-area-inset-right));
+    padding-left: max(var(--m), env(safe-area-inset-left));
+  }
+
+  .iceberg-surface,
+  .iceberg-depth {
+    position: relative;
+  }
+
+  .iceberg-surface {
+    min-height: calc(40vw * 0.45);
+    padding-top: 24px;
+    padding-bottom: 40px;
+  }
+
+  .iceberg-depth {
+    min-height: max(560px, calc(40vw * 1.05));
+    padding-top: 48px;
+    padding-bottom: clamp(96px, 10vw, 144px);
+    background: var(--night);
+    color: var(--on-dark);
+  }
+
+  .iceberg-copy {
+    position: relative;
+    z-index: 2;
+    grid-column: 2;
+    min-width: 0;
+    max-width: 34em;
+  }
+
+  ul {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .iceberg-surface ul {
+    gap: 4px;
+  }
+
+
+  .iceberg-closing {
+    max-width: 30em;
+    margin: 40px 0 0;
+    font-size: var(--t-body);
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 600px) {
+    .iceberg-heading {
+      padding-bottom: 40px;
+    }
+
+    .ice {
+      left: -8%;
+      width: 34%;
+    }
+
+    .iceberg-surface,
+    .iceberg-depth {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    }
+
+    .iceberg-surface {
+      min-height: calc(34vw * 0.45 + 24px);
+      padding-top: 16px;
+      padding-bottom: 32px;
+    }
+
+    .iceberg-depth {
+      padding-top: 36px;
+    }
+
+    .iceberg h3 {
+      margin-bottom: 16px;
+    }
+
+    .iceberg-closing {
+      margin-top: 32px;
+    }
+  }
+</style>
