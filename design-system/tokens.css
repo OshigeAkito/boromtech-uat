@@ -1,0 +1,82 @@
+/* BoromTech — generated from tokens.json by scripts/build-design-system.mjs */
+
+:root, [data-theme="light"] {
+  --surface: #ffffff;
+  --surface-sunken: #f5f4f2;
+  --surface-raised: #ffffff;
+  --line: #e6e3df;
+  --line-strong: #8d8b93;
+  --ink: #1a1b22;
+  --ink-muted: #5f6068;
+  --brand: #e56e3f;
+  --on-brand: #1a1b22;
+  --brand-strong: #b4471d;
+  --brand-soft: #fce9e1;
+  --night: #1e2235;
+  --night-ink: #f2f1ee;
+  --success: #1f7a4d;
+  --warning: #8a5a00;
+  --danger: #c0362c;
+  --link: var(--brand-strong);
+  --focus-ring: var(--brand-strong);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --font-display: "Bricolage Grotesque", "IBM Plex Sans Thai", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans Thai", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface: #121318;
+    --surface-sunken: #191a20;
+    --surface-raised: #1f2027;
+    --line: #2e2f37;
+    --line-strong: #6b6c76;
+    --ink: #f2f1ee;
+    --ink-muted: #a3a3ad;
+    --brand: #e56e3f;
+    --on-brand: #1a1b22;
+    --brand-strong: #f2916a;
+    --brand-soft: #3a1f14;
+    --night: #2f3554;
+    --night-ink: #f2f1ee;
+    --success: #5ccb8f;
+    --warning: #e3b341;
+    --danger: #ff7b72;
+    --link: var(--brand-strong);
+    --focus-ring: var(--brand-strong);
+    color-scheme: dark;
+  }
+}
+
+[data-theme="dark"] {
+  --surface: #121318;
+  --surface-sunken: #191a20;
+  --surface-raised: #1f2027;
+  --line: #2e2f37;
+  --line-strong: #6b6c76;
+  --ink: #f2f1ee;
+  --ink-muted: #a3a3ad;
+  --brand: #e56e3f;
+  --on-brand: #1a1b22;
+  --brand-strong: #f2916a;
+  --brand-soft: #3a1f14;
+  --night: #2f3554;
+  --night-ink: #f2f1ee;
+  --success: #5ccb8f;
+  --warning: #e3b341;
+  --danger: #ff7b72;
+  --link: var(--brand-strong);
+  --focus-ring: var(--brand-strong);
+  color-scheme: dark;
+}

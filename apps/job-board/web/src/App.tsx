@@ -1,21 +1,10 @@
+import { Button, StarRating, TaskCard, TierBadge } from '@boromtech/design-system/components/src'
 import { onAuthStateChanged } from 'firebase/auth'
-import { useEffect, useState, type FormEvent } from 'react'
-import {
-  STATUS_LABEL,
-  allowedActions,
-  defaultFreelancerDeadline,
-  rank,
-  toDateInput,
-  type Job,
-  type Member,
-  type Task,
-} from './domain'
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
+import { allowedActions, defaultFreelancerDeadline, rank, toDateInput, type Job, type Member, type Task } from './domain'
 import * as fb from './firebase'
 
-type Session =
-  | { state: 'loading' }
-  | { state: 'signedOut'; error?: string }
-  | { state: 'member'; me: Member }
+type Session = { state: 'loading' } | { state: 'signedOut'; error?: string } | { state: 'member'; me: Member }
 
 export default function App() {
   const [session, setSession] = useState<Session>({ state: 'loading' })
@@ -30,7 +19,7 @@ export default function App() {
           await fb.logOut()
           setSession({
             state: 'signedOut',
-            error: e instanceof fb.NotInvitedError ? `${e.message} has not been invited yet. Ask an admin for an invite.` : String(e),
+            error: e instanceof fb.NotInvitedError ? `${e.message} has not been invited yet. Ask a BoromTech admin for an invite.` : String(e),
           })
         }
       }),
@@ -42,6 +31,8 @@ export default function App() {
   return <Workspace me={session.me} />
 }
 
+const DAY = 86_400_000
+
 function Landing({ error: enrollError }: { error?: string }) {
   const [signInError, setSignInError] = useState<string>()
   const error = signInError ?? enrollError
@@ -51,16 +42,32 @@ function Landing({ error: enrollError }: { error?: string }) {
       setSignInError(`Sign-in failed (${e.code ?? e.message}).`)
     })
   return (
-    <div className="center">
-      <div className="landing">
+    <div className="landing">
+      <section className="landing-copy">
         <p className="eyebrow">Invite only</p>
-        <h1>Crew</h1>
-        <p className="muted">Small, well-scoped tasks from real client projects. Ship on time, get graded, get paid, climb the board.</p>
-        <button className="primary big" onClick={start}>
+        <h1 className="display">
+          BoromTech <span>Crew</span>
+        </h1>
+        <p className="lede">Small, well-scoped tasks from real client projects. Ship on time, get graded, get paid, climb the board.</p>
+        <Button variant="primary" onClick={start}>
           Continue with Google
-        </button>
+        </Button>
         {error && <p className="error">{error}</p>}
-      </div>
+      </section>
+      <aside className="landing-art" aria-label="Example task">
+        <TaskCard
+          status="open"
+          title="Build the booking form"
+          project="Example client job"
+          description="React form with a date and time picker, validation, and a confirmation step."
+          payout={4500}
+          due={toDateInput(Date.now() + 14 * DAY)}
+        >
+          <Button variant="primary" tabIndex={-1}>
+            Claim task
+          </Button>
+        </TaskCard>
+      </aside>
     </div>
   )
 }
@@ -81,37 +88,47 @@ function Workspace({ me }: { me: Member }) {
     return () => subs.forEach((u) => u())
   }, [])
 
-  const reviewCount = tasks.filter((t) => t.status === 'submitted' || t.status === 'approved').length
+  const toReview = tasks.filter((t) => t.status === 'submitted' || t.status === 'approved')
+  const mine = tasks.filter((t) => t.assigneeUid === me.uid)
+  const counts: Partial<Record<Tab, number>> = {
+    Review: toReview.length,
+    'Open tasks': tasks.filter((t) => t.status === 'open').length,
+    'My tasks': mine.filter((t) => t.status === 'assigned' || t.status === 'changes').length,
+  }
 
   return (
     <div className="shell">
-      <header>
-        <strong className="logo">Crew</strong>
-        <nav>
-          {tabs.map((t) => (
-            <button key={t} className={t === tab ? 'tab active' : 'tab'} onClick={() => setTab(t)}>
-              {t}
-              {t === 'Review' && reviewCount > 0 && <span className="pill">{reviewCount}</span>}
-            </button>
-          ))}
-        </nav>
-        <div className="me">
-          {me.photo && <img src={me.photo} alt="" referrerPolicy="no-referrer" />}
-          <span>
-            {me.name} <em className="muted">· {me.role}</em>
+      <header className="topbar">
+        <div className="topbar-inner">
+          <span className="wordmark">
+            BoromTech <span>Crew</span>
           </span>
-          <button className="ghost" onClick={fb.logOut}>
-            Sign out
-          </button>
+          <nav aria-label="Sections">
+            {tabs.map((t) => (
+              <button key={t} className={t === tab ? 'tab active' : 'tab'} aria-current={t === tab ? 'page' : undefined} onClick={() => setTab(t)}>
+                {t}
+                {!!counts[t] && <span className="count">{counts[t]}</span>}
+              </button>
+            ))}
+          </nav>
+          <div className="me">
+            {me.photo && <img src={me.photo} alt="" referrerPolicy="no-referrer" />}
+            <span className="me-name">
+              {me.name}
+              <small>{me.role === 'admin' ? 'Admin' : 'Freelancer'}</small>
+            </span>
+            <Button variant="ghost" size="sm" onClick={fb.logOut}>
+              Sign out
+            </Button>
+          </div>
         </div>
       </header>
       <main>
+        <h2 className="title">{tab}</h2>
         {tab === 'Jobs' && <JobsView jobs={jobs} tasks={tasks} me={me} />}
-        {tab === 'Review' && (
-          <TaskList me={me} tasks={tasks.filter((t) => t.status === 'submitted' || t.status === 'approved')} empty="Nothing waiting for review." />
-        )}
-        {tab === 'Open tasks' && <TaskList me={me} tasks={tasks.filter((t) => t.status === 'open')} empty="No open tasks right now. Check back soon." />}
-        {tab === 'My tasks' && <TaskList me={me} tasks={tasks.filter((t) => t.assigneeUid === me.uid)} empty="You haven't claimed any tasks yet." />}
+        {tab === 'Review' && <TaskGrid me={me} tasks={toReview} empty="Nothing waiting for review." />}
+        {tab === 'Open tasks' && <TaskGrid me={me} tasks={tasks.filter((t) => t.status === 'open')} empty="No open tasks right now. New ones appear here as soon as they're posted." />}
+        {tab === 'My tasks' && <TaskGrid me={me} tasks={mine} empty="You haven't claimed any tasks yet. Pick one from Open tasks." />}
         {tab === 'Leaderboard' && <Leaderboard members={members} tasks={tasks} me={me} />}
         {tab === 'Invites' && <InvitesView members={members} />}
       </main>
@@ -120,7 +137,7 @@ function Workspace({ me }: { me: Member }) {
 }
 
 function JobsView({ jobs, tasks, me }: { jobs: Job[]; tasks: Task[]; me: Member }) {
-  const [form, setForm] = useState({ title: '', customer: '', description: '', customerDeadline: toDateInput(Date.now() + 30 * 86_400_000) })
+  const [form, setForm] = useState({ title: '', customer: '', description: '', customerDeadline: toDateInput(Date.now() + 30 * DAY) })
   const submit = async (e: FormEvent) => {
     e.preventDefault()
     await fb.createJob(form)
@@ -128,202 +145,215 @@ function JobsView({ jobs, tasks, me }: { jobs: Job[]; tasks: Task[]; me: Member 
   }
   return (
     <>
-      <form className="card form" onSubmit={submit}>
-        <h3>New customer job</h3>
-        <div className="row">
-          <input required placeholder="Job title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-          <input required placeholder="Customer" value={form.customer} onChange={(e) => setForm({ ...form, customer: e.target.value })} />
-          <label>
-            Customer deadline
-            <input type="date" required value={form.customerDeadline} onChange={(e) => setForm({ ...form, customerDeadline: e.target.value })} />
-          </label>
+      <form className="panel form" onSubmit={submit}>
+        <h3>New client job</h3>
+        <div className="fields">
+          <Field label="Job title">
+            <input id="job-title" required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+          </Field>
+          <Field label="Client">
+            <input id="job-client" required value={form.customer} onChange={(e) => setForm({ ...form, customer: e.target.value })} />
+          </Field>
+          <Field label="Client deadline">
+            <input id="job-deadline" type="date" required value={form.customerDeadline} onChange={(e) => setForm({ ...form, customerDeadline: e.target.value })} />
+          </Field>
         </div>
-        <textarea placeholder="Scope / notes" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-        <button className="primary">Create job</button>
+        <Field label="Scope and notes">
+          <textarea id="job-notes" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+        </Field>
+        <Button variant="primary" type="submit">
+          Create job
+        </Button>
       </form>
       {jobs.length === 0 && <p className="muted">No jobs yet. Create one above, then split it into tasks.</p>}
       {jobs.map((job) => (
-        <JobCard key={job.id} job={job} tasks={tasks.filter((t) => t.jobId === job.id)} me={me} />
+        <JobPanel key={job.id} job={job} tasks={tasks.filter((t) => t.jobId === job.id)} me={me} />
       ))}
     </>
   )
 }
 
-function JobCard({ job, tasks, me }: { job: Job; tasks: Task[]; me: Member }) {
+function JobPanel({ job, tasks, me }: { job: Job; tasks: Task[]; me: Member }) {
   const blank = () => ({ title: '', description: '', payout: '', freelancerDeadline: defaultFreelancerDeadline(job.customerDeadline) })
   const [draft, setDraft] = useState(blank)
-  const done = tasks.filter((t) => t.status === 'approved' || t.status === 'paid').length
+  const verified = tasks.filter((t) => t.status === 'approved' || t.status === 'paid').length
+  const budget = tasks.reduce((s, t) => s + t.payout, 0)
   const add = async (e: FormEvent) => {
     e.preventDefault()
     await fb.createTask(job, { ...draft, payout: Number(draft.payout) })
     setDraft(blank())
   }
   return (
-    <section className="card">
+    <section className="panel">
       <div className="job-head">
         <div>
           <h3>{job.title}</h3>
-          <p className="muted">
-            {job.customer} · customer due {job.customerDeadline} · {done}/{tasks.length} tasks verified
+          <p className="muted small">
+            {job.customer} · client due {job.customerDeadline} · <span className="mono">฿{budget.toLocaleString('en-US')}</span> in tasks
           </p>
         </div>
-        <Progress value={tasks.length ? done / tasks.length : 0} />
+        <div className="progress-wrap">
+          <span className="small muted">
+            {verified}/{tasks.length} verified
+          </span>
+          <div className="progress" role="progressbar" aria-valuenow={verified} aria-valuemax={tasks.length}>
+            <div style={{ width: `${tasks.length ? (verified / tasks.length) * 100 : 0}%` }} />
+          </div>
+        </div>
       </div>
-      {job.description && <p>{job.description}</p>}
-      <div className="tasks">
-        {tasks.map((t) => (
-          <TaskCard key={t.id} task={t} me={me} compact />
-        ))}
-      </div>
-      <form className="row add-task" onSubmit={add}>
-        <input required placeholder="Simple task title" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
-        <input placeholder="Details / acceptance criteria" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
-        <input required type="number" min="0" placeholder="Payout" value={draft.payout} onChange={(e) => setDraft({ ...draft, payout: e.target.value })} />
-        <label title="Defaults to half the customer runway">
-          Freelancer due
-          <input type="date" required value={draft.freelancerDeadline} onChange={(e) => setDraft({ ...draft, freelancerDeadline: e.target.value })} />
-        </label>
-        <button className="primary">Add task</button>
+      {job.description && <p className="job-desc">{job.description}</p>}
+      {tasks.length > 0 && (
+        <div className="grid">
+          {tasks.map((t) => (
+            <TaskItem key={t.id} task={t} me={me} compact />
+          ))}
+        </div>
+      )}
+      <form className="add-task" onSubmit={add}>
+        <Field label="Task">
+          <input id={`task-title-${job.id}`} required value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
+        </Field>
+        <Field label="Acceptance criteria">
+          <input id={`task-desc-${job.id}`} value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
+        </Field>
+        <Field label="Payout (฿)">
+          <input id={`task-payout-${job.id}`} required type="number" min="0" inputMode="numeric" value={draft.payout} onChange={(e) => setDraft({ ...draft, payout: e.target.value })} />
+        </Field>
+        <Field label="Freelancer due" hint="Half the client runway">
+          <input id={`task-due-${job.id}`} type="date" required value={draft.freelancerDeadline} onChange={(e) => setDraft({ ...draft, freelancerDeadline: e.target.value })} />
+        </Field>
+        <Button type="submit">Add task</Button>
       </form>
     </section>
   )
 }
 
-function TaskList({ tasks, me, empty }: { tasks: Task[]; me: Member; empty: string }) {
-  if (tasks.length === 0) return <p className="muted">{empty}</p>
+function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+  return (
+    <label className="field">
+      <span>
+        {label}
+        {hint && <em> · {hint}</em>}
+      </span>
+      {children}
+    </label>
+  )
+}
+
+function TaskGrid({ tasks, me, empty }: { tasks: Task[]; me: Member; empty: string }) {
+  if (tasks.length === 0) return <p className="empty">{empty}</p>
   return (
     <div className="grid">
       {tasks.map((t) => (
-        <TaskCard key={t.id} task={t} me={me} />
+        <TaskItem key={t.id} task={t} me={me} />
       ))}
     </div>
   )
 }
 
-function TaskCard({ task, me, compact }: { task: Task; me: Member; compact?: boolean }) {
+function TaskItem({ task, me, compact }: { task: Task; me: Member; compact?: boolean }) {
   const actions = allowedActions(task, me)
   const [url, setUrl] = useState('')
   const [note, setNote] = useState('')
   const [grade, setGrade] = useState(4)
   const [feedback, setFeedback] = useState('')
-  const overdue = task.status === 'assigned' && Date.parse(task.freelancerDeadline) + 86_400_000 < Date.now()
 
   return (
-    <article className={`task ${compact ? 'compact' : ''}`}>
-      <div className="task-head">
-        <span className={`status s-${task.status}`}>{STATUS_LABEL[task.status]}</span>
-        <span className="payout">฿{task.payout.toLocaleString()}</span>
-      </div>
-      <h4>{task.title}</h4>
-      {!compact && <p className="muted small">{task.jobTitle}</p>}
-      {task.description && <p className="small">{task.description}</p>}
-      <p className={`small ${overdue ? 'error' : 'muted'}`}>
-        Due {task.freelancerDeadline}
-        {overdue && ' · overdue'}
-        {task.assigneeName && ` · ${task.assigneeName}`}
-      </p>
-      {task.submissionUrl && (
-        <p className="small">
-          Submission:{' '}
-          <a href={task.submissionUrl} target="_blank" rel="noreferrer">
-            {task.submissionUrl}
-          </a>
-          {task.submissionNote && <span className="muted"> · {task.submissionNote}</span>}
-        </p>
+    <TaskCard
+      status={task.status}
+      title={task.title}
+      project={compact ? undefined : task.jobTitle}
+      description={task.description}
+      payout={task.payout}
+      due={task.freelancerDeadline}
+      assignee={task.assigneeName}
+      submission={task.submissionUrl}
+      review={task.review}
+      compact={compact}
+    >
+      {actions.length > 0 && (
+        <>
+          {actions.includes('claim') && (
+            <Button variant="primary" onClick={() => fb.claimTask(task.id, me)}>
+              Claim task
+            </Button>
+          )}
+          {actions.includes('submit') && (
+            <form
+              className="stack"
+              onSubmit={(e) => {
+                e.preventDefault()
+                fb.submitTask(task.id, url, note)
+              }}
+            >
+              <input id={`sub-url-${task.id}`} required type="url" placeholder="https:// link to your work" aria-label="Link to your work" value={url} onChange={(e) => setUrl(e.target.value)} />
+              <input id={`sub-note-${task.id}`} placeholder="Note for the reviewer" aria-label="Note for the reviewer" value={note} onChange={(e) => setNote(e.target.value)} />
+              <Button variant="primary" type="submit">
+                {task.status === 'changes' ? 'Resubmit for review' : 'Submit for review'}
+              </Button>
+            </form>
+          )}
+          {actions.includes('approve') && (
+            <div className="stack">
+              <StarRating value={grade} onChange={setGrade} />
+              <input id={`fb-${task.id}`} placeholder="Feedback for the freelancer" aria-label="Feedback" value={feedback} onChange={(e) => setFeedback(e.target.value)} />
+              <div className="row">
+                <Button variant="primary" onClick={() => fb.approveTask(task.id, grade, feedback)}>
+                  Pass & grade
+                </Button>
+                <Button variant="danger" onClick={() => fb.rejectTask(task.id, feedback || 'Please revise.')}>
+                  Request changes
+                </Button>
+              </div>
+            </div>
+          )}
+          {actions.includes('pay') && (
+            <Button variant="primary" onClick={() => fb.payTask(task.id)}>
+              Mark ฿{task.payout.toLocaleString('en-US')} paid
+            </Button>
+          )}
+        </>
       )}
-      {task.review && (
-        <p className={`small ${task.review.grade ? '' : 'error'}`}>
-          {task.review.grade ? `Grade ${'★'.repeat(task.review.grade)}${'☆'.repeat(5 - task.review.grade)}` : 'Changes requested'}
-          {task.review.feedback && ` · ${task.review.feedback}`}
-        </p>
-      )}
-
-      {actions.includes('claim') && (
-        <button className="primary" onClick={() => fb.claimTask(task.id, me)}>
-          Claim task
-        </button>
-      )}
-      {actions.includes('submit') && (
-        <form
-          className="stack"
-          onSubmit={(e) => {
-            e.preventDefault()
-            fb.submitTask(task.id, url, note)
-          }}
-        >
-          <input required type="url" placeholder="Link to your work" value={url} onChange={(e) => setUrl(e.target.value)} />
-          <input placeholder="Note for reviewer" value={note} onChange={(e) => setNote(e.target.value)} />
-          <button className="primary">Submit for verification</button>
-        </form>
-      )}
-      {actions.includes('approve') && (
-        <div className="stack">
-          <div className="stars">
-            {[1, 2, 3, 4, 5].map((n) => (
-              <button key={n} type="button" className={n <= grade ? 'star on' : 'star'} onClick={() => setGrade(n)}>
-                ★
-              </button>
-            ))}
-          </div>
-          <input placeholder="Feedback" value={feedback} onChange={(e) => setFeedback(e.target.value)} />
-          <div className="row">
-            <button className="primary" onClick={() => fb.approveTask(task.id, grade, feedback)}>
-              Pass & grade
-            </button>
-            <button className="ghost danger" onClick={() => fb.rejectTask(task.id, feedback || 'Please revise.')}>
-              Request changes
-            </button>
-          </div>
-        </div>
-      )}
-      {actions.includes('pay') && (
-        <button className="primary" onClick={() => fb.payTask(task.id)}>
-          Mark ฿{task.payout.toLocaleString()} paid
-        </button>
-      )}
-    </article>
+    </TaskCard>
   )
 }
 
 function Leaderboard({ members, tasks, me }: { members: Member[]; tasks: Task[]; me: Member }) {
   const standings = rank(members, tasks)
-  if (standings.length === 0) return <p className="muted">No freelancers yet.</p>
+  if (standings.length === 0) return <p className="empty">No freelancers yet. Invite some from the Invites tab.</p>
   return (
-    <section className="card">
-      <h3>Freelancer ranking</h3>
-      <p className="muted small">Score = 70% average grade + 30% on-time rate, minus rework, ramped up over the first 3 verified tasks.</p>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Freelancer</th>
-            <th>Tier</th>
-            <th>Score</th>
-            <th>Verified</th>
-            <th>Avg grade</th>
-            <th>On time</th>
-            <th>Earned</th>
-          </tr>
-        </thead>
-        <tbody>
-          {standings.map((s, i) => (
-            <tr key={s.member.uid} className={s.member.uid === me.uid ? 'mine' : ''}>
-              <td>{i + 1}</td>
-              <td>{s.member.name}</td>
-              <td>
-                <span className={`tier t-${s.tier.toLowerCase()}`}>{s.tier}</span>
-              </td>
-              <td>
-                <strong>{s.score}</strong>
-              </td>
-              <td>{s.completed}</td>
-              <td>{s.completed ? s.avgGrade.toFixed(1) : '·'}</td>
-              <td>{s.completed ? `${Math.round(s.onTimeRate * 100)}%` : '·'}</td>
-              <td>฿{s.earned.toLocaleString()}</td>
+    <section className="panel">
+      <p className="muted small">Score is 70% average grade and 30% on-time rate, minus 2 points per rework, building up over the first 3 verified tasks.</p>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Freelancer</th>
+              <th>Tier</th>
+              <th className="num">Verified</th>
+              <th className="num">Avg grade</th>
+              <th className="num">On time</th>
+              <th className="num">Earned</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {standings.map((s, i) => (
+              <tr key={s.member.uid} className={s.member.uid === me.uid ? 'mine' : ''}>
+                <td className="num">{i + 1}</td>
+                <td>{s.member.name}</td>
+                <td>
+                  <TierBadge tier={s.tier} score={s.completed ? s.score : undefined} />
+                </td>
+                <td className="num">{s.completed}</td>
+                <td className="num">{s.completed ? s.avgGrade.toFixed(1) : '–'}</td>
+                <td className="num">{s.completed ? `${Math.round(s.onTimeRate * 100)}%` : '–'}</td>
+                <td className="num">฿{s.earned.toLocaleString('en-US')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   )
 }
@@ -334,40 +364,42 @@ function InvitesView({ members }: { members: Member[] }) {
   useEffect(() => fb.watchInvites(setInvites), [])
   const joined = new Set(members.map((m) => m.email))
   return (
-    <section className="card">
-      <h3>Invite freelancers</h3>
+    <section className="panel form">
       <form
-        className="row"
+        className="add-task"
         onSubmit={async (e) => {
           e.preventDefault()
           await fb.invite(email)
           setEmail('')
         }}
       >
-        <input required type="email" placeholder="freelancer@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <button className="primary">Send invite</button>
+        <Field label="Google account email">
+          <input id="invite-email" required type="email" placeholder="freelancer@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </Field>
+        <Button variant="primary" type="submit">
+          Invite
+        </Button>
       </form>
-      <p className="muted small">They sign in with that Google account. Share the site link with them yourself.</p>
-      <ul className="invites">
-        {invites.map((i) => (
-          <li key={i.id}>
-            {i.id} <span className={joined.has(i.id) ? 'status s-paid' : 'status s-open'}>{joined.has(i.id) ? 'Joined' : 'Pending'}</span>
-            {!joined.has(i.id) && (
-              <button className="ghost danger" onClick={() => fb.revokeInvite(i.id)}>
-                Revoke
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
+      <p className="muted small">They sign in with that Google account. Send them the site link yourself; no email goes out.</p>
+      {invites.length > 0 && (
+        <ul className="invites">
+          {invites.map((i) => (
+            <li key={i.id}>
+              <span className="mono">{i.id}</span>
+              {joined.has(i.id) ? (
+                <span className="joined">Joined</span>
+              ) : (
+                <>
+                  <span className="muted small">Pending</span>
+                  <Button variant="danger" size="sm" onClick={() => fb.revokeInvite(i.id)}>
+                    Revoke
+                  </Button>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
-  )
-}
-
-function Progress({ value }: { value: number }) {
-  return (
-    <div className="progress">
-      <div style={{ width: `${Math.round(value * 100)}%` }} />
-    </div>
   )
 }

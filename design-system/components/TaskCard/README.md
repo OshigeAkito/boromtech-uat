@@ -4,7 +4,7 @@ One small, checkable piece of a client job, with its status, payout, freelancer 
 
 **Reading order.** Status and payout first, because they decide whether someone opens the card. Then title, then the client job it belongs to. The due line sits under a hairline with the assignee.
 
-**Deadline.** Pass the freelancer deadline (`due`), never the customer's. The card counts calendar days: "4 days left", warning color at 2 days or fewer, danger when overdue. Once work is submitted the deadline stops shouting, because the freelancer has done their part.
+**Deadline.** Pass the freelancer deadline (`due`), never the customer's. The card counts calendar days: "4 days left", warning color at 2 days or fewer, danger when overdue. Once work is submitted the card shows only the due date, because the freelancer has done their part.
 
 **Actions.** The consumer passes only the actions the viewer is allowed to take, as `Button` children. At most one `primary`, and it is the next step in the lifecycle:
 

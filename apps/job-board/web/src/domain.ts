@@ -1,3 +1,7 @@
+import type { TaskStatus, Tier } from '@boromtech/design-system/components/src'
+
+export type { TaskStatus, Tier }
+
 export type Role = 'admin' | 'freelancer'
 
 export interface Member {
@@ -16,8 +20,6 @@ export interface Job {
   customerDeadline: string
   createdAt: number
 }
-
-export type TaskStatus = 'open' | 'assigned' | 'submitted' | 'approved' | 'paid'
 
 export interface Review {
   grade: number
@@ -45,26 +47,18 @@ export interface Task {
 
 export type TaskAction = 'claim' | 'submit' | 'approve' | 'reject' | 'pay'
 
-export const TRANSITIONS: Record<TaskAction, { from: TaskStatus; to: TaskStatus; by: Role | 'assignee' | 'member' }> = {
-  claim: { from: 'open', to: 'assigned', by: 'member' },
-  submit: { from: 'assigned', to: 'submitted', by: 'assignee' },
-  approve: { from: 'submitted', to: 'approved', by: 'admin' },
-  reject: { from: 'submitted', to: 'assigned', by: 'admin' },
-  pay: { from: 'approved', to: 'paid', by: 'admin' },
-}
-
-export const STATUS_LABEL: Record<TaskStatus, string> = {
-  open: 'Open',
-  assigned: 'In progress',
-  submitted: 'Awaiting review',
-  approved: 'Approved, unpaid',
-  paid: 'Paid',
+export const TRANSITIONS: Record<TaskAction, { from: TaskStatus[]; to: TaskStatus; by: Role | 'assignee' | 'member' }> = {
+  claim: { from: ['open'], to: 'assigned', by: 'member' },
+  submit: { from: ['assigned', 'changes'], to: 'submitted', by: 'assignee' },
+  approve: { from: ['submitted'], to: 'approved', by: 'admin' },
+  reject: { from: ['submitted'], to: 'changes', by: 'admin' },
+  pay: { from: ['approved'], to: 'paid', by: 'admin' },
 }
 
 export function allowedActions(task: Task, me: Member): TaskAction[] {
   return (Object.keys(TRANSITIONS) as TaskAction[]).filter((action) => {
     const t = TRANSITIONS[action]
-    if (t.from !== task.status) return false
+    if (!t.from.includes(task.status)) return false
     if (t.by === 'admin') return me.role === 'admin'
     if (t.by === 'assignee') return task.assigneeUid === me.uid
     return me.role === 'freelancer'
@@ -95,10 +89,10 @@ export interface Standing {
   onTimeRate: number
   earned: number
   score: number
-  tier: string
+  tier: Tier
 }
 
-const TIERS: [number, string][] = [
+const TIERS: [number, Tier][] = [
   [85, 'Gold'],
   [65, 'Silver'],
   [40, 'Bronze'],

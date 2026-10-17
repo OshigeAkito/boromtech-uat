@@ -105,6 +105,6 @@ export const approveTask = (id: string, grade: number, feedback: string) =>
   updateDoc(task(id), { status: 'approved', review: { grade, feedback, at: Date.now() } satisfies Review })
 
 export const rejectTask = (id: string, feedback: string) =>
-  updateDoc(task(id), { status: 'assigned', rejections: increment(1), review: { grade: 0, feedback, at: Date.now() } })
+  updateDoc(task(id), { status: 'changes', rejections: increment(1), review: { grade: 0, feedback, at: Date.now() } })
 
 export const payTask = (id: string) => updateDoc(task(id), { status: 'paid', paidAt: Date.now() })

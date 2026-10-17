@@ -1,0 +1,13 @@
+{
+  "name": "boromtech",
+  "private": true,
+  "workspaces": ["apps/job-board/web"],
+  "scripts": {
+    "ds:build": "node scripts/build-design-system.mjs",
+    "job-board:dev": "npm run ds:build && npm run dev -w apps/job-board/web",
+    "job-board:deploy": "npm run ds:build && npm run build -w apps/job-board/web && cd apps/job-board && firebase deploy --only hosting,firestore:rules"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10"
+  }
+}

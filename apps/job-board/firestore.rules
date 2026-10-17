@@ -6,7 +6,7 @@ service cloud.firestore {
     function isAdminEmail() { return signedIn() && request.auth.token.email_verified && email() in ['pongwasin@gmail.com']; }
     function isMember() { return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)); }
     function isAdmin() { return isMember() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'; }
-    function changes(keys) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys); }
+    function onlyChanges(keys) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys); }
 
     match /users/{uid} {
       allow read: if (signedIn() && request.auth.uid == uid) || isMember();
@@ -36,9 +36,9 @@ service cloud.firestore {
             && request.resource.data.status == 'assigned'
             && request.resource.data.assigneeUid == request.auth.uid
             && request.resource.data.assigneeName == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.name
-            && changes(['status', 'assigneeUid', 'assigneeName']))
+            && onlyChanges(['status', 'assigneeUid', 'assigneeName']))
         || (resource.data.assigneeUid == request.auth.uid
-            && resource.data.status == 'assigned'
+            && resource.data.status in ['assigned', 'changes']
             && request.resource.data.status == 'submitted'
             && request.resource.data.submittedAt == request.time
             && request.resource.data.submissionUrl is string
@@ -46,7 +46,7 @@ service cloud.firestore {
             && request.resource.data.submissionUrl.size() <= 2000
             && request.resource.data.submissionNote is string
             && request.resource.data.submissionNote.size() <= 2000
-            && changes(['status', 'submissionUrl', 'submissionNote', 'submittedAt']));
+            && onlyChanges(['status', 'submissionUrl', 'submissionNote', 'submittedAt']));
     }
   }
 }
