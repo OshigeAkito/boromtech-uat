@@ -1,0 +1,15 @@
+<!-- @dsCard group="Actions" height=72 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Button preview</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></head>
+<body>
+<div id="root" class="bt-row"></div>
+<script>
+  var B = window.BoromTech, h = React.createElement;
+  var day = function (n) { var d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(B.Button, { variant: 'primary' }, 'Claim task'), h(B.Button, null, 'View brief'), h(B.Button, { variant: 'ghost' }, 'Cancel'), h(B.Button, { variant: 'danger' }, 'Request changes'), h(B.Button, { variant: 'primary', size: 'sm' }, 'Mark ฿4,500 paid')
+  ));
+</script>
+</body>
+</html>

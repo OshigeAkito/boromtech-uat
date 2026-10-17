@@ -1,0 +1,10 @@
+# Button
+
+Actions, labelled with what happens: "Claim task", "Submit for review", "Mark ฿4,500 paid".
+
+- `primary`: BoromTech Orange with dark `on-brand` text. One per view or per card.
+- `secondary` (default): a bordered button for everything else.
+- `ghost`: low-emphasis actions such as Cancel or Sign out.
+- `danger`: destructive or negative outcomes such as "Request changes" or "Revoke invite". Text only, no red fill.
+
+Sizes: `md` (40px, default) and `sm` (32px, inside dense tables).

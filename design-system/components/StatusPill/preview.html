@@ -1,0 +1,15 @@
+<!-- @dsCard group="Job board" height=72 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>StatusPill preview</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></head>
+<body>
+<div id="root" class="bt-row"></div>
+<script>
+  var B = window.BoromTech, h = React.createElement;
+  var day = function (n) { var d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    ['open', 'assigned', 'changes', 'submitted', 'approved', 'paid'].map(function (s) { return h(B.StatusPill, { key: s, status: s }); })
+  ));
+</script>
+</body>
+</html>

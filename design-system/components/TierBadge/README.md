@@ -1,0 +1,5 @@
+# TierBadge
+
+A freelancer's rank tier, shown as three rising bars plus the tier name and optional score.
+
+Tiers come from the score: Gold 85+, Silver 65+, Bronze 40+, Rookie below that, Unranked with no verified tasks. The bars carry the meaning so tiers stay legible without metallic colors that would sit outside the palette.

@@ -1,0 +1,17 @@
+<!-- @dsCard group="Job board" height=440 subtitle="Open, awaiting review and paid" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>TaskCard preview</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></head>
+<body>
+<div id="root" class="bt-grid"></div>
+<script>
+  var B = window.BoromTech, h = React.createElement;
+  var day = function (n) { var d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(B.TaskCard, { status: 'open', title: 'Build the booking form', project: 'Siam Dental clinic app', description: 'React form with date and time picker, validation, and a confirmation step. Figma frames are linked in the brief.', payout: 4500, due: day(14) }, h(B.Button, { variant: 'primary' }, 'Claim task')),
+    h(B.TaskCard, { status: 'submitted', title: 'Translate onboarding screens to Thai', project: 'Kaset Market app', payout: 1800, due: day(1), assignee: 'Nok Siriwan', submission: 'https://github.com/kaset/app/pull/42' }, h(B.StarRating, { value: 4, onChange: function () {} }), h(B.Button, { variant: 'primary' }, 'Pass & grade'), h(B.Button, { variant: 'danger' }, 'Request changes')),
+    h(B.TaskCard, { status: 'paid', title: 'Fix PDF invoice layout', project: 'Chiang Mai Coffee POS', payout: 2200, due: day(-3), assignee: 'Arthit Pong', review: { grade: 5, feedback: 'Clean, matched the spec first time.' } })
+  ));
+</script>
+</body>
+</html>

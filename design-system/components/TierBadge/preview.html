@@ -1,0 +1,15 @@
+<!-- @dsCard group="Job board" height=64 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>TierBadge preview</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></head>
+<body>
+<div id="root" class="bt-row"></div>
+<script>
+  var B = window.BoromTech, h = React.createElement;
+  var day = function (n) { var d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(B.TierBadge, { tier: 'Gold', score: 91 }), h(B.TierBadge, { tier: 'Silver', score: 72 }), h(B.TierBadge, { tier: 'Bronze', score: 48 }), h(B.TierBadge, { tier: 'Rookie', score: 22 }), h(B.TierBadge, { tier: 'Unranked' })
+  ));
+</script>
+</body>
+</html>

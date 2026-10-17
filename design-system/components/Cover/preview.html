@@ -1,0 +1,58 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BoromTech</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=IBM+Plex+Sans+Thai:wght@400&display=swap">
+<style>
+  html, body { margin:0; height:100%; }
+  body { background:var(--surface); color:var(--ink); font-family:var(--font-sans, "IBM Plex Sans Thai", system-ui, sans-serif); overflow:hidden; }
+  .cover { position:relative; height:288px; overflow:hidden; }
+  .art { position:absolute; top:0; left:480px; width:480px; height:288px; overflow:hidden; }
+  .art svg { display:block; width:480px; height:288px; }
+  .brand { fill:var(--brand); }
+  .tint { fill:var(--brand-soft); }
+  .night { fill:var(--night); }
+  .ink { fill:var(--ink); }
+  .dot { fill:var(--brand); }
+  .dot.cut { fill:var(--surface); }
+  .blk { rx:var(--radius-lg); }
+  .ctl { rx:var(--radius-md); }
+  .words { position:absolute; left:var(--space-12); bottom:var(--space-8); max-width:440px; }
+  .name { margin:0; font-family:"Bricolage Grotesque", var(--font-display, system-ui), sans-serif; font-size:80px; line-height:.92; font-weight:700; letter-spacing:-.03em; color:var(--ink); }
+  .tag { margin:var(--space-3) 0 0 2px; font-size:14px; line-height:20px; color:var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      brand 160x272 slab bled off the top (the identity, largest) · night 256x160 bled off the right edge · brand-soft 112x96 tint · ink 48x32 control-sized chip, once
+  arrangement one tall orange slab with satellites on a space-4 gutter, night pushing off the right edge, bottoms on one line space-8 above the edge
+  pattern     dot grid, from "precise, a 4px grid, IDs in mono": 3px dots at a space-4 pitch over the tint, a column cut into the orange slab in surface
+  scales      sides in space-4 multiples; gutter space-4; pitch space-4; corners radius-lg on blocks, radius-md on the chip
+-->
+<rect class="brand blk" x="16" y="-16" width="160" height="272" rx="14"/>
+<rect class="night blk" x="192" y="96" width="304" height="160" rx="14"/>
+<rect class="tint blk" x="192" y="-16" width="112" height="96" rx="14"/>
+<rect class="ink ctl" x="320" y="48" width="48" height="32" rx="8"/>
+<g>
+  <circle class="dot" cx="208" cy="8" r="1.5"/><circle class="dot" cx="224" cy="8" r="1.5"/><circle class="dot" cx="240" cy="8" r="1.5"/><circle class="dot" cx="256" cy="8" r="1.5"/><circle class="dot" cx="272" cy="8" r="1.5"/><circle class="dot" cx="288" cy="8" r="1.5"/>
+  <circle class="dot" cx="208" cy="24" r="1.5"/><circle class="dot" cx="224" cy="24" r="1.5"/><circle class="dot" cx="240" cy="24" r="1.5"/><circle class="dot" cx="256" cy="24" r="1.5"/><circle class="dot" cx="272" cy="24" r="1.5"/><circle class="dot" cx="288" cy="24" r="1.5"/>
+  <circle class="dot" cx="208" cy="40" r="1.5"/><circle class="dot" cx="224" cy="40" r="1.5"/><circle class="dot" cx="240" cy="40" r="1.5"/><circle class="dot" cx="256" cy="40" r="1.5"/><circle class="dot" cx="272" cy="40" r="1.5"/><circle class="dot" cx="288" cy="40" r="1.5"/>
+  <circle class="dot" cx="208" cy="56" r="1.5"/><circle class="dot" cx="224" cy="56" r="1.5"/><circle class="dot" cx="240" cy="56" r="1.5"/><circle class="dot" cx="256" cy="56" r="1.5"/><circle class="dot" cx="272" cy="56" r="1.5"/><circle class="dot" cx="288" cy="56" r="1.5"/>
+  <circle class="dot cut" cx="160" cy="176" r="1.5"/><circle class="dot cut" cx="160" cy="192" r="1.5"/><circle class="dot cut" cx="160" cy="208" r="1.5"/><circle class="dot cut" cx="160" cy="224" r="1.5"/><circle class="dot cut" cx="160" cy="240" r="1.5"/>
+  <circle class="dot cut" cx="144" cy="208" r="1.5"/><circle class="dot cut" cx="144" cy="224" r="1.5"/><circle class="dot cut" cx="144" cy="240" r="1.5"/>
+  <circle class="dot cut" cx="128" cy="240" r="1.5"/>
+</g>
+</svg>
+</div>
+<div class="words">
+  <h1 class="name">BoromTech</h1>
+  <p class="tag">Small, checkable pieces of work. Shipped on time.</p>
+</div>
+</div>
+</body>
+</html>
