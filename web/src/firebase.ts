@@ -20,7 +20,7 @@ import type { Job, Member, Review, Task } from './domain'
 
 const app = initializeApp({
   apiKey: 'AIzaSyAEk7qx1iGAyEY9-fw-cOxQfmkJCkI7tsA',
-  authDomain: 'job-board-pilot-pw.firebaseapp.com',
+  authDomain: location.hostname === 'localhost' ? 'job-board-pilot-pw.firebaseapp.com' : location.host,
   projectId: 'job-board-pilot-pw',
   storageBucket: 'job-board-pilot-pw.firebasestorage.app',
   messagingSenderId: '929476411060',
