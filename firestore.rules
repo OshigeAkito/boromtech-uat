@@ -9,7 +9,7 @@ service cloud.firestore {
     function changes(keys) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys); }
 
     match /users/{uid} {
-      allow read: if isMember();
+      allow read: if (signedIn() && request.auth.uid == uid) || isMember();
       allow create: if signedIn() && request.auth.uid == uid
         && request.resource.data.email == email()
         && ((request.resource.data.role == 'admin' && isAdminEmail())
