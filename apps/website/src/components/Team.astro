@@ -1,0 +1,33 @@
+---
+import { Picture } from 'astro:assets'
+import sukhumvit from '../assets/photos/sukhumvit-bangkok-at-night.jpg'
+---
+
+<section class="chapter team" id="team" aria-labelledby="team-title">
+  <div class="panel">
+    <div class="panel-left">
+      <h2 id="team-title" class="l reveal">ทีมจากคอนซัลติ้ง<br />ระดับโลก</h2>
+      <figure class="portrait">
+        <Picture
+          src={sukhumvit}
+          formats={['avif', 'webp']}
+          widths={[360, 600, 900]}
+          sizes="(max-width: 900px) 86vw, 38vw"
+          alt="เส้นขอบฟ้าย่านสุขุมวิทยามค่ำคืน"
+          loading="lazy"
+        />
+      </figure>
+    </div>
+    <div class="panel-right">
+      <div class="reveal">
+        <h3>สแตนดาร์ดของโปรเจกต์ใหญ่</h3>
+        <p>ทีมของเรามาจากบริษัทคอนซัลติ้งด้านเทคโนโลยีระดับโลก ผ่านโปรเจกต์ขนาดใหญ่มาแล้ว และนำเมธอดการออดิต การวางแผน และการส่งมอบแบบเดียวกันมาใช้กับทุกงาน</p>
+      </div>
+      <div class="reveal">
+        <h3>โดยไม่มีบิลที่บานปลาย</h3>
+        <p>ไม่มีชาร์จรายชั่วโมงที่ไม่รู้จบ ทุกทาสก์มีราคาที่ตกลงกันก่อนเริ่ม และคุณเห็นทุกบรรทัดในใบเสนอราคา</p>
+      </div>
+      <a class="button reveal" href="#contact">คุยกับทีม</a>
+    </div>
+  </div>
+</section>

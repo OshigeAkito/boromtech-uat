@@ -1,0 +1,62 @@
+---
+import { Picture } from 'astro:assets'
+import bts from '../assets/photos/bangkok-skytrain-bts-3.jpg'
+import posterSrc from '../assets/photos/skytrain-poster.jpg'
+import { credits, site } from '../data/site'
+
+const subject = encodeURIComponent('นัดออดิตซิสเต็ม')
+const blocks = [
+  ['B', 100], ['O', 72], ['R', 88], ['O', 64], ['M', 94], ['T', 78], ['E', 60], ['C', 84], ['H', 70],
+] as const
+---
+
+<section class="chapter contact" id="contact" aria-labelledby="contact-title">
+  <div class="tiles">
+    <div class="tile tile-flank tile-left">
+      <Picture src={posterSrc} formats={['avif', 'webp']} widths={[240, 480]} sizes="(max-width: 900px) 46vw, 16vw" alt="" loading="lazy" />
+      <video muted loop playsinline preload="none" width="854" height="480" aria-hidden="true" data-lazy-video>
+        <source data-src="/media/bangkok-skytrain-p1110323.webm" type="video/webm" />
+      </video>
+    </div>
+    <div class="tile tile-main">
+      <h2 id="contact-title" class="m reveal">ส่งซิสเต็มมาให้เราดู</h2>
+      <p class="reveal">เล่าอาการสั้นๆ เราตอบกลับภายในหนึ่งวันทำการ พร้อมนัดวันออดิต</p>
+      <a class="button button-dark reveal" href={`mailto:${site.email}?subject=${subject}`}>เขียนถึงเรา</a>
+    </div>
+    <div class="tile tile-flank tile-right">
+      <Picture src={bts} formats={['avif', 'webp']} widths={[240, 480]} sizes="(max-width: 900px) 46vw, 16vw" alt="รถไฟฟ้าบีทีเอสแล่นผ่านอนุสาวรีย์ชัยสมรภูมิ" loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="blocks" role="img" aria-label="BoromTech">
+    {blocks.map(([letter, h]) => <span style={`--h:${h}%`} aria-hidden="true">{letter}</span>)}
+  </div>
+  <div class="footer-grid">
+    <ul>
+      <li><a class="link" href="#cases">เคสที่เรารับ</a></li>
+      <li><a class="link" href="#process">โปรเซส</a></li>
+    </ul>
+    <ul>
+      <li><a class="link" href="#team">ทีม</a></li>
+      <li><a class="link" href="#faq">คำถาม</a></li>
+    </ul>
+    <address>{site.email}<br />{site.city}</address>
+  </div>
+  <p class="credits">
+    ภาพประกอบจาก Wikimedia Commons:{' '}
+    {
+      credits.map((c, i) => (
+        <>
+          <a class="link" href={c.href} rel="noopener">"{c.title}"</a> โดย {c.by}, {c.licence}
+          {i < credits.length - 1 && ' · '}
+        </>
+      ))
+    }
+  </p>
+  <div class="footer-last">
+    <span>© 2569 BoromTech</span>
+    <a class="button button-small" href="#contact">นัดออดิต</a>
+  </div>
+</footer>

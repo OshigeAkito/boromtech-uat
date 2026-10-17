@@ -1,11 +1,16 @@
 {
   "name": "boromtech",
   "private": true,
-  "workspaces": ["apps/job-board/web"],
+  "workspaces": [
+    "apps/job-board/web",
+    "apps/website"
+  ],
   "scripts": {
     "ds:build": "node scripts/build-design-system.mjs",
     "job-board:dev": "npm run ds:build && npm run dev -w apps/job-board/web",
-    "job-board:deploy": "npm run ds:build && npm run build -w apps/job-board/web && cd apps/job-board && firebase deploy --only hosting,firestore:rules"
+    "job-board:deploy": "npm run ds:build && npm run build -w apps/job-board/web && cd apps/job-board && firebase deploy --only hosting,firestore:rules",
+    "website:dev": "npm run dev -w apps/website",
+    "website:build": "npm run build -w apps/website"
   },
   "devDependencies": {
     "esbuild": "0.25.10"

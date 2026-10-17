@@ -1,0 +1,44 @@
+---
+import { Picture } from 'astro:assets'
+import sathorn from '../assets/photos/sathorn-unique-tower-ii.jpg'
+import { site, symptoms } from '../data/site'
+---
+
+<section class="chapter cases" id="cases" aria-labelledby="cases-title">
+  <div class="cases-picture">
+    <figure class="shutter">
+      <Picture
+        src={sathorn}
+        formats={['avif', 'webp']}
+        widths={[400, 640, 900, 1200]}
+        sizes="(max-width: 900px) 92vw, 40vw"
+        alt="ตึกสาทรยูนีคที่สร้างค้างไว้ ยืนอยู่ท่ามกลางตึกที่สร้างเสร็จแล้วในย่านสาทร กรุงเทพฯ"
+        loading="lazy"
+      />
+    </figure>
+    <p class="caption">สาทรยูนีค ทาวเวอร์ หยุดก่อสร้างตั้งแต่ปี 2540 และยืนอยู่อย่างนั้นมาเกือบสามสิบปี ซอฟต์แวร์ก็ถูกทิ้งไว้แบบนี้ได้เช่นกัน</p>
+  </div>
+  <div class="cases-body">
+    <h2 id="cases-title" class="l reveal">เคสที่เรารับ</h2>
+    <p class="reveal">เลือกอาการที่ตรงกับซิสเต็มของคุณ แล้วดูว่าเราเริ่มจากตรงไหน</p>
+    <ul class="symptoms" id="symptoms">
+      {
+        symptoms.map(({ symptom, remedy }) => (
+          <li>
+            <label>
+              <input type="checkbox" name="case" />
+              <span class="symptom">{symptom}</span>
+              <span class="remedy">{remedy}</span>
+            </label>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="verdict" aria-live="polite">
+      <p class="verdict-line" id="verdict-line" data-default={`ทุกเคสเริ่มที่ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ ${site.auditPrice} หักคืนเต็มจำนวนเมื่อรีสโตร์ต่อกับเรา`}>
+        ทุกเคสเริ่มที่ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ {site.auditPrice} หักคืนเต็มจำนวนเมื่อรีสโตร์ต่อกับเรา
+      </p>
+      <a class="button" id="verdict-send" href="#contact" data-mail={site.email} data-price={site.auditPrice}>ส่งเคสนี้ให้เรา</a>
+    </div>
+  </div>
+</section>

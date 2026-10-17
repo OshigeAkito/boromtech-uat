@@ -1,5 +1,3 @@
-const MAIL = 'hello@boromtech.co'
-const AUDIT = 'ทุกเคสเริ่มที่ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ ฿25,000 หักคืนเต็มจำนวนเมื่อรีสโตร์ต่อกับเรา'
 
 document.querySelectorAll('.chapter, .footer').forEach((section) => {
   section.querySelectorAll('.reveal').forEach((el, i) => el.style.setProperty('--d', `${i * 80}ms`))
@@ -22,20 +20,21 @@ const seen = new IntersectionObserver(
 document.querySelectorAll('.reveal, .stages, .blocks').forEach((el) => seen.observe(el))
 document.querySelectorAll('.shutter').forEach((el) => seen.observe(el.parentElement))
 
-const mailto = (subject, body) => `mailto:${MAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+const mailto = (subject, body) => `mailto:${send.dataset.mail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 
 const boxes = [...document.querySelectorAll('#symptoms input')]
 const verdictLine = document.getElementById('verdict-line')
 const send = document.getElementById('verdict-send')
+const { price } = send.dataset
 
 function updateVerdict() {
   const picked = boxes.filter((b) => b.checked).map((b) => b.closest('label').querySelector('.symptom').textContent)
   if (picked.length === 0) {
-    verdictLine.textContent = AUDIT
+    verdictLine.textContent = verdictLine.dataset.default
     send.href = '#contact'
     return
   }
-  verdictLine.textContent = `${picked.length} อาการ · ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ ฿25,000 ครอบคลุมทั้งหมดที่คุณเลือก และหักคืนเต็มจำนวนเมื่อรีสโตร์ต่อกับเรา`
+  verdictLine.textContent = `${picked.length} อาการ · ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ ${price} ครอบคลุมทั้งหมดที่คุณเลือก และหักคืนเต็มจำนวนเมื่อรีสโตร์ต่อกับเรา`
   send.href = mailto('นัดออดิตซิสเต็ม', `สวัสดีครับ/ค่ะ\n\nซิสเต็มของเรามีอาการดังนี้\n${picked.map((p) => `• ${p}`).join('\n')}\n\nชื่อซิสเต็ม:\nเทคโนโลยีที่ใช้ (ถ้าทราบ):\nเบอร์ติดต่อ:\n`)
 }
 boxes.forEach((b) => b.addEventListener('change', updateVerdict))
@@ -55,3 +54,16 @@ tabs.forEach((tab) =>
     })
   }),
 )
+
+const calm = matchMedia('(prefers-reduced-motion: reduce)').matches
+const videos = new IntersectionObserver((entries) => {
+  for (const entry of entries) {
+    if (!entry.isIntersecting) continue
+    const video = entry.target
+    video.querySelectorAll('source[data-src]').forEach((s) => (s.src = s.dataset.src))
+    video.load()
+    video.play().catch(() => {})
+    videos.unobserve(video)
+  }
+}, { rootMargin: '200px' })
+if (!calm) document.querySelectorAll('video[data-lazy-video]').forEach((v) => videos.observe(v))

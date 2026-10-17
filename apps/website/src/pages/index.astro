@@ -1,0 +1,26 @@
+---
+import Cases from '../components/Cases.astro'
+import Contact from '../components/Contact.astro'
+import Faq from '../components/Faq.astro'
+import Hero from '../components/Hero.astro'
+import Process from '../components/Process.astro'
+import Showcase from '../components/Showcase.astro'
+import Team from '../components/Team.astro'
+import Base from '../layouts/Base.astro'
+---
+
+<Base>
+  <main id="top">
+    <Hero />
+    <Cases />
+    <Process />
+    <Showcase />
+    <Team />
+    <Faq />
+  </main>
+  <Contact />
+</Base>
+
+<script>
+  import '../scripts/site.js'
+</script>

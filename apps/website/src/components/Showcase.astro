@@ -1,0 +1,70 @@
+---
+---
+
+<section class="chapter showcase" aria-label="สิ่งที่คุณได้รับ">
+  <div class="outputs" role="tablist" aria-label="เอกสารที่คุณได้รับ">
+    <button role="tab" aria-selected="true" aria-controls="sheet-audit" data-sheet="audit">ออดิตรีพอร์ต</button>
+    <button role="tab" aria-selected="false" aria-controls="sheet-quote" data-sheet="quote">ใบเสนอราคา</button>
+    <button role="tab" aria-selected="false" aria-controls="sheet-weekly" data-sheet="weekly">วีคลี่อัปเดต</button>
+    <button role="tab" aria-selected="false" aria-controls="sheet-warranty" data-sheet="warranty">วอร์แรนตี</button>
+    <p class="outputs-note">ตัวอย่างเอกสารจริงที่คุณได้รับ จากเคสสมมติ ระบบสต็อกสินค้าของบริษัทจัดจำหน่าย</p>
+  </div>
+  <div class="desk">
+    <div class="sheet" id="sheet-audit" role="tabpanel" data-ui>
+      <div class="sheet-head"><strong>BoromTech</strong><span>ออดิตรีพอร์ต · BT-A-0412</span></div>
+      <h3>ระบบสต็อกสินค้า · ตัวอย่าง</h3>
+      <p class="sheet-meta">ออดิตวันที่ 3–7 พ.ย. 2569 · โค้ด 182,400 บรรทัด · 3 เซิร์ฟเวอร์</p>
+      <div class="severity"><span class="sev sev-critical">วิกฤต <b>2</b></span><span class="sev sev-high">สูง <b>5</b></span><span class="sev sev-mid">ปานกลาง <b>9</b></span></div>
+      <ol class="findings">
+        <li><b>วิกฤต</b> รหัสผ่านดาต้าเบสถูกเขียนไว้ในโค้ด และอยู่ในทุกไฟล์แบ็กอัป</li>
+        <li><b>วิกฤต</b> ไม่มีแบ็กอัปอัตโนมัติ ข้อมูลล่าสุดที่กู้ได้คือ 41 วันก่อน</li>
+        <li><b>สูง</b> PHP 5.6 หมดซัพพอร์ตด้านความปลอดภัยตั้งแต่สิ้นปี 2561</li>
+        <li><b>สูง</b> รีพอร์ตยอดขายปัดเศษก่อนรวมยอด ทำให้ยอดรวมคลาดเคลื่อน</li>
+        <li><b>สูง</b> ซอร์สโค้ดบนเซิร์ฟเวอร์ใหม่กว่าใน repository เดิม 7 เดือน</li>
+      </ol>
+    </div>
+    <div class="sheet" id="sheet-quote" role="tabpanel" data-ui hidden>
+      <div class="sheet-head"><strong>BoromTech</strong><span>ใบเสนอราคา · BT-Q-0412</span></div>
+      <h3>ระบบสต็อกสินค้า · ตัวอย่าง</h3>
+      <p class="sheet-meta">ฟิกซ์ไพรซ์ทุกรายการ · ยืนราคา 30 วัน</p>
+      <table class="lines">
+        <tbody>
+          <tr><td>ออดิตซิสเต็ม</td><td>25,000</td></tr>
+          <tr><td>รีคัฟเวอร์ซอร์สโค้ด และตั้ง Git</td><td>18,000</td></tr>
+          <tr><td>อัปเกรด PHP 5.6 เป็น 8.3</td><td>64,000</td></tr>
+          <tr><td>แก้รีพอร์ตยอดขายที่คำนวณผิด</td><td>12,000</td></tr>
+          <tr><td>ด็อกคิวเมนต์และไดอะแกรมซิสเต็ม</td><td>15,000</td></tr>
+          <tr class="credit"><td>หักค่าออดิตคืน</td><td>−25,000</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td>รวม</td><td>109,000</td></tr>
+          <tr><td>VAT 7%</td><td>7,630</td></tr>
+          <tr class="total"><td>ยอดชำระ (บาท)</td><td>116,630</td></tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="sheet sheet-narrow" id="sheet-weekly" role="tabpanel" data-ui hidden>
+      <div class="sheet-head"><strong>BoromTech</strong><span>วีคลี่อัปเดต · สัปดาห์ 3 จาก 6</span></div>
+      <h3>คืบหน้า 7 จาก 12 ทาสก์</h3>
+      <div class="meter"><span style="width:58%"></span></div>
+      <ul class="tasks">
+        <li><span class="pill pill-done">ตรวจแล้ว</span>รีคัฟเวอร์ซอร์สโค้ดจากเซิร์ฟเวอร์</li>
+        <li><span class="pill pill-done">ตรวจแล้ว</span>ย้ายรหัสผ่านออกจากโค้ด</li>
+        <li><span class="pill pill-done">ตรวจแล้ว</span>แบ็กอัปอัตโนมัติทุกคืน 02:00</li>
+        <li><span class="pill pill-review">รอตรวจ</span>แก้การปัดเศษในรีพอร์ตยอดขาย</li>
+        <li><span class="pill pill-work">กำลังทำ</span>อัปเกรดโมดูลสต็อกเป็น PHP 8.3</li>
+      </ul>
+      <p class="sheet-meta">สัปดาห์หน้า: อัปเกรดโมดูลออร์เดอร์ และทดสอบกับยอดขายเดือนตุลาคม</p>
+    </div>
+    <div class="sheet sheet-narrow" id="sheet-warranty" role="tabpanel" data-ui hidden>
+      <div class="sheet-head"><strong>BoromTech</strong><span>วอร์แรนตี · BT-W-0412</span></div>
+      <h3>การันตี 90 วัน</h3>
+      <dl class="terms">
+        <div><dt>ครอบคลุม</dt><dd>ทาสก์ BT-104 ถึง BT-115 ทั้ง 12 รายการ</dd></div>
+        <div><dt>เริ่ม</dt><dd>1 ธ.ค. 2569</dd></div>
+        <div><dt>สิ้นสุด</dt><dd>1 มี.ค. 2570</dd></div>
+        <div><dt>เงื่อนไข</dt><dd>ปัญหาที่เกิดจากงานของ BoromTech แก้ไขโดยไม่มีค่าใช้จ่าย ภายใน 2 วันทำการหลังแจ้ง</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>

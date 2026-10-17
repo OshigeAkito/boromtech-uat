@@ -1,0 +1,27 @@
+---
+import { Picture } from 'astro:assets'
+import river from '../assets/photos/chao-phraya-river-bangkok-northwards-from-king.jpg'
+import { faqs } from '../data/site'
+---
+
+<section class="chapter faq" id="faq" aria-labelledby="faq-title">
+  <div class="faq-head">
+    <h2 id="faq-title" class="l reveal">ก่อนเริ่มงาน</h2>
+    <Picture
+      src={river}
+      formats={['avif', 'webp']}
+      widths={[400, 640, 900]}
+      sizes="(max-width: 900px) 92vw, 38vw"
+      alt="แม่น้ำเจ้าพระยามองจากสะพานพระเจ้าตากสิน มีเรือลำเลียงสินค้าแล่นผ่าน"
+      loading="lazy"
+    />
+  </div>
+  {
+    faqs.map(({ q, a }) => (
+      <div class="qa">
+        <h3>{q}</h3>
+        <p>{a}</p>
+      </div>
+    ))
+  }
+</section>
