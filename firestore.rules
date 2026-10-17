@@ -35,10 +35,17 @@ service cloud.firestore {
         || (isMember() && resource.data.status == 'open'
             && request.resource.data.status == 'assigned'
             && request.resource.data.assigneeUid == request.auth.uid
+            && request.resource.data.assigneeName == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.name
             && changes(['status', 'assigneeUid', 'assigneeName']))
         || (resource.data.assigneeUid == request.auth.uid
             && resource.data.status == 'assigned'
             && request.resource.data.status == 'submitted'
+            && request.resource.data.submittedAt == request.time
+            && request.resource.data.submissionUrl is string
+            && request.resource.data.submissionUrl.matches('https?://.+')
+            && request.resource.data.submissionUrl.size() <= 2000
+            && request.resource.data.submissionNote is string
+            && request.resource.data.submissionNote.size() <= 2000
             && changes(['status', 'submissionUrl', 'submissionNote', 'submittedAt']));
     }
   }

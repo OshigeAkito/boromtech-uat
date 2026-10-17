@@ -13,6 +13,7 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  Timestamp,
   updateDoc,
 } from 'firebase/firestore'
 import type { Job, Member, Review, Task } from './domain'
@@ -64,7 +65,10 @@ function watch<T>(name: string, order: string, cb: (rows: T[]) => void) {
 }
 
 export const watchJobs = (cb: (rows: Job[]) => void) => watch<Job>('jobs', 'createdAt', cb)
-export const watchTasks = (cb: (rows: Task[]) => void) => watch<Task>('tasks', 'freelancerDeadline', cb)
+export const watchTasks = (cb: (rows: Task[]) => void) =>
+  watch<Task & { submittedAt: Timestamp | null }>('tasks', 'freelancerDeadline', (rows) =>
+    cb(rows.map((t) => ({ ...t, submittedAt: t.submittedAt?.toMillis() ?? null }))),
+  )
 export const watchMembers = (cb: (rows: Member[]) => void) => watch<Member>('users', 'email', cb)
 export const watchInvites = (cb: (rows: { id: string }[]) => void) => watch<{ id: string }>('invites', 'createdAt', cb)
 
@@ -95,7 +99,7 @@ export const claimTask = (id: string, me: Member) =>
   updateDoc(task(id), { status: 'assigned', assigneeUid: me.uid, assigneeName: me.name })
 
 export const submitTask = (id: string, url: string, note: string) =>
-  updateDoc(task(id), { status: 'submitted', submissionUrl: url, submissionNote: note, submittedAt: Date.now() })
+  updateDoc(task(id), { status: 'submitted', submissionUrl: url, submissionNote: note, submittedAt: serverTimestamp() })
 
 export const approveTask = (id: string, grade: number, feedback: string) =>
   updateDoc(task(id), { status: 'approved', review: { grade, feedback, at: Date.now() } satisfies Review })
