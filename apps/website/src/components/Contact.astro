@@ -1,6 +1,6 @@
 ---
 import { Picture } from 'astro:assets'
-import bts from '../assets/photos/bangkok-skytrain-bts-3.jpg'
+import rack from '../assets/photos/server-rack.jpg'
 import posterSrc from '../assets/photos/skytrain-poster.jpg'
 import { credits, site } from '../data/site'
 
@@ -20,11 +20,11 @@ const blocks = [
     </div>
     <div class="tile tile-main">
       <h2 id="contact-title" class="m reveal">ส่งซิสเต็มมาให้เราดู</h2>
-      <p class="reveal">เล่าอาการสั้นๆ เราตอบกลับภายในหนึ่งวันทำการ พร้อมนัดวันออดิต</p>
+      <p class="reveal">ไม่ว่าโปรเจกต์จะติดขัดตรงไหน หรือกำลังหาทีมดูแลต่อ เล่าอาการสั้นๆ ให้เราฟัง เราตอบกลับภายในหนึ่งวันทำการ พร้อมนัดวันออดิต</p>
       <a class="button button-dark reveal" href={`mailto:${site.email}?subject=${subject}`}>เขียนถึงเรา</a>
     </div>
     <div class="tile tile-flank tile-right">
-      <Picture src={bts} formats={['avif', 'webp']} widths={[320, 640, 960]} sizes="(max-width: 900px) 46vw, 16vw" alt="รถไฟฟ้าบีทีเอสแล่นผ่านอนุสาวรีย์ชัยสมรภูมิ" loading="lazy" />
+      <Picture src={rack} formats={['avif', 'webp']} widths={[320, 640, 960]} sizes="(max-width: 900px) 46vw, 16vw" alt="ตู้เซิร์ฟเวอร์เก่าที่จัดสายแลนใหม่อย่างเป็นระเบียบ" loading="lazy" />
     </div>
   </div>
 </section>
@@ -35,7 +35,7 @@ const blocks = [
   </div>
   <div class="footer-grid">
     <ul>
-      <li><a class="link" href="#cases">เคสที่เรารับ</a></li>
+      <li><a class="link" href="#cases">งานที่เรารับ</a></li>
       <li><a class="link" href="#process">โปรเซส</a></li>
     </ul>
     <ul>
@@ -45,7 +45,7 @@ const blocks = [
     <address>{site.email}<br />{site.city}</address>
   </div>
   <p class="credits">
-    ภาพประกอบจาก Wikimedia Commons:{' '}
+    ภาพประกอบบางส่วนสร้างด้วย AI · ภาพถ่ายจาก Wikimedia Commons:{' '}
     {
       credits.map((c, i) => (
         <>

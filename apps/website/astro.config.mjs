@@ -1,9 +1,10 @@
 import sitemap from '@astrojs/sitemap'
 import { defineConfig, fontProviders } from 'astro/config'
+import thaiLoanwords from './integrations/thai-loanwords.mjs'
 
 export default defineConfig({
   site: 'https://boromtech.co',
-  integrations: [sitemap()],
+  integrations: [sitemap(), thaiLoanwords()],
   build: { inlineStylesheets: 'always' },
   image: { responsiveStyles: false },
   fonts: [

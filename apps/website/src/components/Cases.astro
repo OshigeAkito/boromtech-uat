@@ -16,11 +16,11 @@ import { site, symptoms } from '../data/site'
         loading="lazy"
       />
     </figure>
-    <p class="caption">สาทรยูนีค ทาวเวอร์ หยุดก่อสร้างตั้งแต่ปี 2540 และยืนอยู่อย่างนั้นมาเกือบสามสิบปี ซอฟต์แวร์ก็ถูกทิ้งไว้แบบนี้ได้เช่นกัน</p>
+    <p class="caption">สาทรยูนีค ทาวเวอร์ โครงการมูลค่ามหาศาลที่หยุดสร้างตั้งแต่ปี 2540 ซอฟต์แวร์ราคาแพงหรือโปรเจกต์ที่สร้างเสร็จครึ่งๆ กลางๆ จำนวนมากก็ถูกทิ้งไว้แบบนี้เช่นกัน</p>
   </div>
   <div class="cases-body">
-    <h2 id="cases-title" class="l reveal">เคสที่เรารับ</h2>
-    <p class="reveal">เลือกอาการที่ตรงกับซิสเต็มของคุณ แล้วดูว่าเราเริ่มจากตรงไหน</p>
+    <h2 id="cases-title" class="l reveal">งานที่เรารับดูแล</h2>
+    <p class="reveal">เลือกอาการที่ตรงกับโปรเจกต์ของคุณ แล้วดูว่าเราเข้าไปช่วยจากตรงไหน</p>
     <ul class="symptoms" id="symptoms">
       {
         symptoms.map(({ symptom, remedy }) => (
@@ -35,10 +35,10 @@ import { site, symptoms } from '../data/site'
       }
     </ul>
     <div class="verdict" aria-live="polite">
-      <p class="verdict-line" id="verdict-line" data-default={`ทุกเคสเริ่มที่ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ ${site.auditPrice} หักคืนเต็มจำนวนเมื่อรีสโตร์ต่อกับเรา`}>
-        ทุกเคสเริ่มที่ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ {site.auditPrice} หักคืนเต็มจำนวนเมื่อรีสโตร์ต่อกับเรา
+      <p class="verdict-line" id="verdict-line" data-default={`ทุกเคสเริ่มที่ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ ${site.auditPrice} หักคืนเต็มจำนวนเมื่อทำระบบต่อกับเรา`}>
+        ทุกเคสเริ่มที่ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ {site.auditPrice} หักคืนเต็มจำนวนเมื่อทำระบบต่อกับเรา
       </p>
-      <a class="button" id="verdict-send" href="#contact" data-mail={site.email} data-price={site.auditPrice}>ส่งเคสนี้ให้เรา</a>
+      <a class="button" id="verdict-send" href="#contact" data-mail={site.email} data-price={site.auditPrice}>ส่งเคสนี้ให้เราดู</a>
     </div>
   </div>
 </section>

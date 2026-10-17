@@ -34,8 +34,8 @@ function updateVerdict() {
     send.href = '#contact'
     return
   }
-  verdictLine.textContent = `${picked.length} อาการ · ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ ${price} ครอบคลุมทั้งหมดที่คุณเลือก และหักคืนเต็มจำนวนเมื่อรีสโตร์ต่อกับเรา`
-  send.href = mailto('นัดออดิตซิสเต็ม', `สวัสดีครับ/ค่ะ\n\nซิสเต็มของเรามีอาการดังนี้\n${picked.map((p) => `• ${p}`).join('\n')}\n\nชื่อซิสเต็ม:\nเทคโนโลยีที่ใช้ (ถ้าทราบ):\nเบอร์ติดต่อ:\n`)
+  verdictLine.textContent = `${picked.length} อาการ · ออดิต 5 วันทำการ ฟิกซ์ไพรซ์ ${price} ครอบคลุมทั้งหมดที่คุณเลือก และหักคืนเต็มจำนวนเมื่อทำระบบต่อกับเรา`
+  send.href = mailto('นัดออดิตซิสเต็ม', `สวัสดีครับ/ค่ะ\n\nซิสเต็มของเรามีอาการดังนี้\n${picked.map((p) => `• ${p}`).join('\n')}\n\nชื่อซิสเต็ม / โปรเจกต์:\nเทคโนโลยีที่ใช้ (ถ้าทราบ):\nเบอร์ติดต่อ:\n`)
 }
 boxes.forEach((b) => b.addEventListener('change', updateVerdict))
 
