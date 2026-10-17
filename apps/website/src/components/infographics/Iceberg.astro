@@ -1,46 +1,47 @@
-<section class="chapter iceberg" aria-labelledby="iceberg-title">
-  <header class="iceberg-heading">
-    <h2 id="iceberg-title"><span>ส่วนที่</span><wbr /><span>มองไม่เห็น</span></h2>
-  </header>
+<section class="chapter iceberg" aria-labelledby="iceberg-title" data-iceberg>
+  <div class="scene">
+    <div class="world">
+      <div class="sky"></div>
+      <div class="water"></div>
 
-  <div class="iceberg-cross-section">
-
-    <div class="iceberg-surface">
-      <svg class="ice ice-tip" viewBox="0 0 600 270" aria-hidden="true" focusable="false">
-        <polygon class="f-light" points="300,0 250,95 215,205 170,270 290,270 305,140" />
-        <polygon class="f-mid" points="300,0 340,80 355,160 305,140" />
-        <polygon class="f-deep" points="305,140 355,160 395,215 430,270 290,270" />
+      <svg class="ice" viewBox="0 0 600 900" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <g class="ice-tip">
+          <polygon class="f-light" points="300,0 250,95 215,205 170,270 290,270 305,140" />
+          <polygon class="f-mid" points="300,0 340,80 355,160 305,140" />
+          <polygon class="f-deep" points="305,140 355,160 395,215 430,270 290,270" />
+        </g>
+        <g class="ice-mass">
+          <polygon class="f-deep" points="170,270 290,270 250,470 45,390" />
+          <polygon class="f-rust" points="290,270 430,270 560,350 400,430 250,470" />
+          <polygon class="f-rust" points="45,390 250,470 220,650 0,560" />
+          <polygon class="f-deep" points="250,470 400,430 560,350 600,520 430,640 220,650" />
+          <polygon class="f-dark" points="0,560 220,650 220,900 80,770" />
+          <polygon class="f-rust" points="220,650 430,640 545,700 410,880 220,900" />
+          <polygon class="f-dark" points="430,640 600,520 545,700" />
+        </g>
       </svg>
-      <div class="iceberg-copy">
-        <h3>ที่เห็น</h3>
-        <ul role="list">
-          <li>หน้าจอที่ใช้งานได้</li>
-          <li>ฟีเจอร์ที่เดโมผ่าน</li>
-        </ul>
-      </div>
-    </div>
 
-    <div class="iceberg-depth">
-      <svg class="ice ice-mass" viewBox="0 270 600 630" aria-hidden="true" focusable="false">
-        <polygon class="f-deep" points="170,270 290,270 250,470 45,390" />
-        <polygon class="f-rust" points="290,270 430,270 560,350 400,430 250,470" />
-        <polygon class="f-rust" points="45,390 250,470 220,650 0,560" />
-        <polygon class="f-deep" points="250,470 400,430 560,350 600,520 430,640 220,650" />
-        <polygon class="f-dark" points="0,560 220,650 220,900 80,770" />
-        <polygon class="f-rust" points="220,650 430,640 545,700 410,880 220,900" />
-        <polygon class="f-dark" points="430,640 600,520 545,700" />
-      </svg>
-      <div class="iceberg-copy">
-        <h3>ที่ต้องมีคนดูแล</h3>
-        <ul role="list">
-          <li>แบ็กอัปที่กู้คืนได้จริง</li>
-          <li>ความปลอดภัยและการอัปเดตแพตช์</li>
-          <li>มอนิเตอริงและการแจ้งเตือนเมื่อระบบล่ม</li>
-          <li>ด็อกคิวเมนต์ที่คนถัดไปอ่านเข้าใจ</li>
-          <li>การอัปเกรดเวอร์ชันก่อนหมดซัพพอร์ต</li>
-          <li>คนที่รับโทรศัพท์ตอนตีสาม</li>
-        </ul>
-        <p class="iceberg-closing">BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพื่อให้ส่วนที่อยู่เหนือน้ำใช้งานได้ทุกวัน</p>
+      <div class="copy">
+        <div class="above">
+          <h2 id="iceberg-title"><span>ส่วนที่</span><wbr /><span>มองไม่เห็น</span></h2>
+          <h3>ที่เห็น</h3>
+          <ul role="list">
+            <li>หน้าจอที่ใช้งานได้</li>
+            <li>ฟีเจอร์ที่เดโมผ่าน</li>
+          </ul>
+        </div>
+        <div class="below">
+          <h3 data-depth>ที่ต้องมีคนดูแล</h3>
+          <ul role="list">
+            <li data-depth>แบ็กอัปที่กู้คืนได้จริง</li>
+            <li data-depth>ความปลอดภัยและการอัปเดตแพตช์</li>
+            <li data-depth>มอนิเตอริงและการแจ้งเตือนเมื่อระบบล่ม</li>
+            <li data-depth>ด็อกคิวเมนต์ที่คนถัดไปอ่านเข้าใจ</li>
+            <li data-depth>การอัปเกรดเวอร์ชันก่อนหมดซัพพอร์ต</li>
+            <li data-depth>คนที่รับโทรศัพท์ตอนตีสาม</li>
+          </ul>
+          <p class="closing" data-depth>BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพื่อให้ส่วนที่อยู่เหนือน้ำใช้งานได้ทุกวัน</p>
+        </div>
       </div>
     </div>
   </div>
@@ -48,68 +49,52 @@
 
 <style>
   .chapter.iceberg {
-    padding: 0;
-    background: var(--soft);
-    color: var(--ink);
-    font-family: var(--f-text);
-    font-size: var(--t-body);
-    line-height: 1.65;
-    border-radius: 0;
-  }
-
-  .iceberg-heading {
-    padding: clamp(96px, 12vw, 180px) max(var(--m), env(safe-area-inset-right)) 48px max(var(--m), env(safe-area-inset-left));
-  }
-
-  .iceberg h2,
-  .iceberg h3 {
-    margin: 0;
-    font-family: var(--f-display);
-    font-weight: 700;
-    line-height: 1.4;
-    text-wrap: balance;
-  }
-
-  .iceberg h2 {
-    font-size: var(--t-l);
-  }
-
-  .iceberg h2 span {
-    white-space: nowrap;
-  }
-
-  .iceberg h3 {
-    margin-bottom: 20px;
-    font-size: var(--t-m);
-  }
-
-  .iceberg-cross-section {
-    position: relative;
-    isolation: isolate;
-  }
-
-  .iceberg-cross-section {
-    --ice-width: 40%;
+    --waterline: 60svh;
+    --ice-w: min(42vw, 620px);
+    --ice-h: 118svh;
     --ice-light: #f3a07c;
     --ice-dark: #8f3816;
+    padding: 0;
+    min-height: auto;
+    overflow: clip;
+    background: var(--night);
+    color: var(--ink);
+    font-size: var(--t-body);
+    line-height: 1.6;
+  }
+
+  .world {
+    position: relative;
     overflow: hidden;
+  }
+
+  .sky,
+  .water {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+
+  .sky {
+    top: 0;
+    height: var(--waterline);
+    background: var(--soft);
+  }
+
+  .water {
+    top: var(--waterline);
+    bottom: 0;
+    background: var(--night);
   }
 
   .ice {
     position: absolute;
     z-index: 1;
     left: 4%;
-    width: var(--ice-width);
-    height: auto;
+    top: calc(var(--waterline) - var(--ice-h) * 0.3);
+    width: var(--ice-w);
+    height: var(--ice-h);
     pointer-events: none;
-  }
-
-  .ice-tip {
-    bottom: 0;
-  }
-
-  .ice-mass {
-    top: 0;
   }
 
   .f-light { fill: var(--ice-light); }
@@ -118,92 +103,188 @@
   .f-rust { fill: var(--rust); }
   .f-dark { fill: var(--ice-dark); }
 
-  .iceberg-surface,
-  .iceberg-depth {
+  .copy {
+    position: relative;
+    z-index: 2;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     padding-right: max(var(--m), env(safe-area-inset-right));
     padding-left: max(var(--m), env(safe-area-inset-left));
   }
 
-  .iceberg-surface,
-  .iceberg-depth {
-    position: relative;
-  }
-
-  .iceberg-surface {
-    min-height: calc(40vw * 0.45);
-    padding-top: 24px;
-    padding-bottom: 40px;
-  }
-
-  .iceberg-depth {
-    min-height: max(560px, calc(40vw * 1.05));
-    padding-top: 48px;
-    padding-bottom: clamp(96px, 10vw, 144px);
-    background: var(--night);
-    color: var(--on-dark);
-  }
-
-  .iceberg-copy {
-    position: relative;
-    z-index: 2;
+  .above,
+  .below {
     grid-column: 2;
     min-width: 0;
     max-width: 34em;
   }
 
+  .above {
+    background: var(--soft);
+    min-height: var(--waterline);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 6svh;
+    padding-top: clamp(96px, 12vw, 160px);
+  }
+
+  .below {
+    background: var(--night);
+    color: var(--on-dark);
+    padding-top: 8svh;
+    padding-bottom: clamp(96px, 14svh, 160px);
+  }
+
+  h2,
+  h3 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 700;
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+
+  h2 {
+    font-size: var(--t-l);
+    margin-bottom: 7svh;
+  }
+
+  h2 span {
+    white-space: nowrap;
+  }
+
+  h3 {
+    font-size: var(--t-m);
+    margin-bottom: 16px;
+  }
+
   ul {
     display: grid;
-    gap: 12px;
+    gap: 6px;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .iceberg-surface ul {
-    gap: 4px;
+  .below ul {
+    gap: 7svh;
+    margin-top: 4svh;
   }
 
+  .below li {
+    font-size: var(--t-m);
+    font-family: var(--f-display);
+    font-weight: 600;
+    line-height: 1.35;
+  }
 
-  .iceberg-closing {
-    max-width: 30em;
-    margin: 40px 0 0;
+  .closing {
+    margin: 9svh 0 0;
+    max-width: 26em;
     font-size: var(--t-body);
-    text-wrap: pretty;
   }
 
-  @media (max-width: 600px) {
-    .iceberg-heading {
-      padding-bottom: 40px;
+  /* The dive: the scene pins while the world scrolls up past the waterline. Static and complete without it. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .chapter.iceberg {
+      height: 300svh;
+    }
+
+    :global(.js) .scene {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      overflow: hidden;
+    }
+
+    :global(.js) .world {
+      height: 230svh;
+      transform: translate3d(0, calc(var(--p, 0) * var(--travel, 90svh) * -1), 0);
+      will-change: transform;
+    }
+
+    :global(.js) .ice-mass {
+      opacity: calc(0.28 + var(--p, 0) * 0.72);
+    }
+
+    :global(.js) .ice-tip {
+      opacity: calc(1 - var(--p, 0) * 0.35);
+    }
+
+    :global(.js) [data-depth] {
+      opacity: 0.12;
+      transform: translate3d(0, 18px, 0);
+      transition: opacity 600ms cubic-bezier(0.2, 0.7, 0.2, 1), transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    :global(.js) [data-depth].is-lit {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .chapter.iceberg {
+      --ice-w: 34vw;
+      --ice-h: 104svh;
     }
 
     .ice {
       left: -8%;
-      width: 34%;
     }
 
-    .iceberg-surface,
-    .iceberg-depth {
+    .copy {
       grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     }
 
-    .iceberg-surface {
-      min-height: calc(34vw * 0.45 + 24px);
-      padding-top: 16px;
-      padding-bottom: 32px;
+    .below ul {
+      gap: 5svh;
+    }
+  }
+
+  @media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
+    :global(.js) .chapter.iceberg {
+      height: 340svh;
     }
 
-    .iceberg-depth {
-      padding-top: 36px;
-    }
-
-    .iceberg h3 {
-      margin-bottom: 16px;
-    }
-
-    .iceberg-closing {
-      margin-top: 32px;
+    :global(.js) .world {
+      height: 260svh;
     }
   }
 </style>
+
+<script>
+  const section = document.querySelector<HTMLElement>('[data-iceberg]')
+  const calm = matchMedia('(prefers-reduced-motion: reduce)')
+  if (section && !calm.matches) {
+    const marks = [...section.querySelectorAll<HTMLElement>('[data-depth]')]
+    const world = section.querySelector<HTMLElement>('.world')!
+    const ice = section.querySelector<SVGElement>('.ice')!
+    const closing = section.querySelector<HTMLElement>('.closing')!
+    // The dive ends when the iceberg's base and the closing line sit in the lower part of the screen.
+    const measure = () => {
+      const end = Math.max(ice.getBoundingClientRect().bottom, closing.getBoundingClientRect().bottom) - world.getBoundingClientRect().top
+      section.style.setProperty('--travel', `${Math.max(0, end + innerHeight * 0.12 - innerHeight)}px`)
+    }
+    let queued = false
+    const update = () => {
+      queued = false
+      const rect = section.getBoundingClientRect()
+      const travel = rect.height - innerHeight
+      const p = Math.min(1, Math.max(0, -rect.top / travel))
+      section.style.setProperty('--p', p.toFixed(4))
+      const line = innerHeight * 0.9
+      for (const mark of marks) mark.classList.toggle('is-lit', mark.getBoundingClientRect().top < line)
+    }
+    const queue = () => {
+      if (queued) return
+      queued = true
+      requestAnimationFrame(update)
+    }
+    addEventListener('scroll', queue, { passive: true })
+    addEventListener('resize', () => { measure(); queue() })
+    measure()
+    update()
+  }
+</script>

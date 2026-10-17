@@ -139,7 +139,7 @@ h3 { font-size: var(--t-m); line-height: 1.3; font-weight: 600; letter-spacing: 
 .team { background: var(--soft); padding: 20px; min-height: auto; }
 .panel { position: relative; background: var(--night); color: var(--on-dark); min-height: 110svh; overflow: hidden; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); padding: 56px; }
 .panel-left { grid-column: 1 / span 6; }
-.panel-left h2 { color: var(--on-dark); }
+.panel-left h2 { color: var(--on-dark); font-size: min(var(--t-l), 4.6vw); }
 .portrait { position: absolute; left: 56px; bottom: -8vw; width: 38vw; aspect-ratio: 1; border-radius: 50%; overflow: hidden; }
 .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
 .place { margin-top: 16px; font-size: var(--t-s); color: var(--on-dark-soft); }
