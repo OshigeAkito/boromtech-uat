@@ -42,14 +42,21 @@ export default function App() {
   return <Workspace me={session.me} />
 }
 
-function Landing({ error }: { error?: string }) {
+function Landing({ error: enrollError }: { error?: string }) {
+  const [signInError, setSignInError] = useState<string>()
+  const error = signInError ?? enrollError
+  const start = () =>
+    fb.signIn().catch((e: { code?: string; message?: string }) => {
+      if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return
+      setSignInError(`Sign-in failed (${e.code ?? e.message}).`)
+    })
   return (
     <div className="center">
       <div className="landing">
         <p className="eyebrow">Invite only</p>
         <h1>Crew</h1>
         <p className="muted">Small, well-scoped tasks from real client projects. Ship on time, get graded, get paid, climb the board.</p>
-        <button className="primary big" onClick={() => fb.signIn().catch(() => {})}>
+        <button className="primary big" onClick={start}>
           Continue with Google
         </button>
         {error && <p className="error">{error}</p>}
