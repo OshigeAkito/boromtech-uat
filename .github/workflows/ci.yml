@@ -1,0 +1,33 @@
+# Every PR and every push to main: build and unit-test the job board, and test its server (the database)
+# against a throwaway Postgres. Needs no Neon, Cloudflare or Google credentials.
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  job-board:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17 # Neon's major version
+        env: { POSTGRES_PASSWORD: owner }
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 2s --health-retries 15
+    env:
+      OWNER_URL: postgres://postgres:owner@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - run: sudo apt-get install -y postgresql-client
+      - run: npm ci
+      - run: npm run ds:build
+      - run: npx tsc --noEmit -p packages/domain
+      - run: npx tsc --noEmit -p apps/job-board/gateway
+      - run: npm run build -w job-board
+      - run: npm test -w job-board
+      - run: npm test -w job-board-db # migrates twice, then the contract and invariant suite as bt_gateway
+      - run: npx wrangler deploy --dry-run --outdir /tmp/worker
+        working-directory: apps/job-board/gateway

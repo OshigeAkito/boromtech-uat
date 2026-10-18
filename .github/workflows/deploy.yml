@@ -1,0 +1,37 @@
+# Push to main → deploy the job board: database first, then the Worker with the SPA as its assets.
+# The Worker never changes when a command changes (it forwards names it doesn't know), so a new command is
+# live in SQL before the SPA that calls it ships. Removing a command takes two deploys: SPA first, then SQL.
+#
+# Repo secrets (Settings → Secrets and variables → Actions), set once by a human:
+#   NEON_OWNER_URL         neondb_owner, direct (not pooled) host. Migrations only.
+#   CLOUDFLARE_API_TOKEN   "Edit Cloudflare Workers" template, scoped to the account and the boromtech.co zone
+# Repo variable:
+#   CLOUDFLARE_ACCOUNT_ID
+# Worker runtime secrets (DATABASE_URL for bt_gateway, GOOGLE_CLIENT_SECRET) live in Cloudflare, not GitHub.
+name: deploy
+on:
+  push:
+    branches: [main]
+    paths: ['apps/job-board/**', 'packages/domain/**', 'design-system/**', '.github/workflows/deploy.yml']
+  workflow_dispatch:
+concurrency: { group: deploy-job-board, cancel-in-progress: false }
+
+jobs:
+  job-board:
+    runs-on: ubuntu-latest
+    environment: production
+    container: node:24-trixie # psql 17 (Neon's major) and Node 24 in one image
+    steps:
+      - uses: actions/checkout@v4
+      - run: apt-get update -qq && apt-get install -y -qq postgresql-client >/dev/null
+      - run: npm ci
+      - name: Migrate Neon, rebuild api.sql, assert role privileges
+        run: apps/job-board/db/migrate.sh
+        env: { DATABASE_URL: '${{ secrets.NEON_OWNER_URL }}' }
+      - run: npm run ds:build
+      - run: npm run build -w job-board
+      - run: npx wrangler deploy
+        working-directory: apps/job-board/gateway
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}

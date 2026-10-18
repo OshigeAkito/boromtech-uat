@@ -1,0 +1,24 @@
+# One Worker serves the whole job board: the SPA as static assets (free, unmetered) and /api/* through
+# src/index.ts (metered: 100k requests/day on the free plan). Same origin, so no CORS and Strict cookies.
+name = "boromtech-crew"
+main = "src/index.ts"
+compatibility_date = "2025-10-01"
+
+routes = [{ pattern = "crew.boromtech.co", custom_domain = true }]
+
+[assets]
+directory = "../web/dist"
+not_found_handling = "single-page-application"
+run_worker_first = ["/api", "/api/*"]
+
+[vars]
+GOOGLE_CLIENT_ID = "REPLACE_ME.apps.googleusercontent.com"
+PUBLIC_ORIGIN = "https://crew.boromtech.co"
+
+# Secrets, set once by a human:
+#   npx wrangler secret put DATABASE_URL          # postgres://bt_gateway:…@<neon pooled host>/neondb
+#   npx wrangler secret put GOOGLE_CLIENT_SECRET
+# Local dev reads .dev.vars instead (gitignored); see .dev.vars.example.
+
+[observability]
+enabled = true

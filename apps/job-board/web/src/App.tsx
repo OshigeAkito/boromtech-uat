@@ -1,46 +1,30 @@
 import { Button, StarRating, TaskCard, TierBadge } from '@boromtech/design-system/components/src'
-import { onAuthStateChanged } from 'firebase/auth'
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
-import { allowedActions, defaultFreelancerDeadline, rank, toDateInput, type Job, type Member, type Task } from './domain'
-import * as fb from './firebase'
+import { defaultFreelancerDeadline, rank, toDateInput, type Invite, type Job, type Member, type Task } from '@boromtech/domain'
+import { useState, type FormEvent, type ReactNode } from 'react'
+import { run, signIn, signOut, useBoard, type Board, type SignInError } from './api'
 
-type Session = { state: 'loading' } | { state: 'signedOut'; error?: string } | { state: 'member'; me: Member }
+type MemberBoard = Extract<Board, { state: 'member' }>
+
+const SIGN_IN_ERRORS: Record<SignInError, string> = {
+  not_invited: 'That Google account has not been invited yet. Ask a BoromTech admin for an invite.',
+  email_unverified: 'Google has not verified that email address yet.',
+  removed: 'This account was removed by an admin.',
+  sign_in_failed: 'Sign-in failed. Please try again.',
+}
+
+// Failures are already on the board's error banner; this only stops an unhandled rejection.
+const ignore = () => {}
 
 export default function App() {
-  const [session, setSession] = useState<Session>({ state: 'loading' })
-
-  useEffect(
-    () =>
-      onAuthStateChanged(fb.auth, async (user) => {
-        if (!user) return setSession((s) => (s.state === 'signedOut' ? s : { state: 'signedOut' }))
-        try {
-          setSession({ state: 'member', me: await fb.enroll(user) })
-        } catch (e) {
-          await fb.logOut()
-          setSession({
-            state: 'signedOut',
-            error: e instanceof fb.NotInvitedError ? `${e.message} has not been invited yet. Ask a BoromTech admin for an invite.` : String(e),
-          })
-        }
-      }),
-    [],
-  )
-
-  if (session.state === 'loading') return <div className="center muted">Loading…</div>
-  if (session.state === 'signedOut') return <Landing error={session.error} />
-  return <Workspace me={session.me} />
+  const board = useBoard()
+  if (board.state === 'loading') return <div className="center muted">Loading…</div>
+  if (board.state === 'signedOut') return <Landing error={board.error && SIGN_IN_ERRORS[board.error]} />
+  return <Workspace board={board} />
 }
 
 const DAY = 86_400_000
 
-function Landing({ error: enrollError }: { error?: string }) {
-  const [signInError, setSignInError] = useState<string>()
-  const error = signInError ?? enrollError
-  const start = () =>
-    fb.signIn().catch((e: { code?: string; message?: string }) => {
-      if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return
-      setSignInError(`Sign-in failed (${e.code ?? e.message}).`)
-    })
+function Landing({ error }: { error?: string }) {
   return (
     <div className="landing">
       <section className="landing-copy">
@@ -49,7 +33,7 @@ function Landing({ error: enrollError }: { error?: string }) {
           BoromTech <span>Crew</span>
         </h1>
         <p className="lede">Small, well-scoped tasks from real client projects. Ship on time, get graded, get paid, climb the board.</p>
-        <Button variant="primary" onClick={start}>
+        <Button variant="primary" onClick={signIn}>
           Continue with Google
         </Button>
         {error && <p className="error">{error}</p>}
@@ -76,17 +60,10 @@ const ADMIN_TABS = ['Jobs', 'Review', 'Leaderboard', 'Invites'] as const
 const FREELANCER_TABS = ['Open tasks', 'My tasks', 'Leaderboard'] as const
 type Tab = (typeof ADMIN_TABS)[number] | (typeof FREELANCER_TABS)[number]
 
-function Workspace({ me }: { me: Member }) {
+function Workspace({ board }: { board: MemberBoard }) {
+  const { me, jobs, tasks, members, invites, error, dismissError } = board
   const tabs: readonly Tab[] = me.role === 'admin' ? ADMIN_TABS : FREELANCER_TABS
   const [tab, setTab] = useState<Tab>(tabs[0])
-  const [jobs, setJobs] = useState<Job[]>([])
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [members, setMembers] = useState<Member[]>([])
-
-  useEffect(() => {
-    const subs = [fb.watchJobs(setJobs), fb.watchTasks(setTasks), fb.watchMembers(setMembers)]
-    return () => subs.forEach((u) => u())
-  }, [])
 
   const toReview = tasks.filter((t) => t.status === 'submitted' || t.status === 'approved')
   const mine = tasks.filter((t) => t.assigneeUid === me.uid)
@@ -117,31 +94,38 @@ function Workspace({ me }: { me: Member }) {
               {me.name}
               <small>{me.role === 'admin' ? 'Admin' : 'Freelancer'}</small>
             </span>
-            <Button variant="ghost" size="sm" onClick={fb.logOut}>
+            <Button variant="ghost" size="sm" onClick={signOut}>
               Sign out
             </Button>
           </div>
         </div>
       </header>
       <main>
+        {error && (
+          <p className="error" role="alert">
+            {error.message}{' '}
+            <Button variant="ghost" size="sm" onClick={dismissError}>
+              Dismiss
+            </Button>
+          </p>
+        )}
         <h2 className="title">{tab}</h2>
-        {tab === 'Jobs' && <JobsView jobs={jobs} tasks={tasks} me={me} />}
-        {tab === 'Review' && <TaskGrid me={me} tasks={toReview} empty="Nothing waiting for review." />}
-        {tab === 'Open tasks' && <TaskGrid me={me} tasks={tasks.filter((t) => t.status === 'open')} empty="No open tasks right now. New ones appear here as soon as they're posted." />}
-        {tab === 'My tasks' && <TaskGrid me={me} tasks={mine} empty="You haven't claimed any tasks yet. Pick one from Open tasks." />}
+        {tab === 'Jobs' && <JobsView jobs={jobs} tasks={tasks} />}
+        {tab === 'Review' && <TaskGrid tasks={toReview} empty="Nothing waiting for review." />}
+        {tab === 'Open tasks' && <TaskGrid tasks={tasks.filter((t) => t.status === 'open')} empty="No open tasks right now. New ones appear here as soon as they're posted." />}
+        {tab === 'My tasks' && <TaskGrid tasks={mine} empty="You haven't claimed any tasks yet. Pick one from Open tasks." />}
         {tab === 'Leaderboard' && <Leaderboard members={members} tasks={tasks} me={me} />}
-        {tab === 'Invites' && <InvitesView members={members} />}
+        {tab === 'Invites' && <InvitesView invites={invites} />}
       </main>
     </div>
   )
 }
 
-function JobsView({ jobs, tasks, me }: { jobs: Job[]; tasks: Task[]; me: Member }) {
+function JobsView({ jobs, tasks }: { jobs: Job[]; tasks: Task[] }) {
   const [form, setForm] = useState({ title: '', customer: '', description: '', customerDeadline: toDateInput(Date.now() + 30 * DAY) })
   const submit = async (e: FormEvent) => {
     e.preventDefault()
-    await fb.createJob(form)
-    setForm({ ...form, title: '', customer: '', description: '' })
+    await run('create_job', form).then(() => setForm({ ...form, title: '', customer: '', description: '' }), ignore)
   }
   return (
     <>
@@ -167,21 +151,20 @@ function JobsView({ jobs, tasks, me }: { jobs: Job[]; tasks: Task[]; me: Member 
       </form>
       {jobs.length === 0 && <p className="muted">No jobs yet. Create one above, then split it into tasks.</p>}
       {jobs.map((job) => (
-        <JobPanel key={job.id} job={job} tasks={tasks.filter((t) => t.jobId === job.id)} me={me} />
+        <JobPanel key={job.id} job={job} tasks={tasks.filter((t) => t.jobId === job.id)} />
       ))}
     </>
   )
 }
 
-function JobPanel({ job, tasks, me }: { job: Job; tasks: Task[]; me: Member }) {
+function JobPanel({ job, tasks }: { job: Job; tasks: Task[] }) {
   const blank = () => ({ title: '', description: '', payout: '', freelancerDeadline: defaultFreelancerDeadline(job.customerDeadline) })
   const [draft, setDraft] = useState(blank)
   const verified = tasks.filter((t) => t.status === 'approved' || t.status === 'paid').length
   const budget = tasks.reduce((s, t) => s + t.payout, 0)
   const add = async (e: FormEvent) => {
     e.preventDefault()
-    await fb.createTask(job, { ...draft, payout: Number(draft.payout) })
-    setDraft(blank())
+    await run('create_task', { jobId: job.id, ...draft, payout: Number(draft.payout) }).then(() => setDraft(blank()), ignore)
   }
   return (
     <section className="panel">
@@ -205,7 +188,7 @@ function JobPanel({ job, tasks, me }: { job: Job; tasks: Task[]; me: Member }) {
       {tasks.length > 0 && (
         <div className="grid">
           {tasks.map((t) => (
-            <TaskItem key={t.id} task={t} me={me} compact />
+            <TaskItem key={t.id} task={t} compact />
           ))}
         </div>
       )}
@@ -240,19 +223,19 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   )
 }
 
-function TaskGrid({ tasks, me, empty }: { tasks: Task[]; me: Member; empty: string }) {
+function TaskGrid({ tasks, empty }: { tasks: Task[]; empty: string }) {
   if (tasks.length === 0) return <p className="empty">{empty}</p>
   return (
     <div className="grid">
       {tasks.map((t) => (
-        <TaskItem key={t.id} task={t} me={me} />
+        <TaskItem key={t.id} task={t} />
       ))}
     </div>
   )
 }
 
-function TaskItem({ task, me, compact }: { task: Task; me: Member; compact?: boolean }) {
-  const actions = allowedActions(task, me)
+function TaskItem({ task, compact }: { task: Task; compact?: boolean }) {
+  const { actions } = task
   const [url, setUrl] = useState('')
   const [note, setNote] = useState('')
   const [grade, setGrade] = useState(4)
@@ -274,7 +257,7 @@ function TaskItem({ task, me, compact }: { task: Task; me: Member; compact?: boo
       {actions.length > 0 && (
         <>
           {actions.includes('claim') && (
-            <Button variant="primary" onClick={() => fb.claimTask(task.id, me)}>
+            <Button variant="primary" onClick={() => run('claim_task', { taskId: task.id }).catch(ignore)}>
               Claim task
             </Button>
           )}
@@ -283,7 +266,7 @@ function TaskItem({ task, me, compact }: { task: Task; me: Member; compact?: boo
               className="stack"
               onSubmit={(e) => {
                 e.preventDefault()
-                fb.submitTask(task.id, url, note)
+                run('submit_task', { taskId: task.id, url, note }).catch(ignore)
               }}
             >
               <input id={`sub-url-${task.id}`} required type="url" placeholder="https:// link to your work" aria-label="Link to your work" value={url} onChange={(e) => setUrl(e.target.value)} />
@@ -298,17 +281,17 @@ function TaskItem({ task, me, compact }: { task: Task; me: Member; compact?: boo
               <StarRating value={grade} onChange={setGrade} />
               <input id={`fb-${task.id}`} placeholder="Feedback for the freelancer" aria-label="Feedback" value={feedback} onChange={(e) => setFeedback(e.target.value)} />
               <div className="row">
-                <Button variant="primary" onClick={() => fb.approveTask(task.id, grade, feedback)}>
+                <Button variant="primary" onClick={() => run('approve_task', { taskId: task.id, grade, feedback }).catch(ignore)}>
                   Pass & grade
                 </Button>
-                <Button variant="danger" onClick={() => fb.rejectTask(task.id, feedback || 'Please revise.')}>
+                <Button variant="danger" onClick={() => run('reject_task', { taskId: task.id, feedback: feedback || 'Please revise.' }).catch(ignore)}>
                   Request changes
                 </Button>
               </div>
             </div>
           )}
           {actions.includes('pay') && (
-            <Button variant="primary" onClick={() => fb.payTask(task.id)}>
+            <Button variant="primary" onClick={() => run('pay_task', { taskId: task.id }).catch(ignore)}>
               Mark ฿{task.payout.toLocaleString('en-US')} paid
             </Button>
           )}
@@ -358,19 +341,15 @@ function Leaderboard({ members, tasks, me }: { members: Member[]; tasks: Task[];
   )
 }
 
-function InvitesView({ members }: { members: Member[] }) {
-  const [invites, setInvites] = useState<{ id: string }[]>([])
+function InvitesView({ invites }: { invites: Invite[] }) {
   const [email, setEmail] = useState('')
-  useEffect(() => fb.watchInvites(setInvites), [])
-  const joined = new Set(members.map((m) => m.email))
   return (
     <section className="panel form">
       <form
         className="add-task"
         onSubmit={async (e) => {
           e.preventDefault()
-          await fb.invite(email)
-          setEmail('')
+          await run('invite', { email }).then(() => setEmail(''), ignore)
         }}
       >
         <Field label="Google account email">
@@ -384,14 +363,19 @@ function InvitesView({ members }: { members: Member[] }) {
       {invites.length > 0 && (
         <ul className="invites">
           {invites.map((i) => (
-            <li key={i.id}>
-              <span className="mono">{i.id}</span>
-              {joined.has(i.id) ? (
-                <span className="joined">Joined</span>
+            <li key={i.email}>
+              <span className="mono">{i.email}</span>
+              {i.joined ? (
+                <>
+                  <span className="joined">Joined</span>
+                  <Button variant="danger" size="sm" onClick={() => i.uid && run('remove_member', { uid: i.uid }).catch(ignore)}>
+                    Remove
+                  </Button>
+                </>
               ) : (
                 <>
                   <span className="muted small">Pending</span>
-                  <Button variant="danger" size="sm" onClick={() => fb.revokeInvite(i.id)}>
+                  <Button variant="danger" size="sm" onClick={() => run('revoke_invite', { email: i.email }).catch(ignore)}>
                     Revoke
                   </Button>
                 </>

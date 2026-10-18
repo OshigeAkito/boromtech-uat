@@ -1,0 +1,9 @@
+# Copy to .dev.vars for `npm run dev -w job-board-gateway`. The Vite dev server on :5173 proxies /api here,
+# so the browser sees one origin (the dev script passes --local-upstream so wrangler keeps that Origin). Add http://localhost:5173/api/auth/callback to the OAuth client's redirect URIs.
+PUBLIC_ORIGIN=http://localhost:5173
+GOOGLE_CLIENT_ID=REPLACE_ME.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=REPLACE_ME
+DATABASE_URL=postgres://bt_gateway:PASSWORD@ep-REPLACE_ME-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+# No Neon account? Point at docker Postgres instead (see apps/job-board/README.md):
+# DATABASE_URL=postgres://bt_gateway:test-gateway@db.localtest.me:5432/bt_test
+# NEON_FETCH_ENDPOINT=http://localhost:4444/sql

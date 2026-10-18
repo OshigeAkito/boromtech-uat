@@ -1,0 +1,40 @@
+# B2's one job: a nightly off-Neon copy of the job board's data. Neon free keeps only a short restore
+# window, and these rows record what BoromTech owes freelancers.
+#
+# The dump is taken as bt_backup (SELECT only) and encrypted with age before it leaves the runner, so the
+# runner and the bucket can write backups but never read them. The age private key stays with the owner.
+#
+# Repo secrets: NEON_BACKUP_URL (bt_backup, direct host), B2_KEY_ID + B2_APP_KEY (an application key
+# limited to the one bucket, writeFiles only). Repo variables: BACKUP_AGE_RECIPIENT (age public key),
+# B2_BUCKET, B2_REGION (e.g. us-west-004).
+# Bucket: private, Object Lock on, lifecycle "keep 30 days".
+#
+# Restore: age -d -i key.txt bt-DATE.dump.age > bt.dump; pg_restore --no-owner -d <empty db> bt.dump;
+#          then apps/job-board/db/migrate.sh, which skips recorded migrations and rebuilds api.sql.
+name: backup
+on:
+  schedule: [{ cron: '0 20 * * *' }] # 03:00 Asia/Bangkok
+  workflow_dispatch:
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    container: postgres:17 # pg_dump must be at least the server's major version
+    steps:
+      - run: apt-get update -qq && apt-get install -y -qq age curl >/dev/null
+      - name: Dump, encrypt, upload
+        env:
+          NEON_BACKUP_URL: ${{ secrets.NEON_BACKUP_URL }}
+          RECIPIENT: ${{ vars.BACKUP_AGE_RECIPIENT }}
+          B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
+          B2_APP_KEY: ${{ secrets.B2_APP_KEY }}
+          B2_BUCKET: ${{ vars.B2_BUCKET }}
+          B2_REGION: ${{ vars.B2_REGION }}
+        run: |
+          set -euo pipefail
+          file="bt-$(date -u +%F).dump.age"
+          pg_dump --format=custom --no-owner --no-privileges \
+            --exclude-schema=lib --exclude-schema=cmd --exclude-schema=gate "$NEON_BACKUP_URL" \
+            | age -r "$RECIPIENT" > "$file"
+          curl --fail-with-body --aws-sigv4 "aws:amz:${B2_REGION}:s3" --user "${B2_KEY_ID}:${B2_APP_KEY}" \
+            -T "$file" "https://s3.${B2_REGION}.backblazeb2.com/${B2_BUCKET}/crew/${file}"
