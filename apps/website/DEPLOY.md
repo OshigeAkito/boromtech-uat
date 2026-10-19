@@ -12,6 +12,9 @@ build → copy check → upload images to R2 → `wrangler deploy`. From a lapto
 
 ## Human steps, once
 
+Do steps 1–3 before merging. Until they're done, the workflow's first run will fail: the image upload has no
+bucket or permission, and the custom domain has no zone to attach to. If it does fail, re-run it by hand afterwards.
+
 1. **Domain.** On 2026-10-19 the `.co` registry answered NXDOMAIN for boromtech.co. There is no delegation, so
    nothing serves the domain today (no site, no MX). Check the registration and its expiry at the registrar first.
    Then add boromtech.co to Cloudflare (Free plan) and set the registrar's nameservers to the two Cloudflare names.
