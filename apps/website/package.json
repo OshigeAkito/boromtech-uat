@@ -12,9 +12,13 @@
     "@fontsource-variable/bricolage-grotesque": "5.3.0",
     "@fontsource/ibm-plex-sans-thai": "5.3.0",
     "astro": "7.4.0",
-    "sharp": "0.35.5"
+    "sharp": "0.35.5",
+    "three": "0.186.1"
   },
   "engines": {
     "node": "24.x"
+  },
+  "devDependencies": {
+    "@types/three": "0.186.0"
   }
 }

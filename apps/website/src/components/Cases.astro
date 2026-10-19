@@ -1,9 +1,11 @@
 ---
 import { Picture } from 'astro:assets'
 import sathorn from '../assets/photos/sathorn-unique-tower-ii.jpg'
-import { site, symptoms } from '../data/site'
+import { site } from '../data/site'
+import { useLocale } from '../i18n'
 
-const verdict = 'ทุกเคสเริ่มที่ออดิต 5 วันทำการ พร้อมใบเสนอราคาฟิกซ์ไพรซ์ก่อนเริ่มงาน'
+const { t } = useLocale(Astro.currentLocale)
+const c = t.cases
 ---
 
 <section class="chapter cases" id="cases" aria-labelledby="cases-title">
@@ -14,18 +16,18 @@ const verdict = 'ทุกเคสเริ่มที่ออดิต 5 ว
         formats={['avif', 'webp']}
         widths={[480, 800, 1200, 1600, 2000]}
         sizes="(max-width: 900px) 92vw, 40vw"
-        alt="ตึกสาทรยูนีคที่สร้างค้างไว้ ยืนอยู่ท่ามกลางตึกที่สร้างเสร็จแล้วในย่านสาทร กรุงเทพฯ"
+        alt={c.photoAlt}
         loading="lazy"
       />
     </figure>
-    <p class="caption">สาทรยูนีค ทาวเวอร์ โครงการมูลค่ามหาศาลที่หยุดสร้างตั้งแต่ปี 2540 ซอฟต์แวร์ราคาแพงหรือโปรเจกต์ที่สร้างเสร็จครึ่งๆ กลางๆ จำนวนมากก็ถูกทิ้งไว้แบบนี้เช่นกัน</p>
+    <p class="caption">{c.photoCaption}</p>
   </div>
   <div class="cases-body">
-    <h2 id="cases-title" class="l reveal">งานที่เรารับดูแล</h2>
-    <p class="reveal">เลือกอาการที่ตรงกับโปรเจกต์ของคุณ แล้วดูว่าเราเข้าไปช่วยจากตรงไหน</p>
+    <h2 id="cases-title" class="l reveal">{c.title}</h2>
+    <p class="reveal">{c.intro}</p>
     <ul class="symptoms" id="symptoms">
       {
-        symptoms.map(({ symptom, remedy }) => (
+        c.symptoms.map(({ symptom, remedy }) => (
           <li>
             <label>
               <input type="checkbox" name="case" />
@@ -37,8 +39,8 @@ const verdict = 'ทุกเคสเริ่มที่ออดิต 5 ว
       }
     </ul>
     <div class="verdict" aria-live="polite">
-      <p class="verdict-line" id="verdict-line" data-default={verdict}>{verdict}</p>
-      <a class="button" id="verdict-send" href="#contact" data-mail={site.email}>ส่งเคสนี้ให้เราดู</a>
+      <p class="verdict-line" id="verdict-line" data-default={c.verdict} data-picked={c.verdictPicked}>{c.verdict}</p>
+      <a class="button" id="verdict-send" href="#contact" data-mail={site.email} data-subject={c.emailSubject} data-body={c.emailBody}>{c.cta}</a>
     </div>
   </div>
 </section>

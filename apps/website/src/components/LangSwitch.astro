@@ -1,0 +1,107 @@
+---
+import { languages, localePath, locales, useLocale } from '../i18n'
+
+interface Props {
+  list?: boolean
+}
+
+// A choice made here is saved in the lang cookie (src/scripts/site.js), which detection never overrides.
+const { list = false } = Astro.props
+const { locale, t, lang } = useLocale(Astro.currentLocale)
+const links = locales.map((l) => ({ ...languages[l], href: localePath(l), locale: l, current: l === locale }))
+---
+
+{
+  list ? (
+    <ul aria-label={t.nav.language}>
+      {links.map((l) => (
+        <li>
+          <a class="link" href={l.href} hreflang={l.tag} lang={l.tag} data-locale={l.locale} aria-current={l.current ? 'page' : undefined}>
+            {l.name}
+          </a>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <details class="lang" data-lang-menu>
+      <summary aria-label={`${t.nav.language}: ${lang.name}`}>{lang.short}</summary>
+      <ul>
+        {links.map((l) => (
+          <li>
+            <a href={l.href} hreflang={l.tag} lang={l.tag} data-locale={l.locale} aria-current={l.current ? 'page' : undefined}>
+              {l.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  )
+}
+
+<style>
+  .lang {
+    position: relative;
+    font-size: var(--t-s);
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    font-weight: 600;
+    white-space: nowrap;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border: solid currentColor;
+    border-width: 0 1.5px 1.5px 0;
+    rotate: 45deg;
+    translate: 0 -2px;
+    transition: rotate 160ms ease;
+  }
+
+  .lang[open] summary::after {
+    rotate: 225deg;
+    translate: 0 2px;
+  }
+
+  .lang ul {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 10;
+    display: grid;
+    min-width: 168px;
+    padding: 6px;
+    background: var(--ink);
+    color: var(--on-dark);
+    box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+  }
+
+  .lang a {
+    display: block;
+    padding: 10px 12px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  a[aria-current] {
+    color: var(--orange);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .lang a:hover {
+      background: var(--night-2);
+    }
+  }
+</style>

@@ -21,12 +21,16 @@ export function wrapLoanwords(html) {
   return out + html.slice(last).replace(pattern, '<span class="nb">$1</span>')
 }
 
+// Thai is the unprefixed default locale; /en/, /vi/ and /zh/ pages are left alone.
+const isThai = (pathname) => !/^(en|vi|zh)\//.test(pathname)
+
 export default function thaiLoanwords() {
   return {
     name: 'thai-loanwords',
     hooks: {
       'astro:build:done': async ({ pages, dir }) => {
         for (const { pathname } of pages) {
+          if (!isThai(pathname)) continue
           const file = new URL(`${pathname}index.html`, dir)
           await writeFile(file, wrapLoanwords(await readFile(file, 'utf8')))
         }

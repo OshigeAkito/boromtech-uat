@@ -4,7 +4,15 @@ import thaiLoanwords from './integrations/thai-loanwords.mjs'
 
 export default defineConfig({
   site: 'https://boromtech.co',
-  integrations: [sitemap(), thaiLoanwords()],
+  i18n: {
+    locales: ['th', 'en', 'vi', 'zh'],
+    defaultLocale: 'th',
+    routing: { prefixDefaultLocale: false },
+  },
+  integrations: [
+    sitemap({ i18n: { defaultLocale: 'th', locales: { th: 'th', en: 'en', vi: 'vi', zh: 'zh-Hans' } } }),
+    thaiLoanwords(),
+  ],
   build: { inlineStylesheets: 'always' },
   image: { responsiveStyles: false },
   fonts: [
@@ -23,8 +31,18 @@ export default defineConfig({
       cssVariable: '--font-display',
       weights: [800],
       styles: ['normal'],
-      subsets: ['latin'],
+      subsets: ['latin', 'latin-ext', 'vietnamese'],
       fallbacks: [],
+    },
+    {
+      // IBM Plex Sans Thai has no Vietnamese subset; its Latin is IBM Plex Sans, so Vietnamese pages use that.
+      provider: fontProviders.fontsource(),
+      name: 'IBM Plex Sans',
+      cssVariable: '--font-text-vi',
+      weights: [400, 600, 700],
+      styles: ['normal'],
+      subsets: ['latin', 'latin-ext', 'vietnamese'],
+      fallbacks: ['sans-serif'],
     },
   ],
 })
