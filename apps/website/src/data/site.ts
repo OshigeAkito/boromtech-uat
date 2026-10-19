@@ -1,7 +1,7 @@
 // Language-independent data. Visible copy lives in src/i18n/<locale>.ts.
 export const site = {
   name: 'BoromTech',
-  email: 'hello@boromtech.co',
+  email: 'hello@boromtech.com',
 }
 
 // Bar widths follow the real number of days; labels and notes are per locale (process.times / process.notes).

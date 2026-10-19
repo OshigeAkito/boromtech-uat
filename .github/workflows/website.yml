@@ -1,6 +1,6 @@
 # Push to main → build the marketing site and deploy it to Cloudflare (apps/website/wrangler.toml):
 #   1. build    astro build (sharp images, fonts, thai-loanwords pass), then the copy check against COPY.md.
-#   2. images   upload dist/_astro images to R2 bt-public (https://media.boromtech.co). Before the deploy, so no
+#   2. images   upload dist/_astro images to R2 bt-public (https://media.boromtech.com). Before the deploy, so no
 #               live page points at an image that isn't there yet.
 #   3. deploy   wrangler deploy: the Worker (worker.mjs, locale redirect on /) and dist as static assets.
 #

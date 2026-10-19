@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://boromtech.co/sitemap-index.xml
+Sitemap: https://boromtech.com/sitemap-index.xml

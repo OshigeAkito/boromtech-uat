@@ -7,7 +7,7 @@ BoromTech audits, rescues and maintains software that other people built. The id
 > AI can build it. Who will run it?
 > เอไอใครๆก็ทำได้ แต่ใครจะดูแล
 
-This system formalises what boromtech.co already does. Its palette names and values are the website's own (`apps/website/src/styles/site.css`), so a colour named here is the colour the site paints. The product design system (the job board) builds on these foundations.
+This system formalises what boromtech.com already does. Its palette names and values are the website's own (`apps/website/src/styles/site.css`), so a colour named here is the colour the site paints. The product design system (the job board) builds on these foundations.
 
 ## Voice
 

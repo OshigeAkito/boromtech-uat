@@ -4,10 +4,10 @@ import thaiLoanwords from './integrations/thai-loanwords.mjs'
 
 // Built images are served from R2 (bucket bt-public) at this origin; scripts/upload-media.mjs uploads them.
 // JS, fonts and anything else keep root-relative URLs on the site's own origin (the '/' fallback).
-const media = 'https://media.boromtech.co'
+const media = 'https://media.boromtech.com'
 
 export default defineConfig({
-  site: 'https://boromtech.co',
+  site: 'https://boromtech.com',
   i18n: {
     locales: ['th', 'en', 'vi', 'zh'],
     defaultLocale: 'th',

@@ -1,5 +1,5 @@
 // Uploads the images Astro built (dist/_astro/*.{jpg,png,webp,avif}) to the R2 bucket bt-public, which serves them
-// at https://media.boromtech.co (build.assetsPrefix in astro.config.mjs). Run after `astro build` and before
+// at https://media.boromtech.com (build.assetsPrefix in astro.config.mjs). Run after `astro build` and before
 // `wrangler deploy`, so no deployed page points at an image that isn't there yet. Needs CLOUDFLARE_API_TOKEN (with
 // R2 write on bt-public) and CLOUDFLARE_ACCOUNT_ID, or a `wrangler login`.
 // Keys are content-hashed, so each object is immutable: re-uploading one is harmless, and old ones stay for pages
