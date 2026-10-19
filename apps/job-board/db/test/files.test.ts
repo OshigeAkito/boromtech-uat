@@ -97,6 +97,19 @@ describe('upload', () => {
   })
 })
 
+describe('upload quota under concurrency', () => {
+  test('three simultaneous uploads with one slot left: exactly one gets it', async () => {
+    await g.run(admin, 'invite', { email: 'race@x.com' })
+    const racer = (await g.signIn({ sub: 'R', email: 'race@x.com', email_verified: true })).token
+    for (let i = 0; i < 49; i++) await g.upload(racer, { id: randomUUID(), kind: 'submission', name: 'a', mime: 'image/jpeg', bytes: 10 })
+    const conns = await Promise.all([1, 2, 3].map(() => db.connect('bt_gateway')))
+    const results = await Promise.all(
+      conns.map((c) => gate(c).upload(racer, { id: randomUUID(), kind: 'submission', name: 'a', mime: 'image/jpeg', bytes: 10 })),
+    )
+    assert.deepEqual(results.map((r) => r.status).sort(), [200, 429, 429])
+  })
+})
+
 describe('verification (gate.upload_done)', () => {
   const declare = async (o: { mime?: string; thumb?: boolean } = {}) => {
     const id = randomUUID()

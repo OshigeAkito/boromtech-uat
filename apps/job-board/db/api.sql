@@ -752,6 +752,8 @@ begin
 
     select * into f from app.files where id = v_id;
     if not found then
+      -- One upload declaration per member at a time, so concurrent requests can't both pass the quota check.
+      perform pg_advisory_xact_lock(hashtext('upload:' || me.uid));
       if (select count(*) >= 50 or coalesce(sum(bytes), 0) + v_bytes > 300 * 1048576
             from app.files where uploader_uid = me.uid and created_at > now() - interval '24 hours') then
         perform lib.fail('too_many', 'Upload limit reached for today');
