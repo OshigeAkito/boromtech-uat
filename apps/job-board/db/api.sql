@@ -220,7 +220,7 @@ $$;
 -- Browser GET. The transport floors the signing time to the hour and signs for `ttl`, so a URL is identical
 -- for an hour (the browser caches the bytes) and every URL handed out has at least an hour left. Access
 -- outlives revocation by at most ~2 h. Served from R2's own origin, never ours, so a hostile file cannot
--- touch crew.boromtech.co cookies.
+-- touch crew.boromtech.com cookies.
 create function lib.presign_get(f app.files, p_thumb boolean) returns jsonb immutable language sql as $$
   select jsonb_build_object(
     'method', 'GET', 'key', lib.file_key(f.id, p_thumb), 'ttl', 7200,

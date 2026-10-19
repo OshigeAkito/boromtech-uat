@@ -59,7 +59,7 @@ jobs:
             --execution-environment gen1 --cpu 1 --memory 256Mi --cpu-boost \
             --min-instances 0 --max-instances 3 --concurrency 80 --timeout 60 \
             --allow-unauthenticated --ingress all \
-            --set-env-vars "PUBLIC_ORIGIN=https://crew.boromtech.co,GOOGLE_CLIENT_ID=${{ vars.GOOGLE_CLIENT_ID }},R2_ACCOUNT_ID=${{ vars.R2_ACCOUNT_ID }},R2_ACCESS_KEY_ID=${{ vars.R2_ACCESS_KEY_ID }},R2_BUCKET=bt-crew-files" \
+            --set-env-vars "PUBLIC_ORIGIN=https://crew.boromtech.com,GOOGLE_CLIENT_ID=${{ vars.GOOGLE_CLIENT_ID }},R2_ACCOUNT_ID=${{ vars.R2_ACCOUNT_ID }},R2_ACCESS_KEY_ID=${{ vars.R2_ACCESS_KEY_ID }},R2_BUCKET=bt-crew-files" \
             --set-secrets "DATABASE_URL=crew-database-url:latest,GOOGLE_CLIENT_SECRET=crew-google-client-secret:latest,R2_SECRET_ACCESS_KEY=crew-r2-secret-access-key:latest,EDGE_KEY=crew-edge-key:latest"
           echo "url=$(gcloud run services describe crew-api --region "$REGION" --format='value(status.url)')" >> "$GITHUB_OUTPUT"
 

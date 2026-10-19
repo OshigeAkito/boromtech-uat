@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"sync"
 
-	"boromtech.co/crew-api/internal/facts"
-	"boromtech.co/crew-api/internal/gate"
-	"boromtech.co/crew-api/internal/r2"
+	"boromtech.com/crew-api/internal/facts"
+	"boromtech.com/crew-api/internal/gate"
+	"boromtech.com/crew-api/internal/r2"
 )
 
 // upload: the /api checks, gate.upload, and on 200 its presign specs become signed PUTs:

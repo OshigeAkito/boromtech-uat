@@ -33,10 +33,10 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"boromtech.co/crew-api/internal/facts"
-	"boromtech.co/crew-api/internal/gate"
-	"boromtech.co/crew-api/internal/r2"
-	"boromtech.co/crew-api/internal/sweep"
+	"boromtech.com/crew-api/internal/facts"
+	"boromtech.com/crew-api/internal/gate"
+	"boromtech.com/crew-api/internal/r2"
+	"boromtech.com/crew-api/internal/sweep"
 )
 
 const origin = "http://localhost:5173"

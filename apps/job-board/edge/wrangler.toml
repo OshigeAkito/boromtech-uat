@@ -1,4 +1,4 @@
-# The job board's front door. One Worker on crew.boromtech.co serves the SPA as static assets (unmetered;
+# The job board's front door. One Worker on crew.boromtech.com serves the SPA as static assets (unmetered;
 # the Worker code never runs for them) and forwards /api and /api/* to the Go service on Cloud Run
 # (apps/job-board/api) through src/index.ts. Same origin, so cookies stay Strict and there is no CORS.
 #
@@ -8,7 +8,7 @@ name = "boromtech-crew"           # same Worker name as the old gateway: a deplo
 main = "src/index.ts"
 compatibility_date = "2025-10-01"
 
-routes = [{ pattern = "crew.boromtech.co", custom_domain = true }]
+routes = [{ pattern = "crew.boromtech.com", custom_domain = true }]
 
 [assets]
 directory = "../web/dist"

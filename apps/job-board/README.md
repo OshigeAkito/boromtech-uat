@@ -6,7 +6,7 @@ and get paid. Runs for about $0/month at pilot scale on Cloudflare, Google Cloud
 ## How it fits together
 
 ```
-browser ── crew.boromtech.co  (Cloudflare Worker "boromtech-crew", edge/)
+browser ── crew.boromtech.com  (Cloudflare Worker "boromtech-crew", edge/)
              ├─ /*            SPA from web/dist (static assets: unmetered, Worker code never runs)
              └─ /api, /api/*  edge/src/index.ts streams the request to Cloud Run with X-BT-Edge
                                 └─► crew-api (Go on Cloud Run, asia-southeast1, api/)
@@ -26,7 +26,7 @@ GitHub Actions, nightly: pg_dump as bt_backup | age ─► R2 bt-backups · file
   URLs Postgres asks for, and reports what it measured on uploaded objects. It never decides who may do what.
   `bt_gateway` can execute the `gate.*` functions and nothing else; `db/assert_privileges.sql` fails every
   migrate (CI and deploy) if a role can reach more than its allowlist.
-- **The Worker keeps one origin.** The SPA and `/api` share `crew.boromtech.co`, so cookies stay
+- **The Worker keeps one origin.** The SPA and `/api` share `crew.boromtech.com`, so cookies stay
   `__Host-` and `SameSite=Strict`, with no CORS on the API.
 - **The SPA talks through `web/src/api.ts`:** `useBoard()`, `run(name, args)`, `upload(file, kind)`,
   `signIn()`, `signOut()`, `ApiError`. Every response carries the rows changed since the client's cursor.
@@ -124,20 +124,20 @@ locally. Uploads need the R2 settings in `api/.env` (a dev bucket, or the seawee
    `bt_sweeper` in SQL, because console roles inherit `neon_superuser` and could read every table. Migrate
    once from your machine with `DATABASE_URL='<owner url>' npm run job-board:db`, then in the Neon SQL editor
    set a password for each of the three roles (`alter role bt_gateway password '…'`).
-2. **Google OAuth client** (Web): redirect URIs `https://crew.boromtech.co/api/auth/callback` and
+2. **Google OAuth client** (Web): redirect URIs `https://crew.boromtech.com/api/auth/callback` and
    `http://localhost:5173/api/auth/callback`.
 3. **R2:** enable R2 in the Cloudflare dashboard, then run `infra/setup-r2.sh` (buckets, CORS, backup lock and
    lifecycle) and create the four API tokens it lists.
 4. **Google Cloud:** create a project and link billing in the console, then
    `PROJECT=… REPO=Borom-Tech/boromtech infra/setup-gcp.sh` (Artifact Registry, service accounts, Workload
    Identity for GitHub, the four runtime secrets). Add a $1 budget alert.
-5. **Cloudflare:** add the `boromtech.co` zone (move nameservers). Create an API token from the "Edit
+5. **Cloudflare:** add the `boromtech.com` zone (move nameservers). Create an API token from the "Edit
    Cloudflare Workers" template. In `edge/`, run `npx wrangler secret put EDGE_KEY` with the same value as the
    `crew-edge-key` secret.
 6. **GitHub** (Settings → Secrets and variables → Actions): the secrets and variables listed at the top of
    `.github/workflows/deploy.yml` and `backup.yml`. Generate an age key pair (`age-keygen`) for backups and
    keep the private key offline.
-7. Push to `main` (or run the deploy workflow), sign in at https://crew.boromtech.co as the admin, re-invite
+7. Push to `main` (or run the deploy workflow), sign in at https://crew.boromtech.com as the admin, re-invite
    freelancers, then delete the Firebase project `job-board-pilot-pw`.
 
 ## Cost at pilot scale
@@ -160,6 +160,6 @@ compute lasts to roughly 5,000 active user-hours a month.
 - Confirm the Cloud Run free tier applies in asia-southeast1, and that an idle pooled connection doesn't
   keep Neon from suspending.
 - Try uploads on real Safari and Firefox (desktop and iOS); only Chromium was exercised.
-- Marketing-site images go to the `bt-public` bucket at `media.boromtech.co` when the website moves to
+- Marketing-site images go to the `bt-public` bucket at `media.boromtech.com` when the website moves to
   Cloudflare.
 - `isOnTime` still measures deadlines at UTC midnight, not Bangkok.

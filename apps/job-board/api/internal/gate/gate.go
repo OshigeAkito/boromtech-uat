@@ -16,7 +16,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"boromtech.co/crew-api/internal/r2"
+	"boromtech.com/crew-api/internal/r2"
 )
 
 type Gate struct{ pool *pgxpool.Pool }

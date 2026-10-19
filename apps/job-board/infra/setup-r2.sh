@@ -3,7 +3,7 @@
 # Run from apps/job-board/infra with `npx wrangler login` done. Then create the API tokens listed at the end
 # in the dashboard (R2 → Manage API tokens); tokens can't be created from wrangler.
 set -euo pipefail
-ORIGIN=${ORIGIN:-https://crew.boromtech.co}
+ORIGIN=${ORIGIN:-https://crew.boromtech.com}
 
 # bt-crew-files: every uploaded file, private. Browsers PUT and GET with signed URLs, so it needs CORS for
 # the app's origin. No lock: profile photos are re-copied to the same key, and app.files' never_purge_attached
@@ -23,7 +23,7 @@ npx wrangler r2 bucket lock add bt-backups crew-30d crew/ --retention-days 30 --
 npx wrangler r2 bucket lock add bt-backups files-30d files/ --retention-days 30 --force
 npx wrangler r2 bucket lifecycle add bt-backups crew-35d crew/ --expire-days 35 --force
 
-# bt-public: marketing-site images at media.boromtech.co (wired up when the website moves to Cloudflare).
+# bt-public: marketing-site images at media.boromtech.com (wired up when the website moves to Cloudflare).
 npx wrangler r2 bucket create bt-public --location apac || true
 
 cat <<'TXT'

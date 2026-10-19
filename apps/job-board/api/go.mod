@@ -1,4 +1,4 @@
-module boromtech.co/crew-api
+module boromtech.com/crew-api
 
 go 1.25.0
 

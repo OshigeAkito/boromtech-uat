@@ -9,7 +9,7 @@ func envOf(m map[string]string) func(string) string { return func(k string) stri
 
 func serveEnv(over map[string]string) map[string]string {
 	m := map[string]string{
-		"DATABASE_URL": "postgres://bt_gateway@db/x", "PUBLIC_ORIGIN": "https://crew.boromtech.co", "EDGE_KEY": "k",
+		"DATABASE_URL": "postgres://bt_gateway@db/x", "PUBLIC_ORIGIN": "https://crew.boromtech.com", "EDGE_KEY": "k",
 		"GOOGLE_CLIENT_ID": "id", "GOOGLE_CLIENT_SECRET": "s",
 		"R2_ACCOUNT_ID": "acct", "R2_ACCESS_KEY_ID": "ak", "R2_SECRET_ACCESS_KEY": "sk",
 	}
@@ -35,7 +35,7 @@ func TestConfig(t *testing.T) {
 		"https without edge key":       {"serve", serveEnv(map[string]string{"EDGE_KEY": ""}), "EDGE_KEY"},
 		"localhost without edge key":   {"serve", serveEnv(map[string]string{"EDGE_KEY": "", "PUBLIC_ORIGIN": "http://localhost:5173"}), ""},
 		"lookalike host, no edge key":  {"serve", serveEnv(map[string]string{"EDGE_KEY": "", "PUBLIC_ORIGIN": "http://localhost.evil.example"}), "EDGE_KEY"},
-		"origin with a path":           {"serve", serveEnv(map[string]string{"PUBLIC_ORIGIN": "https://crew.boromtech.co/"}), "PUBLIC_ORIGIN"},
+		"origin with a path":           {"serve", serveEnv(map[string]string{"PUBLIC_ORIGIN": "https://crew.boromtech.com/"}), "PUBLIC_ORIGIN"},
 		"no google secret":             {"serve", serveEnv(map[string]string{"GOOGLE_CLIENT_SECRET": ""}), "GOOGLE_CLIENT_SECRET"},
 		"no R2 endpoint":               {"serve", serveEnv(map[string]string{"R2_ACCOUNT_ID": ""}), "R2_ACCOUNT_ID"},
 		"R2_ENDPOINT instead":          {"serve", serveEnv(map[string]string{"R2_ACCOUNT_ID": "", "R2_ENDPOINT": "http://localhost:59000"}), ""},

@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"boromtech.co/crew-api/internal/gate"
+	"boromtech.com/crew-api/internal/gate"
 )
 
 var googleIssuers = map[string]bool{"accounts.google.com": true, "https://accounts.google.com": true}

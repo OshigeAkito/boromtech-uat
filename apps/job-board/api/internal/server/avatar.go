@@ -15,7 +15,7 @@ import (
 	"net/url"
 	"regexp"
 
-	"boromtech.co/crew-api/internal/r2"
+	"boromtech.com/crew-api/internal/r2"
 )
 
 const (

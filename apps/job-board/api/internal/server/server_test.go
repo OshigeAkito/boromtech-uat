@@ -17,7 +17,7 @@ import (
 	"strings"
 	"testing"
 
-	"boromtech.co/crew-api/internal/facts"
+	"boromtech.com/crew-api/internal/facts"
 )
 
 // A server with no database and no storage: every request these tests make must be answered before either
@@ -38,7 +38,7 @@ func serve(h http.Handler, method, target string, body string, header map[string
 }
 
 func TestEdgeKeyGate(t *testing.T) {
-	s := offline("k3y", "https://crew.boromtech.co")
+	s := offline("k3y", "https://crew.boromtech.com")
 	for _, h := range []map[string]string{nil, {"X-BT-Edge": "nope"}, {"X-BT-Edge": "k3y "}} {
 		if rec := serve(s, "GET", "/healthz", "", h); rec.Code != 404 {
 			t.Errorf("%v: %d", h, rec.Code)
@@ -107,14 +107,14 @@ func TestWarmWithoutCookieNeverTouchesTheDatabase(t *testing.T) {
 }
 
 func TestStartLogin(t *testing.T) {
-	rec := serve(offline("k", "https://crew.boromtech.co"), "GET", "/api/auth/google", "", map[string]string{"X-BT-Edge": "k"})
+	rec := serve(offline("k", "https://crew.boromtech.com"), "GET", "/api/auth/google", "", map[string]string{"X-BT-Edge": "k"})
 	if rec.Code != 302 || rec.Header().Get("Cache-Control") != "no-store" {
 		t.Fatalf("%d %v", rec.Code, rec.Header())
 	}
 	loc, _ := url.Parse(rec.Header().Get("Location"))
 	q := loc.Query()
 	if loc.Host != "accounts.google.com" || q.Get("client_id") != "cid" || q.Get("response_type") != "code" ||
-		q.Get("redirect_uri") != "https://crew.boromtech.co/api/auth/callback" || q.Get("scope") != "openid email profile" ||
+		q.Get("redirect_uri") != "https://crew.boromtech.com/api/auth/callback" || q.Get("scope") != "openid email profile" ||
 		q.Get("code_challenge_method") != "S256" || q.Get("prompt") != "select_account" {
 		t.Fatalf("authorize URL %s", loc)
 	}

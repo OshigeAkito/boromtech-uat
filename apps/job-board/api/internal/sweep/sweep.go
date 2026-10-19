@@ -15,8 +15,8 @@ import (
 	"sort"
 	"strings"
 
-	"boromtech.co/crew-api/internal/gate"
-	"boromtech.co/crew-api/internal/r2"
+	"boromtech.com/crew-api/internal/gate"
+	"boromtech.com/crew-api/internal/r2"
 )
 
 // MaxDeletes bounds one run; whatever is left goes tomorrow.

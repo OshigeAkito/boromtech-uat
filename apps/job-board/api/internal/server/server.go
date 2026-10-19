@@ -31,12 +31,12 @@ import (
 	"strings"
 	"time"
 
-	"boromtech.co/crew-api/internal/gate"
-	"boromtech.co/crew-api/internal/r2"
+	"boromtech.com/crew-api/internal/gate"
+	"boromtech.com/crew-api/internal/r2"
 )
 
 type Config struct {
-	// https://crew.boromtech.co in production, http://localhost:5173 in dev. The only Origin accepted on a
+	// https://crew.boromtech.com in production, http://localhost:5173 in dev. The only Origin accepted on a
 	// state-changing request, and the base of the OAuth redirect URI.
 	PublicOrigin       string
 	EdgeKey            string // empty only for http://localhost (main refuses to start otherwise)

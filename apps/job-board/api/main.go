@@ -21,10 +21,10 @@ import (
 	"syscall"
 	"time"
 
-	"boromtech.co/crew-api/internal/gate"
-	"boromtech.co/crew-api/internal/r2"
-	"boromtech.co/crew-api/internal/server"
-	"boromtech.co/crew-api/internal/sweep"
+	"boromtech.com/crew-api/internal/gate"
+	"boromtech.com/crew-api/internal/r2"
+	"boromtech.com/crew-api/internal/server"
+	"boromtech.com/crew-api/internal/sweep"
 )
 
 func main() {
@@ -147,7 +147,7 @@ func loadConfig(mode string, getenv func(string) string) (config, error) {
 	if mode == "serve" {
 		u, err := url.Parse(c.Server.PublicOrigin)
 		if err != nil || (u.Scheme != "https" && u.Scheme != "http") || u.Host == "" || u.Path != "" {
-			return c, fmt.Errorf("PUBLIC_ORIGIN %q must be an origin like https://crew.boromtech.co", c.Server.PublicOrigin)
+			return c, fmt.Errorf("PUBLIC_ORIGIN %q must be an origin like https://crew.boromtech.com", c.Server.PublicOrigin)
 		}
 		// Without the edge key anyone who finds the *.run.app URL skips Cloudflare. Only local dev may.
 		if c.Server.EdgeKey == "" && !(u.Scheme == "http" && u.Hostname() == "localhost") {
