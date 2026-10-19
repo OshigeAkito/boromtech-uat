@@ -1,5 +1,7 @@
 # design-sync notes: BoromTech CI
 
+- Synced to the Claude Design project "BoromTech CI": https://claude.ai/design/p/4f007695-41e9-47ae-8ba3-5e263ff1c322 (first sync 2026-10-19, 39 files, 5 components).
+- Claude Design access: run /design-login in a standalone `claude` terminal. Running it from the desktop app's chat doesn't authorize the sync.
 - The synced package is `@boromtech/brand` in `design-system/brand/` (not the job-board system in `design-system/components`). Scope chosen by the user on 2026-10-19: brand CI only, logo as React components plus tokens.
 - Build: `node design-system/brand/build.mjs` regenerates `tokens.css` from `tokens.json`, bundles `src/` to `dist/` and emits `.d.ts`. `dist/` is gitignored, so always build before the converter.
 - Converter flags: `--node-modules <repo root>/node_modules` (react, react-dom, typescript and esbuild live there, hoisted by the npm workspace) and `--entry ./design-system/brand/dist/index.js`. From a worktree, point `--node-modules` at the main checkout's `node_modules`.
