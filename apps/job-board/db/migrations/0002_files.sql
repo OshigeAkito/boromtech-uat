@@ -37,6 +37,10 @@ create table app.files (
   -- for avatars, which the transport writes itself under its own 1 MB cap.
   bytes        integer check (bytes between 1 and 26214400),
   thumb_bytes  integer check (thumb_bytes between 1 and 1048576),       -- present iff a 't/' object exists
+  -- Base64 MD5 of the bytes the uploader declared, signed into the PUT as Content-MD5: storage refuses any
+  -- other body, so a verified object can't be swapped later through a still-valid upload URL.
+  md5          text check (md5 ~ '^[A-Za-z0-9+/]{22}==$'),
+  thumb_md5    text check (thumb_md5 ~ '^[A-Za-z0-9+/]{22}==$'),
   width        integer check (width between 1 and 20000),
   height       integer check (height between 1 and 20000),
   state        app.file_state not null default 'pending',
@@ -50,7 +54,8 @@ create table app.files (
   attached_at  timestamptz,
   detached_at  timestamptz,
   purged_at    timestamptz,                                            -- the sweep deleted the R2 objects
-  constraint bytes_known check (kind = 'avatar' or bytes is not null),
+  constraint bytes_known check (kind = 'avatar' or (bytes is not null and md5 is not null)),
+  constraint thumb_md5_iff_thumb check ((thumb_bytes is null) = (thumb_md5 is null)),
   constraint parent_fits_kind check (case kind
     when 'submission' then job_id is null and member_uid is null and source_hash is null
     when 'brief'      then member_uid is null and source_hash is null and num_nonnulls(task_id, job_id) <= 1

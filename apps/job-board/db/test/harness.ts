@@ -49,6 +49,12 @@ export async function freshDb(name: string): Promise<Db> {
   }
 }
 
+export const MD5 = '1B2M2Y8AsgTpgAmY7PhCfg==' // md5('') — any well-formed digest works here; storage checks bytes
+
+function withChecksums(body: Record<string, unknown>) {
+  return { ...('md5' in body ? {} : { md5: MD5 }), ...('thumbBytes' in body && !('thumbMd5' in body) ? { thumbMd5: MD5 } : {}), ...body }
+}
+
 /** The calls the transport makes, bound to one bt_gateway connection. */
 export function gate(gw: pg.Client) {
   const one = async (sql: string, params: unknown[]) => (await gw.query(sql, params)).rows[0].r as Envelope
@@ -60,7 +66,9 @@ export function gate(gw: pg.Client) {
       client
         .query('select gate.call($1, $2::jsonb) as r', [token, JSON.stringify({ since: 0, command: { name, args, requestId } })])
         .then((r) => r.rows[0].r as Envelope),
-    upload: (token: string, body: object) => one('select gate.upload($1, $2::jsonb) as r', [token, JSON.stringify(body)]),
+    /** Fills in a placeholder md5 (and thumbMd5 when thumbBytes is given) unless the test sets its own. */
+    upload: (token: string, body: Record<string, unknown>) =>
+      one('select gate.upload($1, $2::jsonb) as r', [token, JSON.stringify(withChecksums(body))]),
     uploadDone: (token: string, body: object) => one('select gate.upload_done($1, $2::jsonb) as r', [token, JSON.stringify(body)]),
     file: (token: string, id: string, variant: string) => one('select gate.file($1, $2::uuid, $3) as r', [token, id, variant]),
   }

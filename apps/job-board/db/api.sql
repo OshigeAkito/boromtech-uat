@@ -199,12 +199,12 @@ create function lib.file_key(p_id uuid, p_thumb boolean default false) returns t
 $$;
 
 
--- Browser PUT: exact type and length are signed, so R2 refuses any other body (verify: R2 enforces a signed
--- content-length). Objects are immutable (keys are never reused), so they may be cached forever.
-create function lib.presign_put(p_key text, p_mime text, p_bytes int) returns jsonb immutable language sql as $$
+-- Browser PUT: the exact type, length and Content-MD5 are signed, so storage refuses any other body, and a
+-- still-valid URL can only ever write the declared bytes again. Keys are never reused, so cache forever.
+create function lib.presign_put(p_key text, p_mime text, p_bytes int, p_md5 text) returns jsonb immutable language sql as $$
   select jsonb_strip_nulls(jsonb_build_object(
     'method', 'PUT', 'key', p_key, 'ttl', 600, 'contentType', p_mime, 'contentLength', p_bytes,
-    'cacheControl', 'private, max-age=31536000, immutable'))
+    'contentMD5', p_md5, 'cacheControl', 'private, max-age=31536000, immutable'))
 $$;
 
 
@@ -729,7 +729,8 @@ begin
 end $$;
 
 
--- Upload intent. body: { id: uuid (client-chosen), kind, name, mime, bytes, width?, height?, thumbBytes? }
+-- Upload intent. body: { id: uuid (client-chosen), kind, name, mime, bytes, md5, width?, height?,
+--                        thumbBytes?, thumbMd5? }   md5 = base64 of the MD5 digest of exactly those bytes.
 -- Returns { status: 200, file: { id }, presign: { file: put, thumb?: put } } or an error envelope.
 -- Idempotent on id: a retry with the same attributes gets fresh URLs for the same keys.
 -- Quota: 50 uploads and 300 MB per member per rolling 24 h (abuse cap, not a product limit).
@@ -737,7 +738,7 @@ create function gate.upload(p_token text, p_body jsonb) returns jsonb
 language plpgsql security definer set search_path = pg_catalog, pg_temp as $$
 declare
   me app.members; rule record; f app.files; v_id uuid; v_kind app.file_kind; v_mime text; v_bytes int;
-  v_thumb int; v_code text; v_detail text;
+  v_thumb int; v_md5 text; v_thumb_md5 text; v_code text; v_detail text;
 begin
   me := lib.session_member(p_token);
   if me.uid is null then return lib.error_envelope('not_signed_in', 'Sign in again'); end if;
@@ -746,6 +747,8 @@ begin
     v_mime  := lib.arg_text(p_body, 'mime', 100);
     v_bytes := lib.arg_int(p_body, 'bytes', 1, 26214400);
     v_thumb := case when p_body ? 'thumbBytes' then lib.arg_int(p_body, 'thumbBytes', 1, 1048576) end;
+    v_md5   := lib.arg_text(p_body, 'md5', 24);
+    v_thumb_md5 := case when v_thumb is not null then lib.arg_text(p_body, 'thumbMd5', 24) end;
     select * into rule from lib.file_rules() r where r.kind::text = p_body ->> 'kind';
     if not found or rule.uploader = 'transport' then perform lib.fail('invalid', 'kind'); end if;
     v_kind := rule.kind;
@@ -764,8 +767,8 @@ begin
             from app.files where uploader_uid = me.uid and created_at > now() - interval '24 hours') then
         perform lib.fail('too_many', 'Upload limit reached for today');
       end if;
-      insert into app.files (id, kind, uploader_uid, name, mime, bytes, thumb_bytes, width, height)
-      values (v_id, v_kind, me.uid, lib.arg_text(p_body, 'name', 200), v_mime, v_bytes, v_thumb,
+      insert into app.files (id, kind, uploader_uid, name, mime, bytes, md5, thumb_bytes, thumb_md5, width, height)
+      values (v_id, v_kind, me.uid, lib.arg_text(p_body, 'name', 200), v_mime, v_bytes, v_md5, v_thumb, v_thumb_md5,
               case when p_body ? 'width'  then lib.arg_int(p_body, 'width', 1, 20000) end,
               case when p_body ? 'height' then lib.arg_int(p_body, 'height', 1, 20000) end)
       on conflict (id) do nothing
@@ -773,7 +776,7 @@ begin
       if f.id is null then select * into f from app.files where id = v_id; end if;   -- lost a same-id race
     end if;
     if f.uploader_uid <> me.uid or f.kind <> v_kind or f.mime <> v_mime or f.bytes <> v_bytes
-       or f.thumb_bytes is distinct from v_thumb then
+       or f.md5 <> v_md5 or f.thumb_bytes is distinct from v_thumb or f.thumb_md5 is distinct from v_thumb_md5 then
       perform lib.fail('invalid', 'id already used for a different file');
     end if;
     if f.state <> 'pending' then perform lib.fail('wrong_state', 'already attached'); end if;
@@ -787,9 +790,9 @@ begin
   end;
   return jsonb_build_object('status', 200, 'file', jsonb_build_object('id', f.id),
     'presign', jsonb_strip_nulls(jsonb_build_object(
-      'file',  lib.presign_put(lib.file_key(f.id), f.mime, f.bytes),
+      'file',  lib.presign_put(lib.file_key(f.id), f.mime, f.bytes, f.md5),
       'thumb', case when f.thumb_bytes is not null
-                    then lib.presign_put(lib.file_key(f.id, true), 'image/jpeg', f.thumb_bytes) end)));
+                    then lib.presign_put(lib.file_key(f.id, true), 'image/jpeg', f.thumb_bytes, f.thumb_md5) end)));
 end $$;
 
 

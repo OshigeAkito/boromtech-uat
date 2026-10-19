@@ -30,13 +30,16 @@ type Config struct {
 }
 
 // Spec is a signing request from Postgres. Shape fixed by api.sql:
-// { method: PUT|GET|DELETE, key: f/<uuid>|t/<uuid>, ttl, contentType?, contentLength?, cacheControl?, disposition? }
+// { method: PUT|GET|DELETE, key: f/<uuid>|t/<uuid>, ttl, contentType?, contentLength?, contentMD5?, cacheControl?,
+//
+//	disposition? }
 type Spec struct {
 	Method        string `json:"method"`
 	Key           string `json:"key"`
 	TTL           int    `json:"ttl"`
 	ContentType   string `json:"contentType,omitempty"`
 	ContentLength *int64 `json:"contentLength,omitempty"`
+	ContentMD5    string `json:"contentMD5,omitempty"` // base64; storage refuses a body with any other digest
 	CacheControl  string `json:"cacheControl,omitempty"`
 	Disposition   string `json:"disposition,omitempty"`
 }
@@ -75,8 +78,9 @@ func New(cfg Config, hc *http.Client) (*Client, error) {
 // Presign validates a spec from Postgres and signs it. Validation is defense in depth against a bug in
 // api.sql, not policy: a refused spec is an error for the caller to log as a 500.
 //
-//   - PUT signs content-type, and content-length and cache-control when given, so storage refuses any other
-//     body. Signed at now, valid for ttl.
+//   - PUT signs content-type, and content-length, content-md5 and cache-control when given, so storage
+//     refuses any other body: a URL that is still valid after verification can only rewrite the same bytes.
+//     Signed at now, valid for ttl.
 //   - GET is signed at the start of the current UTC hour for ttl, so the same key gives the same URL for an
 //     hour (the browser caches the bytes) and every URL handed out has at least ttl-1h left.
 //   - DELETE is signed at now (the sweep executes it itself).
@@ -95,6 +99,9 @@ func (c *Client) Presign(s Spec) (Signed, error) {
 		headers["content-type"] = s.ContentType
 		if s.CacheControl != "" {
 			headers["cache-control"] = s.CacheControl
+		}
+		if s.ContentMD5 != "" {
+			headers["content-md5"] = s.ContentMD5
 		}
 	case http.MethodGet:
 		now = now.Truncate(time.Hour)

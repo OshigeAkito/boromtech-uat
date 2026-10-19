@@ -11,7 +11,7 @@ ORIGIN=${ORIGIN:-https://crew.boromtech.co}
 npx wrangler r2 bucket create bt-crew-files --location apac || true
 cat > /tmp/bt-crew-files-cors.json <<JSON
 { "rules": [ { "allowed": { "origins": ["$ORIGIN", "http://localhost:5173"], "methods": ["PUT", "GET", "HEAD"],
-                            "headers": ["content-type", "cache-control"] },
+                            "headers": ["content-type", "cache-control", "content-md5"] },
                "exposeHeaders": ["etag"], "maxAgeSeconds": 86400 } ] }
 JSON
 npx wrangler r2 bucket cors set bt-crew-files --file /tmp/bt-crew-files-cors.json --force

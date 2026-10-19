@@ -13,6 +13,7 @@
 // cursor. A command's own response updates the screen at once. Other people's changes arrive on the next
 // poll: every 10 s while the tab is visible and the user did something in the last 5 minutes, and at once
 // on focus or the first input after idle. An idle tab stops polling so Neon can scale to zero.
+import SparkMD5 from 'spark-md5'
 import { useSyncExternalStore } from 'react'
 import type { CommandName, Commands, ErrorCode, UploadKind } from '@boromtech/domain'
 import { BoardState, type MemberView, type Wire } from './board'
@@ -218,10 +219,12 @@ class Store {
       })
       // The id is ours, so a retried intent is the same file (gate.upload is idempotent on it).
       const id = crypto.randomUUID()
+      // The MD5s are signed into the PUT URLs: storage refuses any other bytes, so what the server verifies
+      // after the upload is what stays there.
       const intent = {
-        id, kind, name: p.name, mime: p.mime, bytes: p.blob.size,
+        id, kind, name: p.name, mime: p.mime, bytes: p.blob.size, md5: await md5(p.blob),
         ...(p.width && { width: p.width, height: p.height }),
-        ...(p.thumb && { thumbBytes: p.thumb.size }),
+        ...(p.thumb && { thumbBytes: p.thumb.size, thumbMd5: await md5(p.thumb) }),
       }
       const env = await this.request<Envelope>('/api/files', intent).catch(() => this.request<Envelope>('/api/files', intent))
       if (env.error || !env.signed) throw refused(env.error ?? { code: 'bad_request', message: 'No upload URL' })
@@ -274,4 +277,9 @@ function put(target: Signed, body: Blob, onProgress?: (fraction: number) => void
     xhr.onerror = xhr.onabort = xhr.ontimeout = fail
     xhr.send(body)
   })
+}
+
+/** Base64 MD5 of a blob, the form S3's Content-MD5 header takes. */
+async function md5(blob: Blob): Promise<string> {
+  return btoa(SparkMD5.ArrayBuffer.hash(await blob.arrayBuffer(), true))
 }

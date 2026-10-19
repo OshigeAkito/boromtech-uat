@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto'
 import { after, before, describe, test } from 'node:test'
 import type pg from 'pg'
 import { UPLOAD_RULES } from '@boromtech/domain'
-import { freshDb, gate, type Db } from './harness.ts'
+import { freshDb, gate, MD5, type Db } from './harness.ts'
 
 let db: Db
 let g: ReturnType<typeof gate>
@@ -68,6 +68,13 @@ describe('upload', () => {
     assert.equal((await as(f1, 'avatar')).error?.code, 'invalid', 'only the transport writes avatars')
   })
 
+  test('every upload declares the MD5 of its bytes (and of its thumbnail)', async () => {
+    const up = (body: object) => g.upload(f1, { id: randomUUID(), kind: 'submission', name: 'x', mime: 'image/jpeg', bytes: 10, ...body })
+    assert.equal((await up({ md5: null })).error?.code, 'invalid')
+    assert.equal((await up({ md5: 'not-base64-md5' })).error?.code, 'invalid')
+    assert.equal((await up({ thumbBytes: 5, thumbMd5: null })).error?.code, 'invalid')
+  })
+
   test('mime outside the allowlist, bytes over the max, a thumbnail on a PDF → invalid', async () => {
     const up = (body: object) => g.upload(f1, { id: randomUUID(), kind: 'submission', name: 'x', ...body })
     assert.equal((await up({ mime: 'image/svg+xml', bytes: 10 })).error?.code, 'invalid')
@@ -79,10 +86,12 @@ describe('upload', () => {
     const id = randomUUID()
     const body = { id, kind: 'submission', name: 'a.jpg', mime: 'image/jpeg', bytes: 1234, thumbBytes: 99 }
     const r = await g.upload(f1, body)
-    assert.deepEqual(r.presign.file, { method: 'PUT', key: `f/${id}`, ttl: 600, contentType: 'image/jpeg', contentLength: 1234, cacheControl: 'private, max-age=31536000, immutable' })
+    assert.deepEqual(r.presign.file, { method: 'PUT', key: `f/${id}`, ttl: 600, contentType: 'image/jpeg', contentLength: 1234, contentMD5: MD5, cacheControl: 'private, max-age=31536000, immutable' })
+    assert.equal(r.presign.thumb.contentMD5, MD5)
     assert.equal(r.presign.thumb.key, `t/${id}`)
     assert.deepEqual((await g.upload(f1, body)).presign, r.presign)
     assert.equal((await g.upload(f1, { ...body, bytes: 1 })).error?.code, 'invalid', 'same id, different file')
+    assert.equal((await g.upload(f1, { ...body, md5: 'Zm9vYmFyYmF6cXV4cXV1eA==' })).error?.code, 'invalid', 'same id, different bytes')
     assert.equal((await g.upload(f2, body)).error?.code, 'invalid', "another member can't reuse the id")
   })
 

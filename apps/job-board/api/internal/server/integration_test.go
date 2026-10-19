@@ -10,6 +10,7 @@ package server
 import (
 	"bytes"
 	"context"
+	"crypto/md5"
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/binary"
@@ -156,9 +157,10 @@ func (r *rig) command(name string, args map[string]any) map[string]any {
 func (r *rig) upload(kind, name string, file, thumb []byte) (string, *httptest.ResponseRecorder) {
 	t := r.t
 	id := uuid()
-	body := map[string]any{"id": id, "kind": kind, "name": name, "mime": facts.Sniff(file), "bytes": len(file)}
+	body := map[string]any{"id": id, "kind": kind, "name": name, "mime": facts.Sniff(file), "bytes": len(file), "md5": md5of(file)}
 	if thumb != nil {
 		body["thumbBytes"] = len(thumb)
+		body["thumbMd5"] = md5of(thumb)
 	}
 	rec := r.do("POST", "/api/files", body, nil)
 	if rec.Code != 200 {
@@ -181,6 +183,11 @@ func (r *rig) upload(kind, name string, file, thumb []byte) (string, *httptest.R
 		r.put(env.Signed["thumb"], thumb, 200)
 	}
 	return id, r.do("POST", "/api/files/"+id+"/done", nil, nil)
+}
+
+func md5of(b []byte) string {
+	sum := md5.Sum(b)
+	return base64.StdEncoding.EncodeToString(sum[:])
 }
 
 func (r *rig) put(sg r2.Signed, body []byte, want int) {
@@ -292,14 +299,16 @@ func TestIntegration(t *testing.T) {
 
 	t.Run("storage enforces the signature and the signed headers", func(t *testing.T) {
 		id := uuid()
-		rec := r.do("POST", "/api/files", map[string]any{"id": id, "kind": "brief", "name": "a.pdf", "mime": "application/pdf", "bytes": 9}, nil)
+		rec := r.do("POST", "/api/files", map[string]any{"id": id, "kind": "brief", "name": "a.pdf", "mime": "application/pdf", "bytes": 9, "md5": md5of([]byte("%PDF-1.4\n"))}, nil)
 		var env struct{ Signed map[string]r2.Signed }
 		_ = json.Unmarshal(rec.Body.Bytes(), &env)
 		sg := env.Signed["file"]
 		r.put(r2.Signed{Method: "PUT", URL: sg.URL, Headers: map[string]string{"content-type": "text/html", "cache-control": sg.Headers["cache-control"]}}, []byte("%PDF-1.4\n"), 403)
 		r.put(r2.Signed{Method: "PUT", URL: strings.Replace(sg.URL, "X-Amz-Expires=600", "X-Amz-Expires=7200", 1), Headers: sg.Headers}, []byte("%PDF-1.4\n"), 403)
-		r.put(sg, []byte("%PDF-1.4"), 403) // content-length is signed: a different body size is refused
+		r.put(sg, []byte("%PDF-1.4"), 403)   // content-length is signed: a different body size is refused
+		r.put(sg, []byte("%PDF-1.5\n"), 400) // content-md5 is signed: same size, different bytes → BadDigest
 		r.put(sg, []byte("%PDF-1.4\n"), 200)
+		r.put(sg, []byte("%PDF-1.5\n"), 400) // and still after a successful PUT: the URL can't swap the object
 	})
 
 	t.Run("metadata left in → 422, failed for good", func(t *testing.T) {
@@ -319,7 +328,7 @@ func TestIntegration(t *testing.T) {
 			return b.Bytes()
 		}()
 		id := uuid()
-		rec := r.do("POST", "/api/files", map[string]any{"id": id, "kind": "brief", "name": "x.jpg", "mime": "image/jpeg", "bytes": len(pngBytes)}, nil)
+		rec := r.do("POST", "/api/files", map[string]any{"id": id, "kind": "brief", "name": "x.jpg", "mime": "image/jpeg", "bytes": len(pngBytes), "md5": md5of(pngBytes)}, nil)
 		var env struct{ Signed map[string]r2.Signed }
 		_ = json.Unmarshal(rec.Body.Bytes(), &env)
 		r.put(env.Signed["file"], pngBytes, 200)

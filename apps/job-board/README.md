@@ -43,7 +43,8 @@ One table, `app.files`, holds submission files, admin briefs and profile photos.
 1. **Upload.** The browser redraws images through a canvas, which drops EXIF and GPS, caps them at 2560 px
    and makes a 480 px thumbnail (`web/src/prepare.ts`). `POST /api/files` asks Postgres (`gate.upload`),
    which checks the uploader's role, type, size and a daily quota, and returns signed PUT URLs for the exact
-   type and length. The browser PUTs straight to R2.
+   type, length and MD5. The browser PUTs straight to R2. Because the MD5 is signed, storage refuses any other
+   bytes, so a URL that's still valid after verification can't swap the file.
 2. **Verify.** `POST /api/files/{id}/done`: Go reads the stored object (size, magic bytes, and for JPEG the
    segments before the image data) and reports the facts to `gate.upload_done`. A file whose size, type or
    leftover metadata doesn't match is marked failed. Only verified files can be attached.
