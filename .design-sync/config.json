@@ -1,0 +1,31 @@
+{
+  "shape": "package",
+  "pkg": "@boromtech/brand",
+  "globalName": "BoromTech",
+  "buildCmd": "node design-system/brand/build.mjs",
+  "docsDir": "docs",
+  "guidelinesGlob": [
+    "README.md",
+    "seal.md",
+    "rules.md"
+  ],
+  "cssEntry": "tokens.css",
+  "overrides": {
+    "AppIcon": {
+      "cardMode": "column"
+    },
+    "HeroSeal": {
+      "cardMode": "column"
+    },
+    "Lockup": {
+      "cardMode": "column"
+    },
+    "Seal": {
+      "cardMode": "column"
+    },
+    "Wordmark": {
+      "cardMode": "column"
+    }
+  },
+  "readmeHeader": ".design-sync/conventions.md"
+}
