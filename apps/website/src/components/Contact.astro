@@ -3,8 +3,11 @@ import { Picture } from 'astro:assets'
 import rack from '../assets/photos/server-rack.jpg'
 import posterSrc from '../assets/photos/skytrain-poster.jpg'
 import { credits, site } from '../data/site'
+import { useLocale } from '../i18n'
+import LangSwitch from './LangSwitch.astro'
 
-const subject = encodeURIComponent('นัดออดิตซิสเต็ม')
+const { t } = useLocale(Astro.currentLocale)
+const subject = encodeURIComponent(t.contact.emailSubject)
 const blocks = [
   ['B', 100], ['O', 72], ['R', 88], ['O', 64], ['M', 94], ['T', 78], ['E', 60], ['C', 84], ['H', 70],
 ] as const
@@ -19,12 +22,12 @@ const blocks = [
       </video>
     </div>
     <div class="tile tile-main">
-      <h2 id="contact-title" class="m reveal">ส่งซิสเต็มมาให้เราดู</h2>
-      <p class="reveal">ไม่ว่าโปรเจกต์จะติดขัดตรงไหน หรือกำลังหาทีมดูแลต่อ เล่าอาการสั้นๆ ให้เราฟัง เราตอบกลับภายในหนึ่งวันทำการ พร้อมนัดวันออดิต</p>
-      <a class="button button-dark reveal" href={`mailto:${site.email}?subject=${subject}`}>เขียนถึงเรา</a>
+      <h2 id="contact-title" class="m reveal">{t.contact.title}</h2>
+      <p class="reveal">{t.contact.body}</p>
+      <a class="button button-dark reveal" href={`mailto:${site.email}?subject=${subject}`}>{t.contact.cta}</a>
     </div>
     <div class="tile tile-flank tile-right">
-      <Picture src={rack} formats={['avif', 'webp']} widths={[320, 640, 960]} sizes="(max-width: 900px) 46vw, 16vw" alt="ตู้เซิร์ฟเวอร์เก่าที่จัดสายแลนใหม่อย่างเป็นระเบียบ" loading="lazy" />
+      <Picture src={rack} formats={['avif', 'webp']} widths={[320, 640, 960]} sizes="(max-width: 900px) 46vw, 16vw" alt={t.contact.photoAlt} loading="lazy" />
     </div>
   </div>
 </section>
@@ -35,28 +38,29 @@ const blocks = [
   </div>
   <div class="footer-grid">
     <ul>
-      <li><a class="link" href="#cases">งานที่เรารับ</a></li>
-      <li><a class="link" href="#process">โปรเซส</a></li>
+      <li><a class="link" href="#cases">{t.nav.cases}</a></li>
+      <li><a class="link" href="#process">{t.nav.process}</a></li>
     </ul>
     <ul>
-      <li><a class="link" href="#team">ทีม</a></li>
-      <li><a class="link" href="#faq">คำถาม</a></li>
+      <li><a class="link" href="#team">{t.nav.team}</a></li>
+      <li><a class="link" href="#faq">{t.nav.faq}</a></li>
     </ul>
-    <address>{site.email}<br />{site.city}</address>
+    <LangSwitch list />
+    <address>{site.email}<br />{t.footer.city}</address>
   </div>
   <p class="credits">
-    ภาพประกอบบางส่วนสร้างด้วย AI · ภาพถ่ายจาก Wikimedia Commons:{' '}
+    {t.footer.credits}{' '}
     {
       credits.map((c, i) => (
         <>
-          <a class="link" href={c.href} rel="noopener">"{c.title}"</a> โดย {c.by}, {c.licence}
+          <a class="link" href={c.href} rel="noopener">"{c.title}{c.video && ` (${t.footer.video})`}"</a> {t.footer.by} {c.by}, {c.licence}
           {i < credits.length - 1 && ' · '}
         </>
       ))
     }
   </p>
   <div class="footer-last">
-    <span>© 2569 BoromTech</span>
-    <a class="button button-small" href="#contact">นัดออดิต</a>
+    <span>{t.footer.copyright}</span>
+    <a class="button button-small" href="#contact">{t.nav.cta}</a>
   </div>
 </footer>

@@ -1,46 +1,77 @@
+---
+import { useLocale } from '../../i18n'
+
+const { t } = useLocale(Astro.currentLocale)
+const below = t.iceberg.below
+---
+
 <section class="chapter iceberg" aria-labelledby="iceberg-title" data-iceberg>
   <div class="scene">
     <div class="world">
       <div class="sky"></div>
       <div class="water"></div>
+      <canvas class="gl" aria-hidden="true"></canvas>
 
       <svg class="ice" viewBox="0 0 600 900" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-        <g class="ice-tip">
-          <polygon class="f-light" points="300,0 250,95 215,205 170,270 290,270 305,140" />
-          <polygon class="f-mid" points="300,0 340,80 355,160 305,140" />
-          <polygon class="f-deep" points="305,140 355,160 395,215 430,270 290,270" />
-        </g>
-        <g class="ice-mass">
-          <polygon class="f-deep" points="170,270 290,270 250,470 45,390" />
-          <polygon class="f-rust" points="290,270 430,270 560,350 400,430 250,470" />
-          <polygon class="f-rust" points="45,390 250,470 220,650 0,560" />
-          <polygon class="f-deep" points="250,470 400,430 560,350 600,520 430,640 220,650" />
-          <polygon class="f-dark" points="0,560 220,650 220,900 80,770" />
-          <polygon class="f-rust" points="220,650 430,640 545,700 410,880 220,900" />
-          <polygon class="f-dark" points="430,640 600,520 545,700" />
+        <g class="bob">
+          <g class="ice-tip">
+            <polygon class="f-light" points="300,0 250,95 215,205 170,270 290,270 305,140" />
+            <polygon class="f-mid" points="300,0 340,80 355,160 305,140" />
+            <polygon class="f-deep" points="305,140 355,160 395,215 430,270 290,270" />
+          </g>
+          <g class="ice-mass">
+            <polygon class="f-deep" points="170,270 290,270 250,470 45,390" />
+            <polygon class="f-rust" points="290,270 430,270 560,350 400,430 250,470" />
+            <polygon class="f-rust" points="45,390 250,470 220,650 0,560" />
+            <polygon class="f-deep" points="250,470 400,430 560,350 600,520 430,640 220,650" />
+            <polygon class="f-dark" points="0,560 220,650 220,900 80,770" />
+            <polygon class="f-rust" points="220,650 430,640 545,700 410,880 220,900" />
+            <polygon class="f-dark" points="430,640 600,520 545,700" />
+          </g>
         </g>
       </svg>
 
+      <div class="focus-line" aria-hidden="true"></div>
+      <div class="tags" aria-hidden="true">
+        <span class="tag tag-sub">BoromTech</span>
+        <span class="tag tag-bug"><span class="bug-now">{t.iceberg.bug}</span><span class="bug-fixed">{t.iceberg.fixed}</span></span>
+      </div>
+
       <div class="copy">
         <div class="above">
-          <h2 id="iceberg-title"><span>ส่วนที่</span><wbr /><span>มองไม่เห็น</span></h2>
-          <h3>ที่เห็น</h3>
+          <h2 id="iceberg-title"><span>{t.iceberg.title[0]}</span><wbr /><span>{t.iceberg.title[1]}</span></h2>
+          <p class="title-under" aria-hidden="true"><span>{t.iceberg.title[0]}</span><wbr /><span>{t.iceberg.title[1]}</span></p>
+          <svg class="fx" width="0" height="0" aria-hidden="true" focusable="false">
+            <filter id="iceberg-ripple">
+              <feTurbulence type="fractalNoise" baseFrequency="0.01 0.07" numOctaves="2" seed="4">
+                <animate attributeName="baseFrequency" dur="7s" values="0.01 0.07;0.013 0.09;0.01 0.07" repeatCount="indefinite" />
+              </feTurbulence>
+              <feDisplacementMap in="SourceGraphic" scale="12" />
+            </filter>
+          </svg>
+          <h3>{t.iceberg.aboveLabel}</h3>
           <ul role="list">
-            <li>หน้าจอที่ใช้งานได้</li>
-            <li>ฟีเจอร์ที่เดโมผ่าน</li>
+            <li>{t.iceberg.above[0]}</li>
+            <li>{t.iceberg.above[1]}</li>
           </ul>
         </div>
         <div class="below">
-          <h3 data-depth>ที่ต้องมีคนดูแล</h3>
-          <ul role="list">
-            <li data-depth>แบ็กอัปที่กู้คืนได้จริง</li>
-            <li data-depth>ความปลอดภัยและการอัปเดตแพตช์</li>
-            <li data-depth>มอนิเตอริงและการแจ้งเตือนเมื่อระบบล่ม</li>
-            <li data-depth>ด็อกคิวเมนต์ที่คนถัดไปอ่านเข้าใจ</li>
-            <li data-depth>การอัปเกรดเวอร์ชันก่อนหมดซัพพอร์ต</li>
-            <li data-depth>คนที่รับโทรศัพท์ตอนตีสาม</li>
-          </ul>
-          <p class="closing" data-depth>BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพื่อให้ส่วนที่อยู่เหนือน้ำใช้งานได้ทุกวัน</p>
+          <div class="label">
+            <h3>{t.iceberg.belowLabel}</h3>
+            <span class="count" aria-hidden="true"></span>
+          </div>
+          <div class="track">
+            <svg class="route" aria-hidden="true" focusable="false">
+              <path class="route-ahead" />
+              <path class="route-done" />
+              <path class="route-probe" />
+            </svg>
+            <span class="sub" aria-hidden="true"></span>
+            <ul role="list">
+              {below.map((line, i) => <li data-depth style={`--d: ${i / (below.length - 1)}`}>{line}</li>)}
+            </ul>
+            <p class="closing" data-depth>{t.iceberg.closing}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -102,6 +133,23 @@
   .f-deep { fill: var(--orange-deep); }
   .f-rust { fill: var(--rust); }
   .f-dark { fill: var(--ice-dark); }
+
+  .focus-line,
+  .count,
+  .route,
+  .sub,
+  .gl,
+  .tags,
+  .title-under {
+    display: none;
+  }
+
+  /* Holds the ripple filter; it has to be rendered (at no size) for the filter to work. */
+  .fx {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
 
   .copy {
     position: relative;
@@ -167,28 +215,69 @@
     list-style: none;
   }
 
+  /* The lines below the water hang as a chain of boxes, lighter near the surface and darker with depth. */
+  .track {
+    --link: 7svh;
+    --pad-x: clamp(16px, 1.8vw, 24px);
+  }
+
   .below ul {
-    gap: 7svh;
+    gap: var(--link);
     margin-top: 4svh;
   }
 
+  .track [data-depth] {
+    position: relative;
+    padding: clamp(14px, 1.4vw, 20px) var(--pad-x);
+    border: 2px solid var(--tone, var(--orange));
+    background: var(--night-2);
+  }
+
   .below li {
+    --tone: color-mix(in oklab, var(--orange), var(--rust) calc(var(--d, 0) * 100%));
+    color: color-mix(in srgb, var(--on-dark) calc(var(--o, 1) * 100%), var(--night-2));
     font-size: var(--t-m);
     font-family: var(--f-display);
     font-weight: 600;
     line-height: 1.35;
   }
 
-  .closing {
-    margin: 9svh 0 0;
-    max-width: 26em;
-    font-size: var(--t-body);
+  /* The link up from each box to the one above. */
+  .track li + li::before,
+  .track .closing::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: calc(var(--pad-x) - 4px);
+    width: 4px;
+    height: var(--link);
+    background: var(--orange);
   }
 
-  /* The dive: the scene pins while the world scrolls up past the waterline. Static and complete without it. */
+  .track .closing {
+    --tone: var(--orange);
+    margin: var(--link) 0 0;
+    font-size: var(--t-body);
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--orange);
+  }
+
+  @keyframes ping {
+    from { transform: scale(1); opacity: 0.7; }
+    to { transform: scale(4.5); opacity: 0; }
+  }
+
+  @keyframes bob {
+    from { transform: translate3d(0, -5px, 0) rotate(-0.4deg); }
+    to { transform: translate3d(0, 5px, 0) rotate(0.4deg); }
+  }
+
+  /* The dive, filmed as one camera move: a close-up on the tip, a pull back that brings the berg to the centre,
+     then one stop per line below the water. The script places everything; the static layout above stands without it. */
   @media (prefers-reduced-motion: no-preference) {
     :global(.js) .chapter.iceberg {
-      height: 300svh;
+      height: 700svh;
     }
 
     :global(.js) .scene {
@@ -196,32 +285,357 @@
       top: 0;
       height: 100svh;
       overflow: hidden;
+      background: var(--soft);
     }
 
     :global(.js) .world {
-      height: 230svh;
-      transform: translate3d(0, calc(var(--p, 0) * var(--travel, 90svh) * -1), 0);
+      position: absolute;
+      inset: 0;
+    }
+
+    :global(.js) .sky {
+      display: none;
+    }
+
+    :global(.js) .water {
+      top: 0;
+      bottom: auto;
+      height: 300svh;
+      transform: translate3d(0, var(--wl, 74svh), 0);
+    }
+
+    :global(.js) .ice {
+      left: 0;
+      top: 0;
+      transform-origin: 0 0;
       will-change: transform;
     }
 
+    /* Once the 3D scene is up it draws the berg, the sea and the sky; the SVG stays as the fallback. */
+    :global(.js) .has-gl .gl {
+      display: block;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    :global(.js) .has-gl .ice,
+    :global(.js) .has-gl .water {
+      display: none;
+    }
+
+    /* Labels pinned to the 3D finale: the sub's name, and the bug it fixes. */
+    :global(.js) .has-gl .tags {
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    :global(.js) .tag {
+      position: absolute;
+      top: 0;
+      left: 0;
+      translate: -50% -100%;
+      padding: 4px 10px;
+      font-family: var(--f-display);
+      font-size: var(--t-s);
+      font-weight: 700;
+      line-height: 1.3;
+      white-space: nowrap;
+      will-change: transform, opacity;
+    }
+
+    :global(.js) .tag-sub {
+      color: var(--on-dark);
+      border-bottom: 2px solid var(--orange);
+    }
+
+    :global(.js) .tag-bug {
+      display: grid;
+      color: #fff;
+      background: color-mix(in oklab, #c62a20, var(--good) calc(var(--heal, 0) * 100%));
+    }
+
+    :global(.js) .tag-bug > span {
+      grid-area: 1 / 1;
+    }
+
+    :global(.js) .bug-now {
+      opacity: calc(1 - var(--heal, 0));
+    }
+
+    :global(.js) .bug-fixed {
+      opacity: var(--heal, 0);
+    }
+
+    :global(.js) .bob {
+      transform-box: fill-box;
+      transform-origin: 50% 30%;
+      animation: bob 5.2s ease-in-out infinite alternate;
+    }
+
+    :global(.js) .ice-tip,
     :global(.js) .ice-mass {
-      opacity: calc(0.28 + var(--p, 0) * 0.72);
+      transition: opacity 200ms linear;
     }
 
-    :global(.js) .ice-tip {
-      opacity: calc(1 - var(--p, 0) * 0.35);
+    :global(.js) .copy {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: block;
+      padding: 0;
     }
 
-    :global(.js) [data-depth] {
-      /* Dim enough to read as not-yet-reached, light enough to keep 4.5:1 on the water. */
-      opacity: 0.52;
-      transform: translate3d(0, 18px, 0);
-      transition: opacity 600ms cubic-bezier(0.2, 0.7, 0.2, 1), transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    /* The opening: the things you can see are callouts pinned to the tip, popping in one by one, while the
+       title sits on the waterline and sinks, wavering where it is under water. The script places all of it.
+       The "what you see" heading stays for screen readers only. */
+    :global(.js) .above {
+      position: absolute;
+      inset: 0;
+      max-width: none;
+      min-height: 0;
+      padding: 0;
+      background: none;
+      opacity: var(--ao, 1);
     }
 
-    :global(.js) [data-depth].is-lit {
-      opacity: 1;
-      transform: none;
+    :global(.js) .above h2,
+    :global(.js) .title-under {
+      position: absolute;
+      top: 0;
+      left: var(--ax, 54vw);
+      right: var(--m);
+      margin: 0;
+      will-change: transform, clip-path;
+    }
+
+    :global(.js) .title-under {
+      display: block;
+      font-family: var(--f-display);
+      font-size: var(--t-l);
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--ice-light);
+      text-wrap: balance;
+      filter: url(#iceberg-ripple);
+      opacity: 0.9;
+    }
+
+    :global(.js) .title-under span {
+      white-space: nowrap;
+    }
+
+    :global(.js) .above h3 {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    :global(.js) .above li {
+      --gap: 30px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: max-content;
+      max-width: var(--fit, 260px);
+      padding: 10px 16px;
+      font-family: var(--f-display);
+      font-size: clamp(15px, 1.45vw, 21px);
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--ink);
+      background: var(--paper);
+      box-shadow: 0 10px 30px -12px rgb(30 34 53 / 0.45);
+      opacity: var(--pop, 0);
+      scale: calc(0.7 + 0.3 * var(--pop, 0));
+      translate: var(--gap) -50%;
+      transform-origin: 0 50%;
+      will-change: transform, opacity;
+    }
+
+    :global(.js) .above li::after {
+      content: ' \2713';
+      color: var(--orange-deep);
+      font-weight: 800;
+    }
+
+    /* The leader: a line from the pill back to a dot on the tip. */
+    :global(.js) .above li::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 100%;
+      width: var(--gap);
+      height: 10px;
+      translate: 0 -50%;
+      background:
+        radial-gradient(circle 5px at 5px 50%, var(--paper) 96%, transparent),
+        linear-gradient(var(--paper), var(--paper)) 0 50% / 100% 2px no-repeat;
+    }
+
+    :global(.js) .above li.to-left {
+      translate: calc(-100% - var(--gap)) -50%;
+      transform-origin: 100% 50%;
+    }
+
+    :global(.js) .above li.to-left::before {
+      right: auto;
+      left: 100%;
+      background:
+        radial-gradient(circle 5px at calc(100% - 5px) 50%, var(--paper) 96%, transparent),
+        linear-gradient(var(--paper), var(--paper)) 0 50% / 100% 2px no-repeat;
+    }
+
+    :global(.js) .below {
+      position: absolute;
+      inset: 0;
+      max-width: none;
+      padding: 0;
+      background: none;
+    }
+
+    :global(.js) .label {
+      position: absolute;
+      top: var(--ly, 50svh);
+      left: var(--lx, var(--m));
+      width: var(--lw, 20vw);
+      opacity: calc(var(--ti, 0) * (1 - var(--finale, 0))); /* steps aside for the sub in the 3D finale */
+      transform: translate3d(0, -50%, 0);
+    }
+
+    :global(.js) .label h3 {
+      margin-bottom: 8px;
+    }
+
+    :global(.js) .count {
+      display: block;
+      color: var(--orange);
+      font-size: var(--t-s);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    :global(.js) .track {
+      --link: 9svh;
+      position: absolute;
+      top: 0;
+      left: var(--tx, 66vw);
+      width: var(--tw, 30vw);
+      will-change: transform;
+    }
+
+    :global(.js) .track ul {
+      margin: 0;
+    }
+
+    /* In motion the boxes wander off the column, so the straight links give way to the drawn route. */
+    :global(.js) .track [data-depth] {
+      z-index: 1;
+      width: var(--bw, 100%);
+      margin-left: var(--x, 0);
+      will-change: opacity;
+      box-shadow: 0 0 0 calc(var(--on, 0) * 6px) rgb(229 110 63 / 0.22);
+    }
+
+    :global(.js) .track [data-depth]::before {
+      display: none;
+    }
+
+    :global(.js) .track li {
+      border-color: color-mix(in oklab, var(--tone), var(--orange) calc(var(--on, 0) * 100%));
+      background: color-mix(in oklab, var(--night-2), var(--orange) calc(var(--on, 0) * 14%));
+    }
+
+    :global(.js) .route {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow: visible;
+      fill: none;
+      stroke-linecap: round;
+    }
+
+    :global(.js) .route-ahead {
+      stroke: rgb(229 110 63 / 0.55);
+      stroke-width: 2;
+      stroke-dasharray: 1 9;
+    }
+
+    :global(.js) .route-done {
+      stroke: var(--orange);
+      stroke-width: 3;
+    }
+
+    :global(.js) .route-probe {
+      visibility: hidden;
+    }
+
+    /* The explorer: a lit hull with sonar rings rolling off it. */
+    :global(.js) .sub {
+      display: block;
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      width: 16px;
+      height: 16px;
+      margin: -8px 0 0 -8px;
+      border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 0 0 3px var(--night), 0 0 18px 4px rgb(229 110 63 / 0.55);
+      will-change: transform;
+    }
+
+    :global(.js) .sub::before,
+    :global(.js) .sub::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid var(--orange);
+      border-radius: 50%;
+      animation: ping 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
+    }
+
+    :global(.js) .sub::after {
+      animation-delay: 1.2s;
+    }
+
+    :global(.js) .focus-line {
+      position: absolute;
+      z-index: 2;
+      left: 0;
+      top: 0;
+      height: 2px;
+      transform-origin: 0 50%;
+      background: linear-gradient(90deg, var(--on-dark), var(--orange));
+      pointer-events: none;
+    }
+
+    :global(.js) .focus-line::before {
+      content: '';
+      position: absolute;
+      left: -6px;
+      top: -5px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--on-dark);
+      box-shadow: 0 0 0 6px rgb(242 241 238 / 0.18);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1000px) {
+    :global(.js) .focus-line {
+      display: block;
     }
   }
 
@@ -239,53 +653,330 @@
       grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     }
 
-    .below ul {
-      gap: 5svh;
-    }
-  }
-
-  @media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
-    :global(.js) .chapter.iceberg {
-      height: 340svh;
-    }
-
-    :global(.js) .world {
-      height: 260svh;
+    .track {
+      --link: 5svh;
     }
   }
 </style>
 
 <script>
+  import type { IcebergGL, View } from '../../scripts/iceberg-gl'
+
   const section = document.querySelector<HTMLElement>('[data-iceberg]')
   const calm = matchMedia('(prefers-reduced-motion: reduce)')
   if (section && !calm.matches) {
-    const marks = [...section.querySelectorAll<HTMLElement>('[data-depth]')]
-    const world = section.querySelector<HTMLElement>('.world')!
-    const ice = section.querySelector<SVGElement>('.ice')!
-    const closing = section.querySelector<HTMLElement>('.closing')!
-    // The dive ends when the iceberg's base and the closing line sit in the lower part of the screen.
-    const measure = () => {
-      const end = Math.max(ice.getBoundingClientRect().bottom, closing.getBoundingClientRect().bottom) - world.getBoundingClientRect().top
-      section.style.setProperty('--travel', `${Math.max(0, end + innerHeight * 0.12 - innerHeight)}px`)
+    const scene = section.querySelector<HTMLElement>('.scene')!
+    const ice = section.querySelector<SVGSVGElement>('.ice')!
+    const tip = ice.querySelector<SVGGElement>('.ice-tip')!
+    const mass = ice.querySelector<SVGGElement>('.ice-mass')!
+    const track = section.querySelector<HTMLElement>('.track')!
+    const stops = [...track.querySelectorAll<HTMLElement>('[data-depth]')]
+    const count = section.querySelector<HTMLElement>('.count')!
+    const line = section.querySelector<HTMLElement>('.focus-line')!
+    const route = track.querySelector<SVGSVGElement>('.route')!
+    const ahead = route.querySelector<SVGPathElement>('.route-ahead')!
+    const done = route.querySelector<SVGPathElement>('.route-done')!
+    const probe = route.querySelector<SVGPathElement>('.route-probe')!
+    const sub = track.querySelector<HTMLElement>('.sub')!
+    const tagSub = section.querySelector<HTMLElement>('.tag-sub')!
+    const tagBug = section.querySelector<HTMLElement>('.tag-bug')!
+    // The opening's pieces: the title above the water, its wavering copy below it, and the callouts on the tip.
+    const title = section.querySelector<HTMLElement>('.above h2')!
+    const under = section.querySelector<HTMLElement>('.title-under')!
+    const callouts = [...section.querySelectorAll<HTMLElement>('.above li')]
+    const canvas = section.querySelector<HTMLCanvasElement>('.gl')!
+    let gl: IcebergGL | null = null
+    const lines = track.querySelectorAll('li').length
+    const last = stops.length - 1
+
+    // Scroll beats: callouts pop onto the tip and the title starts to sink until HOLD, the camera pulls back until
+    // SETTLE, then steps through the stops until END. The BoromTech sub dives along, and repairs the bug at the end.
+    const HOLD = 0.16
+    const SETTLE = 0.38
+    const END = 0.86
+    const clamp = (v: number, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v))
+    const smooth = (t: number) => t * t * (3 - 2 * t)
+    const mix = (a: number, b: number, t: number) => a + (b - a) * t
+    const pad = (n: number) => String(n).padStart(2, '0')
+    // How far each box drifts right of the route's lane, as a share of the room the column leaves.
+    const WANDER = [0.15, 0.8, 0.35, 1, 0.05, 0.65, 0.4]
+
+    // Where each callout pins to the tip (world units: x across, y up from the waterline) and which way it reads.
+    // On phones there is only room to the right of the tip.
+    const PINS = {
+      wide: [[-0.55, 1.6, -1], [0.7, 0.8, 1]],
+      narrow: [[0.35, 1.9, 1], [0.8, 0.85, 1]],
     }
-    let queued = false
-    const update = () => {
-      queued = false
+    // Overshoots a little and settles, so a callout pops rather than fades.
+    const spring = (t: number) => 1 + 2.7 * (t - 1) ** 3 + 1.7 * (t - 1) ** 2
+
+    // The opening: the callouts pop onto the tip one by one, then the title, sitting on the waterline, sinks.
+    // What is above the water shows the title as it is; what is under it shows the wavering copy.
+    const opening = (p: number, shot: Shot, k: number, wl: number) => {
+      const o = clamp(p / HOLD)
+      const pins = L.wide ? PINS.wide : PINS.narrow
+      callouts.forEach((el, i) => {
+        const [x, y, side] = pins[i % pins.length]
+        const at = gl ? gl.project(x, y, 0.4) : { x: shot.x + x * k, y: shot.y - y * k }
+        el.classList.toggle('to-left', side < 0)
+        el.style.transform = `translate3d(${at.x}px, ${at.y}px, 0)`
+        el.style.setProperty('--fit', `${Math.max(120, side < 0 ? at.x - 30 - L.m : innerWidth - L.m - at.x - 30)}px`)
+        el.style.setProperty('--pop', String(spring(clamp((o - 0.1 - i * 0.26) / 0.16))))
+      })
+      const sink = smooth(clamp((p - HOLD * 0.62) / (HOLD * 0.38 + (SETTLE - HOLD) * 0.5)))
+      const h = title.offsetHeight
+      const top = wl - h * mix(0.8, -0.35, sink)
+      const dry = clamp(wl - top, 0, h) // how much of the title is still above the water
+      title.style.transform = under.style.transform = `translate3d(0, ${top}px, 0)`
+      title.style.clipPath = `inset(0 0 ${h - dry}px 0)`
+      under.style.clipPath = `inset(${dry}px 0 -24px 0)`
+    }
+
+    // A shot is a scale plus where the tip's base centre (the waterline point at 300,270) lands on screen.
+    type Shot = { s: number; x: number; y: number }
+
+    const frame = () => {
+      const vw = innerWidth
+      const vh = scene.clientHeight
+      const m = clamp(vw * 0.024, 16, 36)
+      const wide = vw >= 1000
+      const W = wide ? Math.min(vw * 0.42, 620) : Math.min(vw * 0.6, 360)
+      const H = W * 1.5
+      const close: Shot = wide
+        ? { s: (vh * 0.62) / (H * 0.3), x: vw * 0.27, y: vh * 0.74 }
+        : { s: (vh * 0.34) / (H * 0.3), x: vw * 0.32, y: vh * 0.62 }
+      const cx = vw * (wide ? 0.42 : 0.5)
+      const gap = wide ? vw * 0.04 : 0
+      const bergW = wide ? Math.min(vw * 0.36, 2 * (vw - m - Math.max(340, vw * 0.3) - gap - cx)) : Math.min(vw * 0.5, vh * 0.26)
+      const trackX = wide ? cx + bergW / 2 + gap : m
+      return {
+        vh, m, wide, W, H, close, cx, bergW, trackX,
+        s: bergW / W,
+        colW: vw - m - trackX,
+        bulge: wide ? 36 : 22, // how far the route swings out to the left between boxes
+        cut: vh * (wide ? 0.5 : 0.2), // where the focus line crosses the berg
+        read: vh * (wide ? 0.5 : 0.67), // where the line being read sits
+        centres: [] as number[],
+        lens: [] as number[], // route length from the surface to each box
+        vars: {
+          '--ax': `${wide ? vw * 0.54 : m}px`,
+          '--tx': `${trackX}px`,
+          '--tw': `${vw - m - trackX}px`,
+          '--lx': `${m}px`,
+          '--lw': `${wide ? cx - bergW / 2 - gap - m : vw - 2 * m}px`,
+          '--ly': `${vh * (wide ? 0.5 : 0.48)}px`,
+        },
+      }
+    }
+
+    let L = frame()
+    const measure = () => {
+      L = frame()
+      for (const [k, v] of Object.entries(L.vars)) section.style.setProperty(k, v)
+      ice.style.width = `${L.W}px`
+      ice.style.height = `${L.H}px`
+      gl?.resize(innerWidth, L.vh)
+
+      const bw = L.colW * (L.wide ? 0.7 : 0.8)
+      const b = L.bulge
+      stops.forEach((el, k) => {
+        el.style.setProperty('--bw', `${bw}px`)
+        el.style.setProperty('--x', `${b + WANDER[k % WANDER.length] * Math.max(0, L.colW - bw - b)}px`)
+      })
+
+      // The route docks at the middle of each box's left edge. It drops in from above the first box,
+      // then between boxes swings out to the left and back, like a sub feeling its way down.
+      const pts = stops.map((el) => ({ x: el.offsetLeft, y: el.offsetTop + el.offsetHeight / 2 }))
+      L.centres = pts.map((pt) => pt.y)
+      const [first] = pts
+      const legs = [`M ${first.x - b / 2} ${first.y - L.vh * 0.14} C ${first.x - b} ${first.y - L.vh * 0.07} ${first.x - b} ${first.y} ${first.x} ${first.y}`]
+      for (let k = 1; k < pts.length; k++) {
+        const a = pts[k - 1]
+        const z = pts[k]
+        const dy = z.y - a.y
+        legs.push(` C ${a.x - b} ${a.y + dy * 0.35} ${z.x - b} ${z.y - dy * 0.35} ${z.x} ${z.y}`)
+      }
+      let sofar = ''
+      L.lens = legs.map((leg) => {
+        sofar += leg
+        probe.setAttribute('d', sofar)
+        return probe.getTotalLength()
+      })
+      ahead.setAttribute('d', sofar)
+      done.setAttribute('d', sofar)
+      done.style.strokeDasharray = `${L.lens[last]} ${L.lens[last]}`
+      route.setAttribute('width', String(Math.max(0, L.colW)))
+      route.setAttribute('height', String(track.offsetHeight))
+    }
+
+    // Each stop looks a little deeper into the berg, from just under the waterline to near its base.
+    const depth = (f: number): Shot => {
+      const d = mix(0.4, 0.9, f / last)
+      return { s: L.s, x: L.cx, y: L.cut - (d - 0.3) * L.H * L.s }
+    }
+
+    let shown = ''
+    const render = (p: number, now = performance.now()) => {
+      let shot: Shot
+      let f = 0
+      const pull = smooth(clamp((p - HOLD) / (SETTLE - HOLD)))
+      if (p < SETTLE) {
+        const a = L.close
+        const b = depth(0)
+        shot = { s: Math.exp(mix(Math.log(a.s), Math.log(b.s), pull)), x: mix(a.x, b.x, pull), y: mix(a.y, b.y, pull) }
+      } else {
+        // Ease between stops so each line holds still for a moment before the next one slides in.
+        const u = clamp((p - SETTLE) / (END - SETTLE)) * last
+        const i = Math.min(Math.floor(u), last - 1)
+        f = i + smooth(clamp((u - i - 0.2) / 0.6))
+        shot = depth(f)
+      }
+
+      const x = shot.x - 0.5 * L.W * shot.s
+      const y = shot.y - 0.3 * L.H * shot.s
+      ice.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${shot.s})`
+      tip.style.opacity = String(mix(1, 0.75, pull))
+      mass.style.opacity = String(mix(0.28, 1, pull))
+
+      const out = smooth(clamp((p - HOLD) / ((SETTLE - HOLD) * 0.6)))
+      const into = smooth(clamp((p - mix(HOLD, SETTLE, 0.35)) / ((SETTLE - HOLD) * 0.6)))
+
+      // The 3D camera frames the same shot. It looks at the depth being read (screen position follows from
+      // the 2D framing), swings round the berg as it pulls back, and keeps orbiting slowly on the way down.
+      const k = (L.W * shot.s) / 6
+      const deep = p < SETTLE ? mix(0.3, 0.4, pull) : mix(0.4, 0.9, f / last)
+      const ty = -(deep - 0.3) * 9
+      const view: View = {
+        k,
+        x: shot.x,
+        y: shot.y - ty * k,
+        ty,
+        // In the finale the camera swings back toward the side the sub comes from.
+        az: p < SETTLE ? mix(-0.35, 0.1, pull) : 0.1 + (0.4 * f) / last - smooth(clamp(f - (last - 1))) * (L.wide ? 0.75 : 0.1),
+        lift: p < SETTLE ? mix(0.16, 0.7, pull) : mix(0.7, 2.2, f / last),
+        swim: p < SETTLE ? into : 1,
+        finale: p < SETTLE ? 0 : clamp(f - (last - 1)),
+        fix: clamp((p - END) / (1 - END)),
+      }
+      gl?.draw(view, now)
+      const focus = gl ? gl.project(0, ty, 0) : { x: L.cx, y: L.cut }
+      if (gl) {
+        const at = gl.tags()
+        tagSub.style.transform = `translate3d(${at.sub.x}px, ${at.sub.y}px, 0)`
+        tagBug.style.transform = `translate3d(${at.bug.x}px, ${at.bug.y}px, 0)`
+        tagSub.style.opacity = String(smooth(clamp((view.swim - 0.5) / 0.4)))
+        tagBug.style.opacity = String(smooth(clamp((view.finale - 0.7) / 0.3)))
+        // Matches the moment the crack closes in the 3D scene.
+        section.style.setProperty('--heal', String(smooth(clamp((view.fix - 0.55) / 0.3))))
+        section.style.setProperty('--finale', String(L.wide ? smooth(view.finale) : 0))
+      }
+
+      const wl = gl ? gl.project(0, 0, 0).y : shot.y
+      section.style.setProperty('--wl', `${wl}px`)
+      section.style.setProperty('--ao', String(1 - out))
+      opening(p, shot, k, wl)
+      section.style.setProperty('--ti', String(into))
+
+      const i = Math.min(Math.floor(f), last - 1)
+      const centre = mix(L.centres[i], L.centres[i + 1], f - i)
+      const trackY = L.read - centre + (1 - into) * L.vh * 0.25
+      track.style.transform = `translate3d(0, ${trackY}px, 0)`
+
+      // The sub dives in from above as the list arrives, then runs the route from box to box.
+      const run = mix(L.lens[i], L.lens[i + 1], f - i) * (p < SETTLE ? into : 1)
+      const at = done.getPointAtLength(run)
+      done.style.strokeDashoffset = String(L.lens[last] - run)
+      sub.style.transform = `translate3d(${at.x}px, ${at.y}px, 0)`
+      sub.style.opacity = String(into)
+      // The route starts at the surface. On phones the trail above the sub would also cross the label,
+      // so there it is cut just above the box before.
+      const top = Math.max(wl - trackY, L.wide ? -Infinity : centre - L.vh * 0.1)
+      route.style.maskImage = `linear-gradient(transparent ${top}px, #000 ${top + 40}px)`
+      route.style.opacity = String(into)
+
+      stops.forEach((el, k) => {
+        const away = k - f
+        const near = Math.min(1, Math.abs(away))
+        // Boxes already passed trail off up the chain (on phones they would cover the label, so they go sooner).
+        // Boxes still ahead keep their box but dim their text to 56%, which still holds 4.5:1.
+        const fade = away <= 0 ? clamp(1 + away * (L.wide ? 0.75 : 1.4)) : 1
+        el.style.opacity = String(fade * into)
+        el.style.setProperty('--o', String(1 - 0.44 * Math.min(1, Math.max(0, away))))
+        el.style.setProperty('--on', String(1 - near))
+      })
+
+      const label = `${pad(Math.min(lines, Math.round(f) + 1))} / ${pad(lines)}`
+      if (label !== shown) count.textContent = shown = label
+      if (L.wide) {
+        // A tether from the berg to the sub, wherever the sub is on its route.
+        const dx = L.trackX + at.x - focus.x
+        const dy = trackY + at.y - focus.y
+        line.style.width = `${Math.hypot(dx, dy)}px`
+        line.style.transform = `translate3d(${focus.x}px, ${focus.y - 1}px, 0) rotate(${Math.atan2(dy, dx)}rad)`
+        line.style.opacity = String(into)
+      }
+    }
+
+    // The camera chases the scroll position, so wheel steps glide instead of jump, and settles on fast scrolls too.
+    const target = () => {
       const rect = section.getBoundingClientRect()
-      const travel = rect.height - innerHeight
-      const p = Math.min(1, Math.max(0, -rect.top / travel))
-      section.style.setProperty('--p', p.toFixed(4))
-      const line = innerHeight * 0.9
-      for (const mark of marks) mark.classList.toggle('is-lit', mark.getBoundingClientRect().top < line)
+      return clamp(-rect.top / (rect.height - L.vh))
+    }
+    let p = 0
+    let raf = 0
+    // The 3D scene loads once the chapter is within a couple of screens. While it is actually on screen the sea
+    // and the snow keep moving, so frames run even with no scrolling.
+    const nearby = () => {
+      const rect = section.getBoundingClientRect()
+      return rect.bottom > -innerHeight && rect.top < innerHeight * 2
+    }
+    const onScreen = () => {
+      const rect = section.getBoundingClientRect()
+      return rect.bottom > 0 && rect.top < innerHeight
+    }
+    const live = () => gl !== null && onScreen() && document.visibilityState === 'visible'
+    const tick = (now: number) => {
+      const goal = target()
+      p += (goal - p) * 0.14
+      if (Math.abs(goal - p) < 0.0004) p = goal
+      render(p, now)
+      raf = p === goal && !live() ? 0 : requestAnimationFrame(tick)
     }
     const queue = () => {
-      if (queued) return
-      queued = true
-      requestAnimationFrame(update)
+      if (nearby()) load()
+      if (!raf) raf = requestAnimationFrame(tick)
     }
+    const reset = () => {
+      measure()
+      p = target()
+      render(p)
+      if (nearby()) load()
+    }
+
+    // The 3D scene loads only when the chapter comes near, and only where WebGL works; otherwise the SVG stays.
+    const webgl = () => {
+      const test = document.createElement('canvas')
+      return Boolean(test.getContext('webgl2') || test.getContext('webgl'))
+    }
+    let loading = false
+    function load() {
+      if (loading) return
+      loading = true
+      if (!webgl()) return
+      import('../../scripts/iceberg-gl')
+        .then(({ mountIceberg }) => {
+          gl = mountIceberg(canvas, { wide: L.wide })
+          section.classList.add('has-gl')
+          reset()
+          queue()
+        })
+        .catch(() => section.classList.remove('has-gl'))
+    }
+
     addEventListener('scroll', queue, { passive: true })
-    addEventListener('resize', () => { measure(); queue() })
-    measure()
-    update()
+    addEventListener('resize', reset)
+    document.addEventListener('visibilitychange', queue)
+    reset()
+    document.fonts.ready.then(reset)
   }
 </script>

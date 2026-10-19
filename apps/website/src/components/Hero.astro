@@ -1,22 +1,28 @@
 ---
+import { useLocale } from '../i18n'
+import LangSwitch from './LangSwitch.astro'
+
+const { t } = useLocale(Astro.currentLocale)
+const [line1, line2] = t.hero.title
 ---
 
 <header class="nav">
   <a class="wordmark" href="#top">BoromTech</a>
-  <nav aria-label="เมนูหลัก">
-    <a class="link" href="#cases">งานที่เรารับ</a>
-    <a class="link" href="#process">โปรเซส</a>
-    <a class="link" href="#team">ทีม</a>
-    <a class="link" href="#faq">คำถาม</a>
+  <nav aria-label={t.nav.label}>
+    <a class="link" href="#cases">{t.nav.cases}</a>
+    <a class="link" href="#process">{t.nav.process}</a>
+    <a class="link" href="#team">{t.nav.team}</a>
+    <a class="link" href="#faq">{t.nav.faq}</a>
   </nav>
-  <a class="button button-small" href="#contact">นัดออดิต</a>
+  <LangSwitch />
+  <a class="button button-small" href="#contact">{t.nav.cta}</a>
 </header>
 
 <section class="chapter hero" aria-labelledby="hero-title">
   <svg class="seal" viewBox="0 0 1000 1000" aria-hidden="true"><circle cx="500" cy="500" r="400"></circle></svg>
   <div class="hero-copy">
-    <h1 id="hero-title" class="xl">เอไอใครๆก็ทำได้<br />แต่ใครจะดูแล</h1>
-    <p class="lede">เคยทำโปรเจกต์แพงๆ แล้วใช้ไม่ได้จริงไหม? ยุคนี้ใครก็สร้างซอฟต์แวร์ได้ แต่การทำให้เสถียรและมีคนรับผิดชอบตอนระบบมีปัญหาคืออีกเรื่อง เรารับช่วงต่อและดูแลทั้งงานเล็กและใหญ่ พร้อมการันตีและราคาที่ชัดเจนตั้งแต่วันแรก</p>
-    <a class="button" href="#contact">นัดออดิตซิสเต็ม</a>
+    <h1 id="hero-title" class="xl"><span class="line">{line1}</span> <span class="line">{line2}</span></h1>
+    <p class="lede">{t.hero.lede}</p>
+    <a class="button" href="#contact">{t.hero.cta}</a>
   </div>
 </section>

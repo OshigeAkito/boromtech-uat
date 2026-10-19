@@ -1,23 +1,47 @@
 ---
-import { Picture } from 'astro:assets'
-import bench from '../assets/photos/restoration-bench.jpg'
-import { faqs } from '../data/site'
+import { useLocale } from '../i18n'
+
+const { t } = useLocale(Astro.currentLocale)
+
+// What is in place before any work starts, drawn as the documents themselves: an NDA, the 5-day audit plan and
+// a fixed-price quote. They read as the real documents do, in English, like the samples in the showcase.
+const days = ['Discovery', 'Codebase', 'Data', 'Infra', 'Report']
 ---
 
 <section class="chapter faq" id="faq" aria-labelledby="faq-title">
   <div class="faq-head">
-    <h2 id="faq-title" class="l reveal">ก่อนเริ่มงาน</h2>
-    <Picture
-      src={bench}
-      formats={['avif', 'webp']}
-      widths={[480, 800, 1200, 1600]}
-      sizes="(max-width: 900px) 92vw, 38vw"
-      alt="แผงวงจรคอมพิวเตอร์เก่าบนโต๊ะรีสโตร์ ข้างแหนบ แว่นขยาย และหัวแร้ง ใต้แสงโคมไฟอุ่น"
-      loading="lazy"
-    />
+    <h2 id="faq-title" class="l reveal">{t.faq.title}</h2>
+    <div class="docs" aria-hidden="true">
+      <div class="doc doc-nda">
+        <div class="doc-head"><strong>BoromTech</strong><span>NDA · BT-N-0412</span></div>
+        <p class="doc-title">Mutual Non-Disclosure Agreement</p>
+        <p class="doc-line">Executed before any repository or server access</p>
+        <div class="doc-sign">
+          <svg viewBox="0 0 120 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 22c8-14 14-16 12-4s6 8 12-4 8-6 8 2 10 4 16-6 6 0 10 6 12-2 18-4" /></svg>
+          <span>Signed · 2 Nov 2026</span>
+        </div>
+      </div>
+      <div class="doc doc-audit">
+        <div class="doc-head"><strong>BoromTech</strong><span>Audit Plan · BT-A-0412</span></div>
+        <p class="doc-title">5-Day System Audit</p>
+        <ol class="doc-days">
+          {days.map((day, i) => <li><b>D{i + 1}</b>{day}</li>)}
+        </ol>
+      </div>
+      <div class="doc doc-quote">
+        <div class="doc-head"><strong>BoromTech</strong><span>Quotation · BT-Q-0412</span></div>
+        <p class="doc-title">Fixed-Price Quotation</p>
+        <dl class="doc-terms">
+          <div><dt>Scope</dt><dd>Work items BT-104 to BT-115</dd></div>
+          <div><dt>Price</dt><dd>Fixed, agreed before work starts</dd></div>
+          <div><dt>Validity</dt><dd>30 days</dd></div>
+        </dl>
+        <span class="doc-stamp">Fixed price</span>
+      </div>
+    </div>
   </div>
   {
-    faqs.map(({ q, a }) => (
+    t.faq.items.map(({ q, a }) => (
       <div class="qa">
         <h3>{q}</h3>
         <p>{a}</p>
@@ -25,3 +49,158 @@ import { faqs } from '../data/site'
     ))
   }
 </section>
+
+<style>
+  /* Three cards fanned on the orange band, each header left showing, the quote on top. */
+  .docs {
+    grid-column: 7 / span 6;
+    position: relative;
+    height: clamp(380px, 37vw, 500px);
+  }
+
+  .doc {
+    position: absolute;
+    width: 74%;
+    min-height: 52%;
+    padding: 22px 26px 26px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--f-text);
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0 24px 48px -24px rgb(30 34 53 / 0.55), 0 2px 6px rgb(30 34 53 / 0.12);
+  }
+
+  .doc-nda {
+    top: 0;
+    left: 0;
+    rotate: -5deg;
+  }
+
+  .doc-audit {
+    top: 22%;
+    left: 9%;
+    rotate: 2deg;
+  }
+
+  .doc-quote {
+    top: 44%;
+    left: 18%;
+    rotate: -1.5deg;
+  }
+
+  .doc-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #e6e3df;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .doc-head strong {
+    font: 800 15px/1 var(--f-display);
+    color: var(--ink);
+  }
+
+  .doc-title {
+    margin: 0 0 8px;
+    font: 700 clamp(17px, 1.5vw, 21px)/1.25 var(--f-display);
+  }
+
+  .doc-line {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .doc-sign {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+    color: var(--muted);
+  }
+
+  .doc-sign svg {
+    width: 96px;
+    color: var(--ink);
+  }
+
+  .doc-days {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .doc-days li {
+    display: grid;
+    gap: 6px;
+    padding-top: 8px;
+    border-top: 4px solid var(--orange);
+  }
+
+  .doc-days b {
+    color: var(--ink);
+  }
+
+  .doc-terms {
+    display: grid;
+    gap: 6px;
+    margin: 12px 0 0;
+  }
+
+  .doc-terms div {
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    gap: 8px;
+  }
+
+  .doc-terms dt {
+    color: var(--muted);
+  }
+
+  .doc-terms dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .doc-stamp {
+    position: absolute;
+    right: 22px;
+    bottom: 18px;
+    padding: 4px 10px;
+    border: 2px solid var(--orange-deep);
+    color: var(--orange-deep);
+    font: 800 12px/1.2 var(--f-display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    rotate: -8deg;
+  }
+
+  @media (max-width: 900px) {
+    .docs {
+      height: 400px;
+    }
+
+    .doc {
+      width: 84%;
+      padding: 18px 20px 22px;
+    }
+
+    .doc-audit {
+      left: 6%;
+    }
+
+    .doc-quote {
+      left: 12%;
+      padding-bottom: 56px; /* room for the stamp below the terms */
+    }
+  }
+</style>

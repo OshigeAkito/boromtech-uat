@@ -20,11 +20,12 @@ const seen = new IntersectionObserver(
 document.querySelectorAll('.reveal, .stages, .blocks').forEach((el) => seen.observe(el))
 document.querySelectorAll('.shutter').forEach((el) => seen.observe(el.parentElement))
 
-const mailto = (subject, body) => `mailto:${send.dataset.mail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-
 const boxes = [...document.querySelectorAll('#symptoms input')]
 const verdictLine = document.getElementById('verdict-line')
 const send = document.getElementById('verdict-send')
+
+// Per-locale wording comes from data attributes on the page; {n} and {symptoms} are filled here.
+const mailto = (subject, body) => `mailto:${send.dataset.mail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 
 function updateVerdict() {
   const picked = boxes.filter((b) => b.checked).map((b) => b.closest('label').querySelector('.symptom').textContent)
@@ -33,8 +34,8 @@ function updateVerdict() {
     send.href = '#contact'
     return
   }
-  verdictLine.textContent = `${picked.length} อาการ · ออดิต 5 วันทำการ ครอบคลุมทั้งหมดที่คุณเลือก พร้อมใบเสนอราคาฟิกซ์ไพรซ์ก่อนเริ่มงาน`
-  send.href = mailto('นัดออดิตซิสเต็ม', `สวัสดีครับ/ค่ะ\n\nซิสเต็มของเรามีอาการดังนี้\n${picked.map((p) => `• ${p}`).join('\n')}\n\nชื่อซิสเต็ม / โปรเจกต์:\nเทคโนโลยีที่ใช้ (ถ้าทราบ):\nเบอร์ติดต่อ:\n`)
+  verdictLine.textContent = verdictLine.dataset.picked.replace('{n}', picked.length)
+  send.href = mailto(send.dataset.subject, send.dataset.body.replace('{symptoms}', picked.map((p) => `• ${p}`).join('\n')))
 }
 boxes.forEach((b) => b.addEventListener('change', updateVerdict))
 
@@ -66,3 +67,20 @@ const videos = new IntersectionObserver((entries) => {
   }
 }, { rootMargin: '200px' })
 if (!calm) document.querySelectorAll('video[data-lazy-video]').forEach((v) => videos.observe(v))
+
+// A manual language choice is kept for a year; detection on / (middleware.js, Base.astro) always honours it.
+document.querySelectorAll('a[data-locale]').forEach((a) =>
+  a.addEventListener('click', () => {
+    document.cookie = `lang=${a.dataset.locale}; path=/; max-age=31536000; samesite=lax`
+  }),
+)
+const langMenu = document.querySelector('[data-lang-menu]')
+document.addEventListener('click', (e) => {
+  if (langMenu?.open && !langMenu.contains(e.target)) langMenu.open = false
+})
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && langMenu?.open) {
+    langMenu.open = false
+    langMenu.querySelector('summary').focus()
+  }
+})

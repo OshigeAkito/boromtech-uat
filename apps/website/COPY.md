@@ -5,6 +5,7 @@
 **วิธีอ่าน**
 - รหัสในวงเล็บเหลี่ยม เช่น `[hero.title]` คือชื่ออ้างอิงตอนนำกลับไปใส่ในโค้ด ไม่ต้องแก้รหัส
 - ⚠ = ข้อมูลตัวอย่างที่ต้องยืนยันหรือแก้เป็นข้อมูลจริงก่อนเปิดเว็บ
+- ไฟล์นี้คือต้นฉบับภาษาไทย (หน้า /) ฉบับภาษาอังกฤษ เวียดนาม และจีน อยู่ใน src/i18n/en.ts, vi.ts, zh.ts (หน้า /en/ /vi/ /zh/) แก้ข้อความไทยตรงไหน ให้แก้ฉบับแปลตามด้วย
 - 📏 = ข้อจำกัดความยาว หากยาวเกิน หัวเรื่องจะตกเป็น 3 บรรทัดขึ้นไปและดีไซน์เสีย
 - ตอนนี้ยังไม่แสดงราคาบนเว็บ ถ้าจะใส่ราคาภายหลัง บอกผมได้ เราซ่อนไว้ 3 จุด คือกล่องสรุปในข้อ 5 คำถามเรื่องราคาในข้อ 10 และใบเสนอราคาตัวอย่างในข้อ 8
 
@@ -201,38 +202,42 @@ BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพ
 แท็บใบเสนอราคาถูกซ่อนไว้จนกว่าจะใส่ราคา
 
 [showcase.note]
-ตัวอย่างเอกสารจริงที่คุณได้รับ จากเคสสมมติ ระบบสต็อกสินค้าของบริษัทจัดจำหน่าย
+ตัวอย่างเอกสารจริงที่คุณได้รับ จากผลงานจริง ระบบสต็อกสินค้าของบริษัทจัดจำหน่าย
 
-⚠ เอกสารทั้งหมดเป็นเคสสมมติ
+[showcase.mock] บรรทัดเล็กใต้ข้อความด้านบน แสดงบนมือถือด้วย
+หมายเหตุ: ข้อมูลทั้งหมดเป็น mock up เพื่อรักษาความเป็นส่วนตัวของลูกค้า
+
+⚠ มาจากผลงานจริง แต่ตัวเลขและรายละเอียดในเอกสารทั้งหมดเป็น mock up
+เอกสารตัวอย่างทั้ง 3 ชิ้นเป็นภาษาอังกฤษในทุกภาษาของเว็บ ใช้ศัพท์เทคนิคแบบเอกสารจริง
 
 ### Audit Report
 [sheet.audit.ref] Audit Report · BT-A-0412
-[sheet.audit.title] ระบบสต็อกสินค้า · ตัวอย่าง
-[sheet.audit.meta] ออดิตวันที่ 3–7 พ.ย. 2569 · โค้ด 182,400 บรรทัด · 3 เซิร์ฟเวอร์
-[sheet.audit.severity] วิกฤต 2 · สูง 5 · ปานกลาง 9
-[sheet.audit.1] วิกฤต · รหัสผ่านดาต้าเบสถูกเขียนไว้ในโค้ด และอยู่ในทุกไฟล์แบ็กอัป
-[sheet.audit.2] วิกฤต · ไม่มีแบ็กอัปอัตโนมัติ ข้อมูลล่าสุดที่กู้ได้คือ 41 วันก่อน
-[sheet.audit.3] สูง · PHP 5.6 หมดซัพพอร์ตด้านความปลอดภัยตั้งแต่สิ้นปี 2561
-[sheet.audit.4] สูง · รีพอร์ตยอดขายปัดเศษก่อนรวมยอด ทำให้ยอดรวมคลาดเคลื่อน
-[sheet.audit.5] สูง · ซอร์สโค้ดบนเซิร์ฟเวอร์ใหม่กว่าใน repository เดิม 7 เดือน
+[sheet.audit.title] Inventory Management System · Sample Engagement
+[sheet.audit.meta] Assessment window 3–7 Nov 2026 · 182,400 LOC · 3 production hosts
+[sheet.audit.severity] Critical 2 · High 5 · Medium 9
+[sheet.audit.1] Critical · Hard-coded database credentials committed to source and replicated across every backup artifact
+[sheet.audit.2] Critical · No automated backup policy. Effective RPO is 41 days, the age of the last restorable snapshot
+[sheet.audit.3] High · Runtime is PHP 5.6, end-of-life with no security patches since December 2018
+[sheet.audit.4] High · Sales reporting rounds before aggregation, introducing cumulative variance in totals
+[sheet.audit.5] High · Configuration drift: production source is 7 months ahead of the version-controlled repository
 
 ### Weekly Update
-[sheet.weekly.ref] Weekly Update · สัปดาห์ 3 จาก 6
-[sheet.weekly.title] คืบหน้า 7 จาก 12 ทาสก์
-[sheet.weekly.1] ตรวจแล้ว · รีคัฟเวอร์ซอร์สโค้ดจากเซิร์ฟเวอร์
-[sheet.weekly.2] ตรวจแล้ว · ย้ายรหัสผ่านออกจากโค้ด
-[sheet.weekly.3] ตรวจแล้ว · แบ็กอัปอัตโนมัติทุกคืน 02:00
-[sheet.weekly.4] รอตรวจ · แก้การปัดเศษในรีพอร์ตยอดขาย
-[sheet.weekly.5] กำลังทำ · อัปเกรดโมดูลสต็อกเป็น PHP 8.3
-[sheet.weekly.next] สัปดาห์หน้า: อัปเกรดโมดูลออร์เดอร์ และทดสอบกับยอดขายเดือนตุลาคม
+[sheet.weekly.ref] Weekly Update · Sprint 3 of 6
+[sheet.weekly.title] 7 of 12 work items closed
+[sheet.weekly.1] Verified · Recover production source and re-baseline it in Git
+[sheet.weekly.2] Verified · Migrate credentials out of code into a managed secrets store
+[sheet.weekly.3] Verified · Automated nightly backups at 02:00, with a tested restore
+[sheet.weekly.4] In review · Fix the rounding defect in sales aggregation
+[sheet.weekly.5] In progress · Upgrade the inventory module to PHP 8.3
+[sheet.weekly.next] Next sprint: upgrade the orders module and run regression tests against October sales data.
 
 ### Warranty
 [sheet.warranty.ref] Warranty · BT-W-0412
-[sheet.warranty.title] การันตี 90 วัน
-[sheet.warranty.scope] ครอบคลุม · ทาสก์ BT-104 ถึง BT-115 ทั้ง 12 รายการ
-[sheet.warranty.start] เริ่ม · 1 ธ.ค. 2569
-[sheet.warranty.end] สิ้นสุด · 1 มี.ค. 2570
-[sheet.warranty.terms] ⚠ เงื่อนไข · ปัญหาที่เกิดจากงานของ BoromTech แก้ไขโดยไม่มีค่าใช้จ่าย ภายใน 2 วันทำการหลังแจ้ง
+[sheet.warranty.title] 90-Day Warranty
+[sheet.warranty.scope] Scope · Work items BT-104 to BT-115 (12 items)
+[sheet.warranty.start] Effective · 1 Dec 2026
+[sheet.warranty.end] Expires · 1 Mar 2027
+[sheet.warranty.terms] SLA · Defects attributable to BoromTech work are remediated at no cost within 2 business days of report.
 
 ---
 
@@ -272,8 +277,7 @@ BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพ
 [faq.title] 📏 2–4 คำ
 ก่อนเริ่มงาน
 
-[faq.photoAlt]
-แผงวงจรคอมพิวเตอร์เก่าบนโต๊ะรีสโตร์ ข้างแหนบ แว่นขยาย และหัวแร้ง ใต้แสงโคมไฟอุ่น
+ข้างหัวข้อเป็นกราฟิกเอกสาร 3 ใบซ้อนกัน (NDA, แผนออดิต 5 วัน, ใบเสนอราคาฟิกซ์ไพรซ์) เป็นภาษาอังกฤษเหมือนเอกสารตัวอย่าง
 
 [faq.1.q] ใช้ AI สร้างระบบมา หรือทำโปรเจกต์แพงๆ แล้วพัง รับดูแลไหม
 [faq.1.a] รับครับ ไม่ว่าจะเป็นโค้ดที่เจนจาก AI แล้วรันจริงไม่ไหว หรือโปรเจกต์ราคาแพงที่เวนเดอร์เดิมทำค้างไว้ เราเข้าไปออดิต แก้ไขจุดที่พัง และรับดูแลต่อให้ใช้งานได้จริง

@@ -1,38 +1,30 @@
+---
+import { useLocale } from '../../i18n'
+
+const { t } = useLocale(Astro.currentLocale)
+const [title1, title2] = t.audit.title
+const layerKeys = ['interface', 'code', 'data', 'infrastructure', 'security', 'knowledge']
+---
+
 <section class="chapter audit-scope" aria-labelledby="audit-scope-title">
   <header class="audit-scope-heading">
-    <h2 id="audit-scope-title" class="reveal"><span>ออดิต</span><wbr /><span>ครบทุกชั้น</span></h2>
-    <p class="reveal">ห้าวันทำการ เราเปิดดูซิสเต็มของคุณทีละชั้น ตั้งแต่หน้าจอจนถึงคนที่ดูแล</p>
+    <h2 id="audit-scope-title" class="reveal"><span>{title1}</span><wbr /><span>{title2}</span></h2>
+    <p class="reveal">{t.audit.intro}</p>
   </header>
 
   <dl class="audit-layers">
-    <div class="audit-layer layer-interface">
-      <dt>หน้าจอและฟีเจอร์</dt>
-      <dd>ทุกฟีเจอร์ในสัญญาใช้งานได้จริงหรือไม่</dd>
-    </div>
-    <div class="audit-layer layer-code">
-      <dt>โค้ด</dt>
-      <dd>ซอร์สโค้ดตรงกับที่รันอยู่ไหม โครงสร้างแก้ต่อได้หรือเปล่า</dd>
-    </div>
-    <div class="audit-layer layer-data">
-      <dt>ดาต้าเบส</dt>
-      <dd>ข้อมูลถูกต้อง มีแบ็กอัป และกู้คืนได้จริง</dd>
-    </div>
-    <div class="audit-layer layer-infrastructure">
-      <dt>เซิร์ฟเวอร์และคลาวด์</dt>
-      <dd>เวอร์ชันหมดซัพพอร์ตหรือยัง ใครถือรหัสผ่านอยู่</dd>
-    </div>
-    <div class="audit-layer layer-security">
-      <dt>ความปลอดภัย</dt>
-      <dd>ช่องโหว่ที่รู้จัก รหัสผ่านในโค้ด และสิทธิ์ที่เปิดเกิน</dd>
-    </div>
-    <div class="audit-layer layer-knowledge">
-      <dt>คนและความรู้</dt>
-      <dd>ใครรู้อะไร และอะไรที่ยังไม่มีใครจดไว้</dd>
-    </div>
+    {
+      t.audit.layers.map(({ layer, check }, i) => (
+        <div class={`audit-layer layer-${layerKeys[i]}`}>
+          <dt>{layer}</dt>
+          <dd>{check}</dd>
+        </div>
+      ))
+    }
   </dl>
 
   <footer class="audit-scope-closing">
-    <p class="reveal">ผลลัพธ์คือAudit Reportที่บอกว่าอะไรพัง อะไรเสี่ยง และควรแก้อะไรก่อน</p>
+    <p class="reveal">{t.audit.closing}</p>
   </footer>
 </section>
 

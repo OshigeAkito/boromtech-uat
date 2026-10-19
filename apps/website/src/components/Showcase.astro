@@ -1,48 +1,83 @@
 ---
+import { useLocale } from '../i18n'
+
+const { t } = useLocale(Astro.currentLocale)
+const s = t.showcase
+const findings = ['critical', 'critical', 'high', 'high', 'high'] as const
+const tasks = ['done', 'done', 'done', 'review', 'work'] as const
+
+// The sample deliverables read as the real documents do: in English, in the terms an engineering lead expects,
+// whatever language the rest of the page is in.
+const doc = {
+  severity: { critical: 'Critical', high: 'High', mid: 'Medium' },
+  audit: {
+    title: 'Inventory Management System · Sample Engagement',
+    meta: 'Assessment window 3–7 Nov 2026 · 182,400 LOC · 3 production hosts',
+    findings: [
+      'Hard-coded database credentials committed to source and replicated across every backup artifact',
+      'No automated backup policy. Effective RPO is 41 days, the age of the last restorable snapshot',
+      'Runtime is PHP 5.6, end-of-life with no security patches since December 2018',
+      'Sales reporting rounds before aggregation, introducing cumulative variance in totals',
+      'Configuration drift: production source is 7 months ahead of the version-controlled repository',
+    ],
+  },
+  weekly: {
+    ref: 'Sprint 3 of 6',
+    title: '7 of 12 work items closed',
+    status: { done: 'Verified', review: 'In review', work: 'In progress' },
+    tasks: [
+      'Recover production source and re-baseline it in Git',
+      'Migrate credentials out of code into a managed secrets store',
+      'Automated nightly backups at 02:00, with a tested restore',
+      'Fix the rounding defect in sales aggregation',
+      'Upgrade the inventory module to PHP 8.3',
+    ],
+    next: 'Next sprint: upgrade the orders module and run regression tests against October sales data.',
+  },
+  warranty: {
+    title: '90-Day Warranty',
+    terms: [
+      ['Scope', 'Work items BT-104 to BT-115 (12 items)'],
+      ['Effective', '1 Dec 2026'],
+      ['Expires', '1 Mar 2027'],
+      ['SLA', 'Defects attributable to BoromTech work are remediated at no cost within 2 business days of report.'],
+    ],
+  },
+}
 ---
 
-<section class="chapter showcase" aria-label="สิ่งที่คุณได้รับ">
-  <div class="outputs" role="tablist" aria-label="เอกสารที่คุณได้รับ">
+<section class="chapter showcase" aria-label={s.label}>
+  <div class="outputs" role="tablist" aria-label={s.tablist}>
     <button role="tab" aria-selected="true" aria-controls="sheet-audit" data-sheet="audit">Audit Report</button>
     <button role="tab" aria-selected="false" aria-controls="sheet-weekly" data-sheet="weekly">Weekly Update</button>
     <button role="tab" aria-selected="false" aria-controls="sheet-warranty" data-sheet="warranty">Warranty</button>
-    <p class="outputs-note">ตัวอย่างเอกสารจริงที่คุณได้รับ จากเคสสมมติ ระบบสต็อกสินค้าของบริษัทจัดจำหน่าย</p>
+    <p class="outputs-note">{s.note}</p>
+    <p class="outputs-mock">{s.mock}</p>
   </div>
-  <div class="desk">
+  <div class="desk" lang="en">
     <div class="sheet" id="sheet-audit" role="tabpanel" data-ui>
       <div class="sheet-head"><strong>BoromTech</strong><span>Audit Report · BT-A-0412</span></div>
-      <h3>ระบบสต็อกสินค้า · ตัวอย่าง</h3>
-      <p class="sheet-meta">ออดิตวันที่ 3–7 พ.ย. 2569 · โค้ด 182,400 บรรทัด · 3 เซิร์ฟเวอร์</p>
-      <div class="severity"><span class="sev sev-critical">วิกฤต <b>2</b></span><span class="sev sev-high">สูง <b>5</b></span><span class="sev sev-mid">ปานกลาง <b>9</b></span></div>
+      <h3>{doc.audit.title}</h3>
+      <p class="sheet-meta">{doc.audit.meta}</p>
+      <div class="severity"><span class="sev sev-critical">{doc.severity.critical} <b>2</b></span><span class="sev sev-high">{doc.severity.high} <b>5</b></span><span class="sev sev-mid">{doc.severity.mid} <b>9</b></span></div>
       <ol class="findings">
-        <li><b>วิกฤต</b> รหัสผ่านดาต้าเบสถูกเขียนไว้ในโค้ด และอยู่ในทุกไฟล์แบ็กอัป</li>
-        <li><b>วิกฤต</b> ไม่มีแบ็กอัปอัตโนมัติ ข้อมูลล่าสุดที่กู้ได้คือ 41 วันก่อน</li>
-        <li><b>สูง</b> PHP 5.6 หมดซัพพอร์ตด้านความปลอดภัยตั้งแต่สิ้นปี 2561</li>
-        <li><b>สูง</b> รีพอร์ตยอดขายปัดเศษก่อนรวมยอด ทำให้ยอดรวมคลาดเคลื่อน</li>
-        <li><b>สูง</b> ซอร์สโค้ดบนเซิร์ฟเวอร์ใหม่กว่าใน repository เดิม 7 เดือน</li>
+        {doc.audit.findings.map((text, i) => <li><b>{doc.severity[findings[i]]}</b> {text}</li>)}
       </ol>
     </div>
     <div class="sheet sheet-narrow" id="sheet-weekly" role="tabpanel" data-ui hidden>
-      <div class="sheet-head"><strong>BoromTech</strong><span>Weekly Update · สัปดาห์ 3 จาก 6</span></div>
-      <h3>คืบหน้า 7 จาก 12 ทาสก์</h3>
+      <div class="sheet-head"><strong>BoromTech</strong><span>Weekly Update · {doc.weekly.ref}</span></div>
+      <h3>{doc.weekly.title}</h3>
       <div class="meter"><span style="width:58%"></span></div>
       <ul class="tasks">
-        <li><span class="pill pill-done">ตรวจแล้ว</span>รีคัฟเวอร์ซอร์สโค้ดจากเซิร์ฟเวอร์</li>
-        <li><span class="pill pill-done">ตรวจแล้ว</span>ย้ายรหัสผ่านออกจากโค้ด</li>
-        <li><span class="pill pill-done">ตรวจแล้ว</span>แบ็กอัปอัตโนมัติทุกคืน 02:00</li>
-        <li><span class="pill pill-review">รอตรวจ</span>แก้การปัดเศษในรีพอร์ตยอดขาย</li>
-        <li><span class="pill pill-work">กำลังทำ</span>อัปเกรดโมดูลสต็อกเป็น PHP 8.3</li>
+        {doc.weekly.tasks.map((text, i) => <li><span class={`pill pill-${tasks[i]}`}>{doc.weekly.status[tasks[i]]}</span>{text}</li>)}
       </ul>
-      <p class="sheet-meta">สัปดาห์หน้า: อัปเกรดโมดูลออร์เดอร์ และทดสอบกับยอดขายเดือนตุลาคม</p>
+      <p class="sheet-meta">{doc.weekly.next}</p>
     </div>
     <div class="sheet sheet-narrow" id="sheet-warranty" role="tabpanel" data-ui hidden>
       <div class="sheet-head"><strong>BoromTech</strong><span>Warranty · BT-W-0412</span></div>
-      <h3>การันตี 90 วัน</h3>
+      <h3>{doc.warranty.title}</h3>
       <dl class="terms">
-        <div><dt>ครอบคลุม</dt><dd>ทาสก์ BT-104 ถึง BT-115 ทั้ง 12 รายการ</dd></div>
-        <div><dt>เริ่ม</dt><dd>1 ธ.ค. 2569</dd></div>
-        <div><dt>สิ้นสุด</dt><dd>1 มี.ค. 2570</dd></div>
-        <div><dt>เงื่อนไข</dt><dd>ปัญหาที่เกิดจากงานของ BoromTech แก้ไขโดยไม่มีค่าใช้จ่าย ภายใน 2 วันทำการหลังแจ้ง</dd></div>
+        {doc.warranty.terms.map(([term, detail]) => <div><dt>{term}</dt><dd>{detail}</dd></div>)}
       </dl>
     </div>
   </div>

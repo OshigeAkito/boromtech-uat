@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro'
+import Cases from './Cases.astro'
+import Contact from './Contact.astro'
+import Faq from './Faq.astro'
+import Hero from './Hero.astro'
+import AuditScope from './infographics/AuditScope.astro'
+import Iceberg from './infographics/Iceberg.astro'
+import Process from './Process.astro'
+import Showcase from './Showcase.astro'
+import Team from './Team.astro'
+---
+
+<Base>
+  <main id="top">
+    <Hero />
+    <Iceberg />
+    <Cases />
+    <Process />
+    <AuditScope />
+    <Showcase />
+    <Team />
+    <Faq />
+  </main>
+  <Contact />
+</Base>
+
+<script>
+  import '../scripts/site.js'
+</script>
