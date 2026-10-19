@@ -1,0 +1,6 @@
+# Built images live in R2 (bt-public, https://media.boromtech.co), not in the Worker's assets. Keep this list in
+# step with build.assetsPrefix in astro.config.mjs and the types in scripts/upload-media.mjs.
+_astro/*.jpg
+_astro/*.png
+_astro/*.webp
+_astro/*.avif

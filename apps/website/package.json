@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "upload-media": "node scripts/upload-media.mjs",
+    "deploy": "astro build && node scripts/check-copy.mjs && node scripts/upload-media.mjs && wrangler deploy"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",
@@ -19,6 +21,7 @@
     "node": "24.x"
   },
   "devDependencies": {
-    "@types/three": "0.186.0"
+    "@types/three": "0.186.0",
+    "wrangler": "4.151.2"
   }
 }

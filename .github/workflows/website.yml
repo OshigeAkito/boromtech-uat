@@ -1,0 +1,35 @@
+# Push to main → build the marketing site and deploy it to Cloudflare (apps/website/wrangler.toml):
+#   1. build    astro build (sharp images, fonts, thai-loanwords pass), then the copy check against COPY.md.
+#   2. images   upload dist/_astro images to R2 bt-public (https://media.boromtech.co). Before the deploy, so no
+#               live page points at an image that isn't there yet.
+#   3. deploy   wrangler deploy: the Worker (worker.mjs, locale redirect on /) and dist as static assets.
+#
+# GitHub secret:   CLOUDFLARE_API_TOKEN (Workers Scripts edit + R2 object write on bt-public)
+# GitHub variable: CLOUDFLARE_ACCOUNT_ID
+name: website
+on:
+  push:
+    branches: [main]
+    paths: ['apps/website/**', '.github/workflows/website.yml']
+  workflow_dispatch:
+concurrency: { group: deploy-website, cancel-in-progress: false }
+
+jobs:
+  website:
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run: { working-directory: apps/website }
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
+        working-directory: .
+      - run: npm run build
+      - run: node scripts/check-copy.mjs
+      - run: npm run upload-media
+      - run: npx wrangler deploy

@@ -2,6 +2,10 @@ import sitemap from '@astrojs/sitemap'
 import { defineConfig, fontProviders } from 'astro/config'
 import thaiLoanwords from './integrations/thai-loanwords.mjs'
 
+// Built images are served from R2 (bucket bt-public) at this origin; scripts/upload-media.mjs uploads them.
+// JS, fonts and anything else keep root-relative URLs on the site's own origin (the '/' fallback).
+const media = 'https://media.boromtech.co'
+
 export default defineConfig({
   site: 'https://boromtech.co',
   i18n: {
@@ -13,7 +17,11 @@ export default defineConfig({
     sitemap({ i18n: { defaultLocale: 'th', locales: { th: 'th', en: 'en', vi: 'vi', zh: 'zh-Hans' } } }),
     thaiLoanwords(),
   ],
-  build: { inlineStylesheets: 'always' },
+  build: {
+    inlineStylesheets: 'always',
+    // Keep these extensions in step with public/.assetsignore and scripts/upload-media.mjs.
+    assetsPrefix: { fallback: '/', jpg: media, png: media, webp: media, avif: media },
+  },
   image: { responsiveStyles: false },
   fonts: [
     {
