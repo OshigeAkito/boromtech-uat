@@ -1,15 +1,16 @@
-# The marketing site at boromtech.com. One Worker serves the Astro build (dist/) as static assets (unmetered; the
-# Worker code never runs for them), except for the paths in run_worker_first: the Thai root, where worker.mjs
-# sends first-time visitors to their language before the page loads.
+# The marketing site. One Worker serves the Astro build (dist/) as static assets (unmetered; the Worker code never
+# runs for them), except for the paths in run_worker_first: the Thai root, where worker.mjs sends first-time
+# visitors to their language before the page loads.
 #
-# Images are not in this upload. astro.config.mjs points built jpg/png/webp/avif at https://media.boromtech.com
-# (R2 bucket bt-public), scripts/upload-media.mjs puts them there before each deploy, and public/.assetsignore
-# keeps them out of dist's upload. JS, fonts and the video stay here, on the site's own origin.
+# Two ways to deploy, one switch (DEPLOY.md):
+#   npx wrangler deploy                    boromtech-website.<account>.workers.dev; images ship with the site.
+#   npx wrangler deploy --env production   the same Worker on boromtech.com, once that zone is on Cloudflare.
+#                                          Build with MEDIA_ORIGIN=https://media.boromtech.com first, so images
+#                                          come from R2 bt-public (astro.config.mjs, scripts/upload-media.mjs).
 name = "boromtech-website"
 main = "worker.mjs"
 compatibility_date = "2026-10-01"
-
-routes = [{ pattern = "boromtech.com", custom_domain = true }]
+workers_dev = true
 
 [assets]
 directory = "dist"
@@ -18,3 +19,8 @@ run_worker_first = ["/"] # exact paths: "/" matches only the Thai root, not /en/
 
 [observability]
 enabled = true
+
+[env.production]
+name = "boromtech-website" # the same Worker, not a separate boromtech-website-production
+routes = [{ pattern = "boromtech.com", custom_domain = true }]
+workers_dev = false        # one public copy of the site, on its own domain
