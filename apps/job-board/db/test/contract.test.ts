@@ -2,52 +2,23 @@
 // a real Postgres. No mocks: the database is the server.
 //
 // Run: OWNER_URL=postgres://postgres:owner@localhost:55432/postgres npm test -w job-board-db
-// Each run creates a fresh database `bt_test` on that server and migrates it with ../migrate.sh.
+// Each file creates and migrates its own database on that server (harness.ts).
 import assert from 'node:assert/strict'
-import { execFileSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { after, before, describe, test } from 'node:test'
-import pg from 'pg'
+import type pg from 'pg'
 import { COMMAND_NAMES, ERROR_CODES, TASK_ACTIONS, TASK_STATUSES } from '@boromtech/domain'
+import { freshDb, type Db, type Envelope } from './harness.ts'
 
-const OWNER_URL = process.env.OWNER_URL ?? 'postgres://postgres:owner@localhost:55432/postgres'
-const DB = 'bt_test'
-const dbUrl = (user?: string, password?: string) => {
-  const u = new URL(OWNER_URL)
-  u.pathname = `/${DB}`
-  if (user) u.username = user
-  if (password) u.password = password
-  return u.toString()
-}
-
+let db: Db
 let owner: pg.Client
-const gateways: pg.Client[] = []
-
-async function gateway(): Promise<pg.Client> {
-  const c = new pg.Client(dbUrl('bt_gateway', 'test-gateway'))
-  await c.connect()
-  gateways.push(c)
-  return c
-}
+const gateway = () => db.connect('bt_gateway')
 
 before(async () => {
-  const admin = new pg.Client(OWNER_URL)
-  await admin.connect()
-  await admin.query(`drop database if exists ${DB} with (force)`)
-  await admin.query(`create database ${DB}`)
-  await admin.end()
-  execFileSync(new URL('../migrate.sh', import.meta.url).pathname, { env: { ...process.env, DATABASE_URL: dbUrl() }, stdio: 'pipe' })
-  owner = new pg.Client(dbUrl())
-  await owner.connect()
-  await owner.query(`alter role bt_gateway password 'test-gateway'`)
+  db = await freshDb('bt_contract')
+  owner = db.owner
 })
-
-after(async () => {
-  await Promise.all(gateways.map((c) => c.end()))
-  await owner?.end()
-})
-
-type Envelope = Record<string, any> & { status: number; error: { code: string; message: string } | null }
+after(() => db?.close())
 
 // ---- lists that exist in both TS and SQL: CI fails when they disagree -------------------------------
 

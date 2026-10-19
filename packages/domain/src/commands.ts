@@ -16,7 +16,8 @@ type TaskResult = { id: string; status: TaskStatus }
 export interface Commands {
   // ---- task state machine (actor checks + from-states live in SQL lib.transitions()) ----
   claim_task: { args: TaskRef; result: TaskResult }
-  submit_task: { args: TaskRef & { url: string; note: string }; result: TaskResult }
+  /** `url` may be '' when `fileIds` is non-empty: evidence is a link, files, or both. */
+  submit_task: { args: TaskRef & { url: string; note: string; fileIds?: string[] }; result: TaskResult }
   approve_task: { args: TaskRef & { grade: number; feedback: string }; result: TaskResult }
   reject_task: { args: TaskRef & { feedback: string }; result: TaskResult }
   pay_task: { args: TaskRef; result: TaskResult }
@@ -30,6 +31,9 @@ export interface Commands {
   invite: { args: { email: string }; result: { email: string } }
   revoke_invite: { args: { email: string }; result: null }
   remove_member: { args: { uid: string }; result: { uid: string } }
+  // ---- attachments (uploads go through POST /api/files first; these make verified files visible) ----
+  attach_files: { args: ({ taskId: string } | { jobId: string }) & { fileIds: string[] }; result: null }
+  detach_file: { args: { fileId: string }; result: null }
 }
 
 export type CommandName = keyof Commands
@@ -46,6 +50,8 @@ export const COMMAND_NAMES = [
   'invite',
   'revoke_invite',
   'remove_member',
+  'attach_files',
+  'detach_file',
 ] as const satisfies readonly CommandName[]
 type _AllCommandsListed = Exclude<CommandName, (typeof COMMAND_NAMES)[number]> extends never ? true : never
 true satisfies _AllCommandsListed
@@ -64,6 +70,7 @@ export const ERROR_CODES = [
   'claim_lost', // 409 — someone else claimed first (the compare-and-set lost)
   'wrong_state', // 409 — task not in a from-state for this action
   'invalid', // 422 — argument failed validation; message says which
+  'too_many', // 429 — upload quota for the day
   'unknown_command', // 400
   'bad_request', // 400
 ] as const

@@ -8,6 +8,9 @@
 // task now), computed from the one state machine in SQL.
 
 export * from './commands.ts'
+export * from './files.ts'
+
+import type { Attachment } from './files.ts'
 
 /** Mirrors `app.task_status`. */
 export const TASK_STATUSES = ['open', 'assigned', 'changes', 'submitted', 'approved', 'paid'] as const
@@ -26,6 +29,7 @@ export interface Member {
   /** Lowercased. `null` when the viewer may not see it (freelancers see only their own). */
   email: string | null
   name: string
+  /** '/api/files/<id>?v=file', or '' while the copy from Google hasn't happened. */
   photo: string
   role: Role
 }
@@ -39,6 +43,8 @@ export interface Job {
   customerDeadline: string
   /** Epoch millis, server clock. */
   createdAt: number
+  /** Briefs, mockups and references the admin attached to the job. */
+  files: Attachment[]
 }
 
 /** Latest review. `grade` is 1..5 when approved and 0 when changes were requested. */
@@ -71,6 +77,8 @@ export interface Task {
   /** Server time of the submit, epoch millis. */
   submittedAt: number | null
   review: Review | null
+  /** Briefs for everyone; submission files only for admins and the assignee (lib.file_visible). */
+  files: Attachment[]
   /** Changes-requested reviews while the current assignee held the task. Derived in SQL. */
   rejections: number
   /** What the viewer may do to this task now, from the SQL state machine. */
