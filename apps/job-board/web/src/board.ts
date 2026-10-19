@@ -1,6 +1,6 @@
 // The merged client copy of everything the viewer may see, and the wire shapes it is built from.
 // Pure: no fetch, no timers, no React. Only api.ts imports it.
-import type { ErrorCode, Invite, Job, Member, Review, Task, TaskAction, TaskStatus } from '@boromtech/domain'
+import type { Attachment, ErrorCode, Invite, Job, Member, Review, Task, TaskAction, TaskStatus } from '@boromtech/domain'
 
 /** Everything a signed-in member sees, joined and sorted. */
 export interface MemberView {
@@ -19,8 +19,19 @@ export interface MemberView {
 interface Versioned {
   version: number
 }
-export type MemberRow = Member & Versioned & { removed: boolean }
-export type JobRow = Job & Versioned
+/** lib.file_json. `thumb` says whether a 't/<id>' preview exists. */
+export interface FileRow {
+  id: string
+  kind: 'submission' | 'brief' // projections list only these; avatars ride members.photoId
+  name: string
+  mime: string
+  bytes: number | null
+  width: number | null
+  height: number | null
+  thumb: boolean
+}
+export type MemberRow = Omit<Member, 'photo'> & Versioned & { removed: boolean; photoId: string | null }
+export type JobRow = Omit<Job, 'files'> & Versioned & { files: FileRow[] }
 export type InviteRow = { email: string; createdAt: number; revoked: boolean } & Versioned
 export interface TaskRow extends Versioned {
   id: string
@@ -35,6 +46,7 @@ export interface TaskRow extends Versioned {
   submissionNote: string | null
   submittedAt: number | null
   review: (Omit<Review, 'feedback'> & { feedback: string | null }) | null
+  files: FileRow[]
   rejections: number
   actions: TaskAction[]
 }
@@ -86,6 +98,7 @@ export class BoardState {
       tasks: [...this.tasks.values()]
         .map((t): Task => ({
           ...strip(t),
+          files: t.files.map(attachment),
           jobTitle: titles.get(t.jobId) ?? '',
           assigneeName: t.assigneeUid ? (names.get(t.assigneeUid) ?? 'Former member') : null,
           review: t.review && { verdict: t.review.verdict, grade: t.review.grade, at: t.review.at, ...(t.review.feedback !== null && { feedback: t.review.feedback }) },
@@ -107,7 +120,12 @@ function merge<R extends Versioned>(into: Map<string, R>, rows: R[], key: (r: R)
   }
 }
 
-const member = ({ uid, email, name, photo, role }: MemberRow): Member => ({ uid, email, name, photo, role })
-const job = ({ id, title, customer, description, customerDeadline, createdAt }: JobRow): Job => ({ id, title, customer, description, customerDeadline, createdAt })
-const strip = ({ version: _v, review: _r, ...t }: TaskRow) => t
+// File URLs are same-origin; the Go service answers each with a cached redirect to a signed R2 URL.
+// An avatar is one small JPEG with no separate thumbnail.
+const member = ({ uid, email, name, photoId, role }: MemberRow): Member => ({ uid, email, name, photo: photoId ? `/api/files/${photoId}?v=file` : '', role })
+const job = ({ id, title, customer, description, customerDeadline, createdAt, files }: JobRow): Job => ({ id, title, customer, description, customerDeadline, createdAt, files: files.map(attachment) })
+const attachment = ({ id, kind, name, mime, bytes, width, height, thumb }: FileRow): Attachment => ({
+  id, kind, name, mime, bytes, width, height, src: `/api/files/${id}`, thumbSrc: thumb ? `/api/files/${id}?v=thumb` : null,
+})
+const strip = ({ version: _v, review: _r, files: _f, ...t }: TaskRow) => t
 

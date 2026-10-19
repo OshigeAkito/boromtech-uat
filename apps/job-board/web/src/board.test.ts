@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { BoardState, type MemberRow, type TaskRow, type Wire } from './board.ts'
+import { BoardState, type FileRow, type MemberRow, type TaskRow, type Wire } from './board.ts'
 
-const me: MemberRow = { uid: 'F1', email: 'f1@x.com', name: 'Free One', photo: '', role: 'freelancer', removed: false, version: 1 }
-const other: MemberRow = { uid: 'F2', email: null, name: 'Free Two', photo: '', role: 'freelancer', removed: false, version: 2 }
-const job = { id: 'j1', title: 'Site', customer: 'Acme', description: '', customerDeadline: '2026-12-31', createdAt: 1, version: 3 }
+const me: MemberRow = { uid: 'F1', email: 'f1@x.com', name: 'Free One', photoId: null, role: 'freelancer', removed: false, version: 1 }
+const other: MemberRow = { uid: 'F2', email: null, name: 'Free Two', photoId: null, role: 'freelancer', removed: false, version: 2 }
+const job = { id: 'j1', title: 'Site', customer: 'Acme', description: '', customerDeadline: '2026-12-31', createdAt: 1, files: [], version: 3 }
 const task = (version: number, patch: Partial<TaskRow> = {}): TaskRow => ({
   id: 't1', jobId: 'j1', title: 'Form', description: '', payout: 100, freelancerDeadline: '2026-12-01',
   status: 'open', assigneeUid: null, submissionUrl: null, submissionNote: null, submittedAt: null,
-  review: null, rejections: 0, actions: ['claim'], version, ...patch,
+  review: null, files: [], rejections: 0, actions: ['claim'], version, ...patch,
 })
 const wire = (cursor: number, patch: Partial<Wire> = {}): Wire => ({
   status: 200, cursor, me, jobs: [], tasks: [], members: [], invites: [], error: null, ...patch,
@@ -66,4 +66,34 @@ test('a fresh me row from any response wins over an older one', () => {
   s.apply(wire(5, { me: { ...me, name: 'New', version: 9 } }))
   s.apply(wire(6, { me }))
   assert.equal(s.view().me.name, 'New')
+})
+
+const photo: FileRow = { id: 'p1', kind: 'submission', name: 'shot.jpg', mime: 'image/jpeg', bytes: 900, width: 2560, height: 1440, thumb: true }
+const zip: FileRow = { id: 'z1', kind: 'submission', name: 'site.zip', mime: 'application/zip', bytes: 5000, width: null, height: null, thumb: false }
+
+test('photoId becomes a same-origin avatar URL, and no photo becomes an empty string', () => {
+  const s = new BoardState()
+  s.apply(wire(5, { me: { ...me, photoId: 'a1' }, members: [{ ...me, photoId: 'a1' }, other] }))
+  const v = s.view()
+  assert.equal(v.me.photo, '/api/files/a1?v=file')
+  assert.deepEqual(v.members.map((m) => m.photo), ['/api/files/a1?v=file', ''])
+  assert.equal('photoId' in v.me, false)
+})
+
+test('task and job files become Attachments; only files with a thumbnail get thumbSrc', () => {
+  const s = new BoardState()
+  s.apply(wire(5, { tasks: [task(5, { files: [photo, zip] })], jobs: [{ ...job, files: [{ ...photo, id: 'b1', kind: 'brief', name: 'brief.png', mime: 'image/png' }] }], members: [me] }))
+  const v = s.view()
+  assert.deepEqual(v.tasks[0].files, [
+    { id: 'p1', kind: 'submission', name: 'shot.jpg', mime: 'image/jpeg', bytes: 900, width: 2560, height: 1440, src: '/api/files/p1', thumbSrc: '/api/files/p1?v=thumb' },
+    { id: 'z1', kind: 'submission', name: 'site.zip', mime: 'application/zip', bytes: 5000, width: null, height: null, src: '/api/files/z1', thumbSrc: null },
+  ])
+  assert.deepEqual(v.jobs[0].files.map((f) => [f.name, f.src, f.thumbSrc]), [['brief.png', '/api/files/b1', '/api/files/b1?v=thumb']])
+})
+
+test('a detached file disappears with the parent row\'s next version', () => {
+  const s = new BoardState()
+  s.apply(wire(5, { tasks: [task(5, { files: [photo, zip] })], members: [me], jobs: [job] }))
+  s.apply(wire(6, { tasks: [task(6, { files: [zip] })] }))
+  assert.deepEqual(s.view().tasks[0].files.map((f) => f.id), ['z1'])
 })

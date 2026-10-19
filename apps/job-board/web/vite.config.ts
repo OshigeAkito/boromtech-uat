@@ -9,8 +9,9 @@ export default defineConfig({
   resolve: { alias: { '@boromtech/design-system': designSystem } },
   server: {
     fs: { allow: ['../../..'] },
-    // `npm run dev -w job-board-gateway` runs the API on :8787. Proxying keeps the browser on one origin,
-    // so the cookie and Origin checks behave as in production.
-    proxy: { '/api': 'http://localhost:8787' },
+    // The Go service (apps/job-board/api, `go run .`) listens on :8080. Proxying straight to it keeps the
+    // browser on one origin, so cookies and the Origin check behave as in production; the edge Worker only
+    // forwards /api in production and isn't needed here. Vite keeps the Origin header (no changeOrigin).
+    proxy: { '/api': 'http://localhost:8080' },
   },
 })

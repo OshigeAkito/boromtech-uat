@@ -3,8 +3,9 @@
 --   lib   the state machine, guards, argument parsing, read projections, error table
 --   cmd   one function per command: cmd.<name>(me app.members, args jsonb) returns jsonb
 --         The set of functions in this schema IS the command list (gate.call resolves by name).
---   gate  the transport surface: exactly three SECURITY DEFINER functions, the only things bt_gateway
---         can execute. Everything else runs inside them with the owner's privileges.
+--   gate  the transport surface: SECURITY DEFINER functions, the only things bt_gateway (and bt_sweeper, for
+--         gate.sweep) can execute. Everything else runs inside them with the owner's privileges. The grants at
+--         the bottom and assert_privileges.sql list them; a deploy fails if the two disagree.
 --
 -- Dropping and re-creating these schemas each deploy means the database always equals this file:
 -- a function deleted here is deleted in prod. No `create or replace` drift.
@@ -579,7 +580,7 @@ end $$;
 
 -- =============================================================================================
 -- gate: the transport surface. SECURITY DEFINER, pinned search_path, everything schema-qualified.
--- These three are the only functions bt_gateway can execute. Each returns a jsonb envelope with
+-- They are the only functions bt_gateway and bt_sweeper can execute. Each returns a jsonb envelope with
 -- an integer `status` the transport copies onto the HTTP response without interpreting anything else.
 -- =============================================================================================
 
@@ -641,7 +642,12 @@ begin
   end if;
 
   -- Avatar: only Google's own image host, and only a sane URL; anything else → no avatar, initials.
-  if v_pic ~ '^https://[a-z0-9.-]+\.googleusercontent\.com/[^\s]*$' and length(v_pic) <= 2000 then
+  -- The transport copies the picture into R2 only when this sign-in made a new current avatar (first sign-in,
+  -- a changed Google picture, or one swept away). If that copy fails the <img> 404s until the picture changes.
+  if v_pic ~ '^https://[a-z0-9.-]+\.googleusercontent\.com/[^\s]*$' and length(v_pic) <= 2000
+     and not exists (select 1 from app.files a
+                      where a.kind = 'avatar' and a.member_uid = m.uid and a.state = 'attached' and a.purged_at is null
+                        and a.source_hash = public.digest(v_pic, 'sha256')) then
     f := lib.avatar_from(m, v_pic);
     v_presign := jsonb_build_object('avatar', jsonb_build_object(
       'method', 'PUT', 'key', lib.file_key(f.id), 'ttl', 120, 'contentType', 'image/jpeg',
@@ -836,7 +842,7 @@ exception when invalid_text_representation or numeric_value_out_of_range then
   return lib.error_envelope('bad_request', 'facts');
 end $$;
 
--- View. Read-only (no command_log row, no clock bump). 404 for "missing" and "not yours" alike, so ids can't
+-- View. No command_log row and no clock bump (lib.session_member may still extend the session). 404 for "missing" and "not yours" alike, so ids can't
 -- be probed. p_variant: 'file' | 'thumb'.
 create function gate.file(p_token text, p_id uuid, p_variant text) returns jsonb
 language plpgsql security definer set search_path = pg_catalog, pg_temp as $$

@@ -13,6 +13,8 @@ export const UPLOAD_RULES = {
 
 export interface Attachment {
   id: string
+  /** A brief (admins attach, everyone sees) or a submission file (the assignee's work). */
+  kind: UploadKind
   name: string
   mime: string
   bytes: number | null

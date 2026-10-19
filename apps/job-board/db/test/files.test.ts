@@ -243,6 +243,7 @@ describe('members', () => {
     assert.equal(first.me.photoId, id)
     const again = await g.signIn({ sub: 'F1', email: 'f1@x.com', email_verified: true, picture: pic })
     assert.equal(again.me.photoId, id, 'same picture, same file')
+    assert.equal(again.presign, undefined, 'already copied: no second fetch from Google')
     const changed = await g.signIn({ sub: 'F1', email: 'f1@x.com', email_verified: true, picture: 'https://lh3.googleusercontent.com/a/two' })
     assert.notEqual(changed.me.photoId, id)
     const { rows } = await db.owner.query(`select state::text from app.files where kind = 'avatar' and member_uid = 'F1' order by created_at`)

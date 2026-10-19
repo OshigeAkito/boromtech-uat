@@ -4,13 +4,13 @@
   "workspaces": [
     "packages/domain",
     "apps/job-board/web",
-    "apps/job-board/gateway",
+    "apps/job-board/edge",
     "apps/job-board/db",
     "apps/website"
   ],
   "scripts": {
     "ds:build": "node scripts/build-design-system.mjs",
-    "job-board:dev": "npm run ds:build && (npm run dev -w job-board-gateway & npm run dev -w job-board)",
+    "job-board:dev": "npm run ds:build && ((cd apps/job-board/api && set -a && . ./.env && set +a && go run .) & npm run dev -w job-board)",
     "job-board:db": "npm run migrate -w job-board-db",
     "job-board:test": "npm test -w job-board-db && npm test -w job-board",
     "website:dev": "npm run dev -w apps/website",

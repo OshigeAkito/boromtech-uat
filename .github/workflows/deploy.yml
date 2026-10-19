@@ -1,13 +1,14 @@
-# Push to main → deploy the job board: database first, then the Worker with the SPA as its assets.
-# The Worker never changes when a command changes (it forwards names it doesn't know), so a new command is
-# live in SQL before the SPA that calls it ships. Removing a command takes two deploys: SPA first, then SQL.
+# Push to main → deploy the job board in dependency order:
+#   1. migrate  SQL first: new gate.* functions exist before the Go that calls them, and a new command is live
+#               before the SPA that sends it. Removing anything takes two deploys: callers first.
+#   2. api      build the Go image, push it to Artifact Registry, deploy Cloud Run (Workload Identity, no keys).
+#   3. edge     build the SPA and deploy the Worker (assets + /api proxy), pointed at the Cloud Run URL.
 #
-# Repo secrets (Settings → Secrets and variables → Actions), set once by a human:
-#   NEON_OWNER_URL         neondb_owner, direct (not pooled) host. Migrations only.
-#   CLOUDFLARE_API_TOKEN   "Edit Cloudflare Workers" template, scoped to the account and the boromtech.co zone
-# Repo variable:
-#   CLOUDFLARE_ACCOUNT_ID
-# Worker runtime secrets (DATABASE_URL for bt_gateway, GOOGLE_CLIENT_SECRET) live in Cloudflare, not GitHub.
+# GitHub secrets:   NEON_OWNER_URL, CLOUDFLARE_API_TOKEN
+# GitHub variables: CLOUDFLARE_ACCOUNT_ID, GCP_PROJECT_ID, GCP_WIF_PROVIDER, GCP_DEPLOY_SA, GOOGLE_CLIENT_ID,
+#                   R2_ACCOUNT_ID, R2_ACCESS_KEY_ID
+# Runtime secrets live in Secret Manager (crew-*, see apps/job-board/infra/setup-gcp.sh) and in the Worker
+# (EDGE_KEY, set once with `npx wrangler secret put EDGE_KEY`), never in GitHub.
 name: deploy
 on:
   push:
@@ -16,22 +17,65 @@ on:
   workflow_dispatch:
 concurrency: { group: deploy-job-board, cancel-in-progress: false }
 
+env:
+  REGION: asia-southeast1
+  IMAGE: asia-southeast1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/crew/api:${{ github.sha }}
+
 jobs:
-  job-board:
+  migrate:
     runs-on: ubuntu-latest
     environment: production
-    container: node:24-trixie # psql 17 (Neon's major) and Node 24 in one image
+    container: node:24-trixie # psql 17, Neon's major version
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: apt-get update -qq && apt-get install -y -qq postgresql-client >/dev/null
-      - run: npm ci
       - name: Migrate Neon, rebuild api.sql, assert role privileges
         run: apps/job-board/db/migrate.sh
         env: { DATABASE_URL: '${{ secrets.NEON_OWNER_URL }}' }
+
+  api:
+    needs: migrate
+    runs-on: ubuntu-latest
+    environment: production
+    permissions: { contents: read, id-token: write }
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
+      - run: gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
+      - run: docker build -t "$IMAGE" apps/job-board/api && docker push "$IMAGE"
+      - name: Deploy Cloud Run
+        id: deploy
+        # Every flag is a cold-start or cost decision (apps/job-board/README.md, "Cold start"): gen1 starts
+        # fastest for a small static binary, CPU boost speeds the first request, scale to zero keeps it free.
+        run: |
+          gcloud run deploy crew-api --quiet --region "$REGION" --image "$IMAGE" \
+            --service-account "crew-runtime@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com" \
+            --execution-environment gen1 --cpu 1 --memory 256Mi --cpu-boost \
+            --min-instances 0 --max-instances 3 --concurrency 80 --timeout 60 \
+            --allow-unauthenticated --ingress all \
+            --set-env-vars "PUBLIC_ORIGIN=https://crew.boromtech.co,GOOGLE_CLIENT_ID=${{ vars.GOOGLE_CLIENT_ID }},R2_ACCOUNT_ID=${{ vars.R2_ACCOUNT_ID }},R2_ACCESS_KEY_ID=${{ vars.R2_ACCESS_KEY_ID }},R2_BUCKET=bt-crew-files" \
+            --set-secrets "DATABASE_URL=crew-database-url:latest,GOOGLE_CLIENT_SECRET=crew-google-client-secret:latest,R2_SECRET_ACCESS_KEY=crew-r2-secret-access-key:latest,EDGE_KEY=crew-edge-key:latest"
+          echo "url=$(gcloud run services describe crew-api --region "$REGION" --format='value(status.url)')" >> "$GITHUB_OUTPUT"
+
+  edge:
+    needs: api
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
       - run: npm run ds:build
       - run: npm run build -w job-board
-      - run: npx wrangler deploy
-        working-directory: apps/job-board/gateway
+      - run: npx wrangler deploy --var "API_ORIGIN:${{ needs.api.outputs.url }}"
+        working-directory: apps/job-board/edge
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}

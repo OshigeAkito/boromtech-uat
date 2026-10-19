@@ -1,7 +1,7 @@
 import { Button, StarRating, TaskCard, TierBadge } from '@boromtech/design-system/components/src'
-import { defaultFreelancerDeadline, rank, toDateInput, type Invite, type Job, type Member, type Task } from '@boromtech/domain'
-import { useState, type FormEvent, type ReactNode } from 'react'
-import { run, signIn, signOut, useBoard, type Board, type SignInError } from './api'
+import { defaultFreelancerDeadline, rank, toDateInput, UPLOAD_RULES, type Attachment, type Invite, type Job, type Member, type Task, type UploadKind } from '@boromtech/domain'
+import { useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
+import { run, signIn, signOut, upload, useBoard, type Board, type SignInError } from './api'
 
 type MemberBoard = Extract<Board, { state: 'member' }>
 
@@ -67,6 +67,8 @@ function Workspace({ board }: { board: MemberBoard }) {
 
   const toReview = tasks.filter((t) => t.status === 'submitted' || t.status === 'approved')
   const mine = tasks.filter((t) => t.assigneeUid === me.uid)
+  const briefs = new Map(jobs.map((j) => [j.id, j.files]))
+  const grid = (list: Task[], empty: string) => <TaskGrid tasks={list} me={me} briefs={briefs} empty={empty} />
   const counts: Partial<Record<Tab, number>> = {
     Review: toReview.length,
     'Open tasks': tasks.filter((t) => t.status === 'open').length,
@@ -89,7 +91,7 @@ function Workspace({ board }: { board: MemberBoard }) {
             ))}
           </nav>
           <div className="me">
-            {me.photo && <img src={me.photo} alt="" referrerPolicy="no-referrer" />}
+            {me.photo && <img src={me.photo} alt="" width={32} height={32} />}
             <span className="me-name">
               {me.name}
               <small>{me.role === 'admin' ? 'Admin' : 'Freelancer'}</small>
@@ -110,10 +112,10 @@ function Workspace({ board }: { board: MemberBoard }) {
           </p>
         )}
         <h2 className="title">{tab}</h2>
-        {tab === 'Jobs' && <JobsView jobs={jobs} tasks={tasks} />}
-        {tab === 'Review' && <TaskGrid tasks={toReview} empty="Nothing waiting for review." />}
-        {tab === 'Open tasks' && <TaskGrid tasks={tasks.filter((t) => t.status === 'open')} empty="No open tasks right now. New ones appear here as soon as they're posted." />}
-        {tab === 'My tasks' && <TaskGrid tasks={mine} empty="You haven't claimed any tasks yet. Pick one from Open tasks." />}
+        {tab === 'Jobs' && <JobsView jobs={jobs} tasks={tasks} me={me} />}
+        {tab === 'Review' && grid(toReview, 'Nothing waiting for review.')}
+        {tab === 'Open tasks' && grid(tasks.filter((t) => t.status === 'open'), "No open tasks right now. New ones appear here as soon as they're posted.")}
+        {tab === 'My tasks' && grid(mine, "You haven't claimed any tasks yet. Pick one from Open tasks.")}
         {tab === 'Leaderboard' && <Leaderboard members={members} tasks={tasks} me={me} />}
         {tab === 'Invites' && <InvitesView invites={invites} />}
       </main>
@@ -121,7 +123,7 @@ function Workspace({ board }: { board: MemberBoard }) {
   )
 }
 
-function JobsView({ jobs, tasks }: { jobs: Job[]; tasks: Task[] }) {
+function JobsView({ jobs, tasks, me }: { jobs: Job[]; tasks: Task[]; me: Member }) {
   const [form, setForm] = useState({ title: '', customer: '', description: '', customerDeadline: toDateInput(Date.now() + 30 * DAY) })
   const submit = async (e: FormEvent) => {
     e.preventDefault()
@@ -151,13 +153,13 @@ function JobsView({ jobs, tasks }: { jobs: Job[]; tasks: Task[] }) {
       </form>
       {jobs.length === 0 && <p className="muted">No jobs yet. Create one above, then split it into tasks.</p>}
       {jobs.map((job) => (
-        <JobPanel key={job.id} job={job} tasks={tasks.filter((t) => t.jobId === job.id)} />
+        <JobPanel key={job.id} job={job} tasks={tasks.filter((t) => t.jobId === job.id)} me={me} />
       ))}
     </>
   )
 }
 
-function JobPanel({ job, tasks }: { job: Job; tasks: Task[] }) {
+function JobPanel({ job, tasks, me }: { job: Job; tasks: Task[]; me: Member }) {
   const blank = () => ({ title: '', description: '', payout: '', freelancerDeadline: defaultFreelancerDeadline(job.customerDeadline) })
   const [draft, setDraft] = useState(blank)
   const verified = tasks.filter((t) => t.status === 'approved' || t.status === 'paid').length
@@ -165,6 +167,11 @@ function JobPanel({ job, tasks }: { job: Job; tasks: Task[] }) {
   const add = async (e: FormEvent) => {
     e.preventDefault()
     await run('create_task', { jobId: job.id, ...draft, payout: Number(draft.payout) }).then(() => setDraft(blank()), ignore)
+  }
+  const briefs = usePicker('brief', 20)
+  const attach = async (e: FormEvent) => {
+    e.preventDefault()
+    await briefs.send((fileIds) => run('attach_files', { jobId: job.id, fileIds }))
   }
   return (
     <section className="panel">
@@ -185,10 +192,11 @@ function JobPanel({ job, tasks }: { job: Job; tasks: Task[] }) {
         </div>
       </div>
       {job.description && <p className="job-desc">{job.description}</p>}
+      <Attachments label="Brief" files={job.files} onRemove={detach} />
       {tasks.length > 0 && (
         <div className="grid">
           {tasks.map((t) => (
-            <TaskItem key={t.id} task={t} compact />
+            <TaskItem key={t.id} task={t} me={me} compact />
           ))}
         </div>
       )}
@@ -207,6 +215,15 @@ function JobPanel({ job, tasks }: { job: Job; tasks: Task[] }) {
         </Field>
         <Button type="submit">Add task</Button>
       </form>
+      <form className="add-task" onSubmit={attach}>
+        <Field label="Briefs and references" hint={describe('brief')}>
+          {briefs.input(`brief-files-${job.id}`)}
+        </Field>
+        <Button type="submit" disabled={briefs.files.length === 0 || briefs.busy}>
+          {briefs.label('Attach to job', 'Attaching…')}
+        </Button>
+        {briefs.picked}
+      </form>
     </section>
   )
 }
@@ -223,23 +240,35 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   )
 }
 
-function TaskGrid({ tasks, empty }: { tasks: Task[]; empty: string }) {
+function TaskGrid({ tasks, me, briefs, empty }: { tasks: Task[]; me: Member; briefs: Map<string, Attachment[]>; empty: string }) {
   if (tasks.length === 0) return <p className="empty">{empty}</p>
   return (
     <div className="grid">
       {tasks.map((t) => (
-        <TaskItem key={t.id} task={t} />
+        <TaskItem key={t.id} task={t} me={me} briefs={briefs.get(t.jobId)} />
       ))}
     </div>
   )
 }
 
-function TaskItem({ task, compact }: { task: Task; compact?: boolean }) {
+/** `briefs`: the job's files, shown on the card wherever the job itself isn't (everything but the Jobs tab). */
+function TaskItem({ task, me, briefs = [], compact }: { task: Task; me: Member; briefs?: Attachment[]; compact?: boolean }) {
   const { actions } = task
   const [url, setUrl] = useState('')
   const [note, setNote] = useState('')
   const [grade, setGrade] = useState(4)
   const [feedback, setFeedback] = useState('')
+  const evidence = usePicker('submission', 10)
+  const submit = async (e: FormEvent) => {
+    e.preventDefault()
+    await evidence.send((fileIds) => run('submit_task', { taskId: task.id, url, note, ...(fileIds.length > 0 && { fileIds }) }))
+  }
+  // Admins may remove any attachment; the assignee, their own submission files while the task is back with
+  // them (cmd.detach_file decides; this only hides buttons it would refuse).
+  const removable = me.role === 'admin' || (task.assigneeUid === me.uid && (task.status === 'assigned' || task.status === 'changes'))
+  const taskBriefs = [...briefs, ...task.files.filter((f) => f.kind === 'brief')]
+  const submitted = task.files.filter((f) => f.kind === 'submission')
+  const hasFiles = taskBriefs.length > 0 || submitted.length > 0
 
   return (
     <TaskCard
@@ -254,25 +283,32 @@ function TaskItem({ task, compact }: { task: Task; compact?: boolean }) {
       review={task.review}
       compact={compact}
     >
-      {actions.length > 0 && (
+      {(actions.length > 0 || hasFiles) && (
         <>
+          <Attachments label="Brief" files={taskBriefs} onRemove={me.role === 'admin' ? detach : undefined} />
+          <Attachments label="Files" files={submitted} onRemove={removable ? detach : undefined} />
           {actions.includes('claim') && (
             <Button variant="primary" onClick={() => run('claim_task', { taskId: task.id }).catch(ignore)}>
               Claim task
             </Button>
           )}
           {actions.includes('submit') && (
-            <form
-              className="stack"
-              onSubmit={(e) => {
-                e.preventDefault()
-                run('submit_task', { taskId: task.id, url, note }).catch(ignore)
-              }}
-            >
-              <input id={`sub-url-${task.id}`} required type="url" placeholder="https:// link to your work" aria-label="Link to your work" value={url} onChange={(e) => setUrl(e.target.value)} />
+            <form className="stack" onSubmit={submit}>
+              <input
+                id={`sub-url-${task.id}`}
+                required={evidence.files.length === 0}
+                type="url"
+                placeholder={evidence.files.length ? 'https:// link (optional)' : 'https:// link to your work'}
+                aria-label="Link to your work"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+              {evidence.input(`sub-files-${task.id}`, 'Files for the reviewer')}
+              {evidence.picked}
+              <span className="muted small">A link, files ({describe('submission')}), or both.</span>
               <input id={`sub-note-${task.id}`} placeholder="Note for the reviewer" aria-label="Note for the reviewer" value={note} onChange={(e) => setNote(e.target.value)} />
-              <Button variant="primary" type="submit">
-                {task.status === 'changes' ? 'Resubmit for review' : 'Submit for review'}
+              <Button variant="primary" type="submit" disabled={evidence.busy}>
+                {evidence.label(task.status === 'changes' ? 'Resubmit for review' : 'Submit for review', 'Submitting…')}
               </Button>
             </form>
           )}
@@ -299,6 +335,117 @@ function TaskItem({ task, compact }: { task: Task; compact?: boolean }) {
       )}
     </TaskCard>
   )
+}
+
+// ---- attachments ------------------------------------------------------------------------------------
+
+const detach = (f: Attachment) => run('detach_file', { fileId: f.id }).catch(ignore)
+
+/** Thumbnails for images (sized up front, so nothing shifts as they load), a named link for PDFs and ZIPs. */
+function Attachments({ label, files, onRemove }: { label: string; files: Attachment[]; onRemove?: (f: Attachment) => void }) {
+  if (files.length === 0) return null
+  return (
+    <div className="attachments">
+      <span className="attachments-label">{label}</span>
+      <ul>
+        {files.map((f) => (
+          <li key={f.id}>
+            {f.thumbSrc ? (
+              <a href={f.src} target="_blank" rel="noreferrer" title={f.name}>
+                <img src={f.thumbSrc} alt={f.name} loading="lazy" decoding="async" width={f.width ?? 1} height={f.height ?? 1} />
+              </a>
+            ) : (
+              <a className="file" href={f.src} target="_blank" rel="noreferrer">
+                {f.name}
+                {f.bytes !== null && <span className="muted"> · {megabytes(f.bytes)}</span>}
+              </a>
+            )}
+            {onRemove && (
+              <Button variant="ghost" size="sm" aria-label={`Remove ${f.name}`} onClick={() => onRemove(f)}>
+                Remove
+              </Button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+const megabytes = (n: number) => (n < 1048576 ? `${Math.max(1, Math.round(n / 1024))} KB` : `${(n / 1048576).toFixed(1)} MB`)
+
+// Extensions as well as types in `accept`, for systems that label a ZIP or PDF oddly.
+const FILE_TYPES: Record<string, { name: string; ext: string[] }> = {
+  'image/jpeg': { name: 'JPG', ext: ['.jpg', '.jpeg'] },
+  'image/png': { name: 'PNG', ext: ['.png'] },
+  'application/pdf': { name: 'PDF', ext: ['.pdf'] },
+  'application/zip': { name: 'ZIP', ext: ['.zip'] },
+}
+
+/** e.g. "JPG, PNG, PDF or ZIP, up to 15 MB each". */
+function describe(kind: UploadKind): string {
+  const names = UPLOAD_RULES[kind].mimes.map((m) => FILE_TYPES[m].name)
+  return `${names.slice(0, -1).join(', ')} or ${names.at(-1)}, up to ${UPLOAD_RULES[kind].maxBytes / 1048576} MB each`
+}
+
+// Files the user picked but hasn't sent. Uploaded ids are remembered per File, so retrying a failed command
+// doesn't upload the same file twice (an upload stays attachable for a day).
+const uploaded = new WeakMap<File, string>()
+
+/** A multi-file picker that uploads on send and reports progress. Failures show on the board's error banner. */
+function usePicker(kind: UploadKind, max: number) {
+  const [files, setFiles] = useState<File[]>([])
+  const [dropped, setDropped] = useState(0)
+  const [progress, setProgress] = useState<number | null>(null)
+  const [generation, setGeneration] = useState(0) // remounts the <input type=file>, which can't be cleared by value
+
+  const pick = (e: ChangeEvent<HTMLInputElement>) => {
+    const all = [...(e.target.files ?? [])]
+    setFiles(all.slice(0, max))
+    setDropped(Math.max(0, all.length - max))
+  }
+
+  /** Uploads every picked file, then runs `command` with their ids. Clears the picker when it succeeds. */
+  const send = async (command: (fileIds: string[]) => Promise<unknown>) => {
+    setProgress(0)
+    try {
+      const ids: string[] = []
+      for (const [i, f] of files.entries()) {
+        const id = uploaded.get(f) ?? (await upload(f, kind, (p) => setProgress((i + p) / files.length)))
+        uploaded.set(f, id)
+        ids.push(id)
+      }
+      setProgress(1)
+      await command(ids)
+      setFiles([])
+      setDropped(0)
+      setGeneration((g) => g + 1)
+    } catch {
+      // Already on the error banner.
+    } finally {
+      setProgress(null)
+    }
+  }
+
+  return {
+    files,
+    busy: progress !== null,
+    send,
+    label: (idle: string, finishing: string) => (progress === null ? idle : progress < 1 ? `Uploading… ${Math.round(progress * 100)}%` : finishing),
+    input: (id: string, ariaLabel?: string) => (
+      <input key={generation} id={id} type="file" multiple accept={UPLOAD_RULES[kind].mimes.flatMap((m) => [m, ...FILE_TYPES[m].ext]).join(',')} aria-label={ariaLabel} disabled={progress !== null} onChange={pick} />
+    ),
+    picked: files.length > 0 && (
+      <ul className="picked small">
+        {files.map((f, i) => (
+          <li key={i}>
+            {f.name} <span className="muted">· {megabytes(f.size)}</span>
+          </li>
+        ))}
+        {dropped > 0 && <li className="muted">Up to {max} files at a time; {dropped} not included.</li>}
+      </ul>
+    ),
+  }
 }
 
 function Leaderboard({ members, tasks, me }: { members: Member[]; tasks: Task[]; me: Member }) {
