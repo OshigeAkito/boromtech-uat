@@ -1,5 +1,5 @@
-/* BoromTech CI — generated from tokens.json by build.mjs */
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+SC:wght@400;700&display=swap");
+/* BoromTech CI — generated from tokens.json and ../tokens.json by build.mjs */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;700&display=swap");
 
 @font-face { font-family: "Bricolage Grotesque"; src: url("fonts/BricolageGrotesque-ExtraBold-latin.woff2") format("woff2"); font-weight: 800; font-display: swap; }
 
@@ -35,6 +35,22 @@
   --status-good: var(--good);
   --status-warn: var(--warn);
   --status-bad: var(--bad);
+  --surface-sunken: #eceef2;
+  --surface-raised: #ffffff;
+  --line-strong: #8d8b93;
+  --ink-muted: #5f6068;
+  --brand: #e56e3f;
+  --brand-deep: #c9592c;
+  --on-brand: #1a1b22;
+  --brand-strong: #b4471d;
+  --brand-soft: #fce9e1;
+  --night-ink: #f2f1ee;
+  --night-ink-soft: #b9bac6;
+  --success: #1f7a4d;
+  --warning: #8a5a00;
+  --danger: #c0362c;
+  --link: var(--brand-strong);
+  --focus-ring: var(--brand-strong);
 }
 
 [data-theme="dark"] {
@@ -49,6 +65,15 @@
   --status-good: #5ccb8f;
   --status-warn: #e3b341;
   --status-bad: #ff7b72;
+  --surface-sunken: #191a20;
+  --surface-raised: #1f2027;
+  --line-strong: #6b6c76;
+  --ink-muted: #a3a3ad;
+  --brand-strong: #f2916a;
+  --brand-soft: #3a1f14;
+  --success: #5ccb8f;
+  --warning: #e3b341;
+  --danger: #ff7b72;
   color-scheme: dark;
 }
 
@@ -60,10 +85,21 @@
   --space-margin: 36px;
   --space-l: 48px;
   --space-section: 180px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
   --radius-none: 0;
   --radius-pill: 999px;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
   --font-display: "Bricolage Grotesque", "IBM Plex Sans Thai", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-sans: "IBM Plex Sans Thai", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   --font-text: "IBM Plex Sans Thai", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
   --font-text-vi: "IBM Plex Sans", "IBM Plex Sans Thai", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
 }

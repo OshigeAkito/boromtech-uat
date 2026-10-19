@@ -1,0 +1,182 @@
+/* BoromTech CI — generated from tokens.json and ../tokens.json by build.mjs */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;700&display=swap");
+
+@font-face { font-family: "Bricolage Grotesque"; src: url("fonts/BricolageGrotesque-ExtraBold-latin.woff2") format("woff2"); font-weight: 800; font-display: swap; }
+
+:root, [data-theme="light"] {
+  --night: #1e2235;
+  --night-2: #262b42;
+  --orange: #e56e3f;
+  --orange-deep: #c9592c;
+  --rust: #b4471d;
+  --soft: #fce9e1;
+  --ink: #1a1b22;
+  --ink-2: #24252d;
+  --paper: #ffffff;
+  --sunken: #eceef2;
+  --on-dark: #f2f1ee;
+  --on-dark-soft: #b9bac6;
+  --muted: #5f6068;
+  --line: #e6e3df;
+  --line-night: #3a4060;
+  --good: #1f7a4d;
+  --warn: #8a5a00;
+  --bad: #c0362c;
+  --surface: var(--paper);
+  --surface-2: var(--sunken);
+  --surface-inverse: var(--night);
+  --text: var(--ink);
+  --text-soft: var(--muted);
+  --seal: var(--orange);
+  --accent-text: var(--rust);
+  --on-orange: var(--ink);
+  --hairline: var(--line);
+  --focus: var(--rust);
+  --status-good: var(--good);
+  --status-warn: var(--warn);
+  --status-bad: var(--bad);
+  --surface-sunken: #eceef2;
+  --surface-raised: #ffffff;
+  --line-strong: #8d8b93;
+  --ink-muted: #5f6068;
+  --brand: #e56e3f;
+  --brand-deep: #c9592c;
+  --on-brand: #1a1b22;
+  --brand-strong: #b4471d;
+  --brand-soft: #fce9e1;
+  --night-ink: #f2f1ee;
+  --night-ink-soft: #b9bac6;
+  --success: #1f7a4d;
+  --warning: #8a5a00;
+  --danger: #c0362c;
+  --link: var(--brand-strong);
+  --focus-ring: var(--brand-strong);
+}
+
+[data-theme="dark"] {
+  --surface: var(--night);
+  --surface-2: var(--night-2);
+  --surface-inverse: var(--paper);
+  --text: var(--on-dark);
+  --text-soft: var(--on-dark-soft);
+  --accent-text: var(--orange);
+  --hairline: var(--line-night);
+  --focus: var(--orange);
+  --status-good: #5ccb8f;
+  --status-warn: #e3b341;
+  --status-bad: #ff7b72;
+  --surface-sunken: #191a20;
+  --surface-raised: #1f2027;
+  --line-strong: #6b6c76;
+  --ink-muted: #a3a3ad;
+  --brand-strong: #f2916a;
+  --brand-soft: #3a1f14;
+  --success: #5ccb8f;
+  --warning: #e3b341;
+  --danger: #ff7b72;
+  color-scheme: dark;
+}
+
+:root {
+  --space-xs: 4px;
+  --space-s: 8px;
+  --space-m: 16px;
+  --space-gap: 28px;
+  --space-margin: 36px;
+  --space-l: 48px;
+  --space-section: 180px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-none: 0;
+  --radius-pill: 999px;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --font-display: "Bricolage Grotesque", "IBM Plex Sans Thai", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-sans: "IBM Plex Sans Thai", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --font-text: "IBM Plex Sans Thai", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --font-text-vi: "IBM Plex Sans", "IBM Plex Sans Thai", system-ui, sans-serif;
+}
+
+/* -- job-board components (../components/bundle.css) -- */
+.bt-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; padding: var(--space-4); }
+.bt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-4); padding: var(--space-4); align-items: start; }
+
+.bt-btn { font: inherit; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); border-radius: var(--radius-md); border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); cursor: pointer; white-space: nowrap; transition: background-color .12s, border-color .12s; }
+.bt-btn-md { height: 40px; padding: 0 var(--space-4); font-size: 15px; }
+.bt-btn-sm { height: 32px; padding: 0 var(--space-3); font-size: 13px; }
+.bt-btn:hover { background: var(--surface-sunken); }
+.bt-btn-primary { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.bt-btn-primary:hover { background: var(--brand); border-color: var(--on-brand); }
+.bt-btn-ghost { background: transparent; border-color: transparent; color: var(--ink-muted); }
+.bt-btn-ghost:hover { color: var(--ink); }
+.bt-btn-danger { background: transparent; border-color: transparent; color: var(--danger); }
+.bt-btn-danger:hover { background: var(--surface-sunken); }
+.bt-btn:disabled { opacity: .45; cursor: not-allowed; }
+.bt-btn:focus-visible, .bt-star:focus-visible, .bt-task-link:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+.bt-pill { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px 0 8px; border-radius: var(--radius-pill); border: 1px solid var(--line); background: var(--surface-raised); font-size: 12px; font-weight: 600; letter-spacing: .02em; color: var(--ink); white-space: nowrap; }
+.bt-pill-dot { width: 8px; height: 8px; border-radius: var(--radius-pill); background: var(--ink-muted); flex: none; }
+.bt-tone-brand { background: var(--brand-soft); border-color: transparent; color: var(--brand-strong); }
+.bt-tone-brand .bt-pill-dot { background: var(--brand); }
+.bt-tone-warning .bt-pill-dot { background: var(--warning); }
+.bt-tone-warning { color: var(--warning); }
+.bt-tone-danger .bt-pill-dot { background: var(--danger); }
+.bt-tone-danger { color: var(--danger); }
+.bt-tone-success-ring .bt-pill-dot { background: transparent; box-shadow: inset 0 0 0 2px var(--success); }
+.bt-tone-success-ring { color: var(--success); }
+.bt-tone-success .bt-pill-dot { background: var(--success); }
+.bt-tone-success { color: var(--success); }
+
+.bt-stars { display: inline-flex; gap: 2px; line-height: 1; }
+.bt-star { font-size: 22px; color: var(--line-strong); background: none; border: 0; padding: 2px; border-radius: var(--radius-sm); font-family: system-ui, sans-serif; }
+button.bt-star { cursor: pointer; }
+button.bt-star:hover { color: var(--brand); }
+.bt-star-on { color: var(--brand); }
+.bt-stars-sm .bt-star { font-size: 15px; padding: 0; }
+
+.bt-tier { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 13px; font-weight: 600; color: var(--ink); }
+.bt-tier-muted { color: var(--ink-muted); font-weight: 400; }
+.bt-tier-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+.bt-tier-bar { width: 4px; border-radius: 1px; background: var(--line); }
+.bt-tier-bar:nth-child(1) { height: 6px; } .bt-tier-bar:nth-child(2) { height: 10px; } .bt-tier-bar:nth-child(3) { height: 14px; }
+.bt-tier-bar-on { background: var(--brand); }
+.bt-tier-score { font-family: var(--font-mono); font-weight: 500; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+
+.bt-task { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-lg); min-width: 0; }
+.bt-task-compact { background: var(--surface-sunken); border-color: transparent; }
+.bt-task-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.bt-task-payout { font-family: var(--font-mono); font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.bt-task-titles { display: flex; flex-direction: column; gap: 2px; }
+.bt-task-title { margin: 0; font-size: 17px; line-height: 24px; font-weight: 600; text-wrap: balance; }
+.bt-task-project { margin: 0; font-size: 13px; line-height: 20px; color: var(--ink-muted); }
+.bt-task-desc { margin: 0; font-size: 14px; line-height: 22px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.bt-task-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--line); font-size: 13px; line-height: 20px; color: var(--ink-muted); }
+.bt-task-due { font-variant-numeric: tabular-nums; }
+.bt-soon { color: var(--warning); font-weight: 600; }
+.bt-late { color: var(--danger); font-weight: 600; }
+.bt-task-who { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); }
+.bt-avatar { width: 22px; height: 22px; border-radius: var(--radius-pill); background: var(--night); color: var(--night-ink); font-size: 10px; font-weight: 700; display: inline-grid; place-items: center; letter-spacing: .02em; }
+.bt-task-link { font-size: 13px; color: var(--link); overflow-wrap: anywhere; text-underline-offset: 2px; border-radius: var(--radius-sm); }
+.bt-task-review { display: flex; flex-direction: column; gap: 4px; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); background: var(--surface-sunken); font-size: 13px; line-height: 20px; }
+.bt-task-review-changes strong { color: var(--danger); font-weight: 600; }
+.bt-task-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.bt-task-actions > .bt-btn-primary { flex: 1; }
+
+/* Job-board components carry their own font and card text colour (the job-board sheet set them on body). */
+:is(.bt-btn, .bt-pill, .bt-task, .bt-stars, .bt-tier) { font-family: var(--font-sans); }
+.bt-task { color: var(--ink); }
+
+/* Job-board components keep their own dark values for tokens the CI holds constant. */
+[data-theme="dark"] :is(.bt-btn, .bt-pill, .bt-task, .bt-stars, .bt-tier) {
+  --surface: #121318;
+  --line: #2e2f37;
+  --ink: #f2f1ee;
+  --night: #2f3554;
+}

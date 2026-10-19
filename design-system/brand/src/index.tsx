@@ -199,3 +199,6 @@ export function HeroSeal({ tone = 'orange', scale = 1.24, x = 0.88, y = 0.55, cl
     </svg>
   )
 }
+
+// The job-board components, from the product system the job-board app builds on.
+export * from '../../components/src/index'

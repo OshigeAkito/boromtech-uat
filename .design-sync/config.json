@@ -10,7 +10,7 @@
     "seal.md",
     "rules.md"
   ],
-  "cssEntry": "tokens.css",
+  "cssEntry": "brand.css",
   "overrides": {
     "AppIcon": {
       "cardMode": "column"
@@ -25,6 +25,12 @@
       "cardMode": "column"
     },
     "Wordmark": {
+      "cardMode": "column"
+    },
+    "TaskCard": {
+      "cardMode": "column"
+    },
+    "Button": {
       "cardMode": "column"
     }
   },

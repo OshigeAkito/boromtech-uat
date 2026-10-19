@@ -7,9 +7,12 @@
     "strict": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "rootDir": "src",
-    "outDir": "dist",
+    "rootDir": "..",
+    "outDir": "dist/types",
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "../components/src"
+  ]
 }
