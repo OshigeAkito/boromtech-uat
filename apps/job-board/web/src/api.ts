@@ -144,6 +144,9 @@ class Store {
   }
 
   private start(): void {
+    // Claims index.html's /api/warm preload (same URL and credentials mode), so the browser doesn't warn that
+    // it went unused. The request itself already ran while the JS downloaded; this costs no second one.
+    void fetch('/api/warm', { credentials: 'include' }).catch(() => undefined)
     const params = new URLSearchParams(location.search)
     const authError = params.get('auth_error')
     if (authError) {
