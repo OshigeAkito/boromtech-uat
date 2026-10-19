@@ -35,4 +35,4 @@ jobs:
       - run: npm run build
       - run: node scripts/check-copy.mjs
       - run: npm run upload-media # no-op without MEDIA_ORIGIN
-      - run: npx wrangler deploy ${MEDIA_ORIGIN:+--env production}
+      - run: npx wrangler deploy --env="${MEDIA_ORIGIN:+production}" # "" is the top-level (workers.dev) config

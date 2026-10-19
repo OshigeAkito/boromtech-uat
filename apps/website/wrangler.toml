@@ -3,7 +3,7 @@
 # visitors to their language before the page loads.
 #
 # Two ways to deploy, one switch (DEPLOY.md):
-#   npx wrangler deploy                    boromtech-website.<account>.workers.dev; images ship with the site.
+#   npx wrangler deploy --env=""          boromtech-website.<account>.workers.dev; images ship with the site.
 #   npx wrangler deploy --env production   the same Worker on boromtech.com, once that zone is on Cloudflare.
 #                                          Build with MEDIA_ORIGIN=https://media.boromtech.com first, so images
 #                                          come from R2 bt-public (astro.config.mjs, scripts/upload-media.mjs).

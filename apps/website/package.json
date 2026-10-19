@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "upload-media": "node scripts/upload-media.mjs",
-    "deploy": "astro build && node scripts/check-copy.mjs && wrangler deploy",
+    "deploy": "astro build && node scripts/check-copy.mjs && wrangler deploy --env=\"\"",
     "deploy:production": "export MEDIA_ORIGIN=https://media.boromtech.com && astro build && node scripts/check-copy.mjs && node scripts/upload-media.mjs && wrangler deploy --env production"
   },
   "dependencies": {
