@@ -10,6 +10,7 @@ main = "worker.mjs"
 compatibility_date = "2026-10-01"
 routes = [{ pattern = "boromtech.com", custom_domain = true }]
 workers_dev = false # one public copy of the site, on its own domain
+preview_urls = false
 
 [assets]
 directory = "dist"
