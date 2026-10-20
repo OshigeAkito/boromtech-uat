@@ -1,13 +1,12 @@
-# Push to main → build the marketing site and deploy it to Cloudflare (apps/website/wrangler.toml).
+# Push to main → build the marketing site and deploy it to boromtech.com (apps/website/wrangler.toml), plus the
+# www.boromtech.com → apex redirect Worker (apps/website/www/wrangler.toml).
 #
-# One switch, the GitHub variable MEDIA_ORIGIN (apps/website/DEPLOY.md):
-#   unset                              deploy to boromtech-website.<account>.workers.dev, images inside the Worker.
-#   https://media.boromtech.com        images go to R2 bt-public first (so no live page points at a missing image),
-#                                      then deploy with --env production: the boromtech.com custom domain.
+# Images ship inside the Worker unless the GitHub variable MEDIA_ORIGIN is set (https://media.boromtech.com, once
+# R2 bt-public has that custom domain). Then they go to R2 first, so no live page points at a missing image.
 #
-# GitHub secret:   CLOUDFLARE_API_TOKEN (Workers Scripts edit; for production also R2 write on bt-public,
-#                  Workers Routes and DNS edit on the boromtech.com zone)
-# GitHub variables: CLOUDFLARE_ACCOUNT_ID, MEDIA_ORIGIN (once boromtech.com and media.boromtech.com exist)
+# GitHub secret:   CLOUDFLARE_API_TOKEN (Workers Scripts edit; Workers Routes and DNS edit on the boromtech.com
+#                  zone; R2 write on bt-public if MEDIA_ORIGIN is set)
+# GitHub variables: CLOUDFLARE_ACCOUNT_ID, MEDIA_ORIGIN (optional)
 name: website
 on:
   push:
@@ -35,4 +34,5 @@ jobs:
       - run: npm run build
       - run: node scripts/check-copy.mjs
       - run: npm run upload-media # no-op without MEDIA_ORIGIN
-      - run: npx wrangler deploy --env="${MEDIA_ORIGIN:+production}" # "" is the top-level (workers.dev) config
+      - run: npx wrangler deploy
+      - run: npx wrangler deploy -c www/wrangler.toml
