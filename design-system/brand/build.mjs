@@ -17,12 +17,13 @@ const themed = t.color.tokens
   .filter((k) => typeof k.value !== 'string' && k.value[second] && k.value[second] !== k.value[first])
   .map((k) => `  --${k.name}: ${value(k, second)};`)
   .join('\n')
-const lengths = ['spacing', 'radius'].flatMap((f) => t[f].tokens.map((k) => `  --${k.name}: ${k.value};`)).join('\n')
+const lengths = ['spacing', 'radius', 'motion'].flatMap((f) => t[f].tokens.map((k) => `  --${k.name}: ${k.value};`)).join('\n')
 const families = Object.entries(t.type.families).map(([k, s]) => `  --font-${k}: ${s};`).join('\n')
 
 writeFileSync(`${dir}tokens.css`, `/* ${t.name} — generated from tokens.json by build.mjs */
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+SC:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400..700&family=IBM+Plex+Sans+Thai:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+SC:wght@400;700&display=swap");
 
+/* Bricolage 400-700 comes from Google Fonts; this static cut is the only 800, so the wordmark always draws from it. */
 @font-face { font-family: "Bricolage Grotesque"; src: url("fonts/BricolageGrotesque-ExtraBold-latin.woff2") format("woff2"); font-weight: 800; font-display: swap; }
 
 :root, [data-theme="${first}"] {

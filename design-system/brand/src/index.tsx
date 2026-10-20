@@ -6,12 +6,13 @@ const INK = {
   orange: 'var(--orange, #e56e3f)',
   rust: 'var(--rust, #b4471d)',
   ink: 'var(--ink, #1a1b22)',
+  navy: 'var(--night, #1e2235)',
   light: 'var(--on-dark, #f2f1ee)',
   night: 'var(--night, #1e2235)',
 } as const
 
 export type SealTone = 'orange' | 'rust' | 'ink' | 'light'
-export type WordmarkTone = 'ink' | 'light'
+export type WordmarkTone = 'navy' | 'light' | 'ink'
 export type LockupGround = 'night' | 'paper' | 'soft' | 'mono'
 
 const label = (title?: string) => (title ? { role: 'img', 'aria-label': title } : { 'aria-hidden': true })
@@ -60,7 +61,7 @@ const wordmarkPaths = (fill: string, x = 0, baseline = CAP) => (
 )
 
 export interface WordmarkProps {
-  /** `ink` on paper, sunken and soft; `light` on night. Never orange. */
+  /** `navy` (Deep Navy) on ivory, paper, sunken and soft; `light` (Warm Ivory) on night; `ink` for single-colour print. Never orange. */
   tone?: WordmarkTone
   /** Cap height in px (the SVG's height). The width follows at 8.1 times the height. Minimum 10 (80px wide). */
   height?: number
@@ -71,10 +72,10 @@ export interface WordmarkProps {
 }
 
 /**
- * The BoromTech wordmark, outlined from Bricolage Grotesque ExtraBold at -0.03em with the site's kerning.
- * Use it alone in a nav or wherever the big cropped seal is already in view.
+ * The BoromTech wordmark, the primary logo: outlined from Bricolage Grotesque ExtraBold at -0.03em with the site's kerning.
+ * Keep clear space of at least its cap height (the height of the B) on every side.
  */
-export function Wordmark({ tone = 'ink', height = 24, title = 'BoromTech', className, style }: WordmarkProps) {
+export function Wordmark({ tone = 'navy', height = 24, title = 'BoromTech', className, style }: WordmarkProps) {
   return (
     <svg
       {...label(title)}
@@ -95,13 +96,13 @@ const K = D / 950
 const LOCKUP_WIDTH = D + 150 * K + WORDMARK_WIDTH
 const LOCKUP_INKS: Record<LockupGround, readonly [string, string]> = {
   night: [INK.orange, INK.light],
-  paper: [INK.orange, INK.ink],
-  soft: [INK.rust, INK.ink],
+  paper: [INK.orange, INK.navy],
+  soft: [INK.rust, INK.navy],
   mono: [INK.ink, INK.ink],
 }
 
 export interface LockupProps {
-  /** The ground it sits on, which picks the inks: `night` (orange + light), `paper` (orange + ink), `soft` (rust + ink), `mono` (all ink, single-colour print). It does not paint a background. */
+  /** The ground it sits on, which picks the inks: `night` (orange + light), `paper` (orange + navy), `soft` (rust + navy), `mono` (all ink, single-colour print). It does not paint a background. */
   ground?: LockupGround
   /** Height in px; the width is 7.64 times the height. Minimum 24. */
   height?: number
@@ -112,8 +113,8 @@ export interface LockupProps {
 }
 
 /**
- * The seal set before the wordmark. Use it on documents, email signatures, card backs and partner slides,
- * where the seal is not already on the page.
+ * The seal set before the wordmark. Not part of Brand Guidelines v1.0, whose logo is the wordmark alone; kept for
+ * small square-ish slots (email signatures, partner slides) where the seal is not already on the page.
  */
 export function Lockup({ ground = 'paper', height = 32, title = 'BoromTech', className, style }: LockupProps) {
   const [seal, word] = LOCKUP_INKS[ground]
@@ -174,7 +175,7 @@ export interface HeroSealProps {
 }
 
 /**
- * The brand's signature picture: the seal huge and cropped by the right edge of a night hero. Place it as the
+ * The brand's signature picture: the ring huge and cropped by the right edge of a navy cover or hero. It never sits over text. Place it as the
  * first child of a container with `position: relative; overflow: hidden` and a night background; it is decorative.
  */
 export function HeroSeal({ tone = 'orange', scale = 1.24, x = 0.88, y = 0.55, className, style }: HeroSealProps) {
