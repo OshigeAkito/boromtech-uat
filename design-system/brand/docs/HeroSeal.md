@@ -1,11 +1,11 @@
 ---
 category: Logo
 ---
-The brand's signature picture: the seal huge and cropped by the right edge of a night hero, exactly as on boromtech.co.
+The brand's signature picture: the ring huge and cropped by the right edge of a Deep Navy cover or hero, as on the website and the guideline cover.
 
 - Put it first inside a container with `position: relative`, `overflow: hidden` and `background: var(--night)`; give the copy after it `position: relative` so it stacks above.
-- Defaults match the website: 1.24 × the container height, centred 88% across and 55% down. Keep the headline left of the ring.
-- Use it on heroes, business card fronts, social posts and slide covers. Never crop from the left, never more than one seal per view.
+- Defaults match the website: 1.24 × the container height, centred 88% across and 55% down. Keep the headline left of the ring: it never sits over text.
+- Use it on heroes, slide covers and section dividers, the business card's brand side and social posts. On `ivory` or `soft` it may stay `orange` as decoration. Never crop from the left, never more than one seal per view.
 
 ```jsx
 <section style={{ position: 'relative', overflow: 'hidden', background: 'var(--night)', color: 'var(--on-dark)', padding: '120px 5vw' }}>

@@ -1,6 +1,7 @@
 /* BoromTech CI — generated from tokens.json and ../tokens.json by build.mjs */
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400..700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;700&display=swap");
 
+/* Bricolage 400-700 comes from Google Fonts; this static cut is the only 800, so the wordmark always draws from it. */
 @font-face { font-family: "Bricolage Grotesque"; src: url("fonts/BricolageGrotesque-ExtraBold-latin.woff2") format("woff2"); font-weight: 800; font-display: swap; }
 
 :root, [data-theme="light"] {
@@ -12,9 +13,10 @@
   --soft: #fce9e1;
   --ink: #1a1b22;
   --ink-2: #24252d;
+  --ivory: #f2f1ee;
   --paper: #ffffff;
   --sunken: #eceef2;
-  --on-dark: #f2f1ee;
+  --on-dark: var(--ivory);
   --on-dark-soft: #b9bac6;
   --muted: #5f6068;
   --line: #e6e3df;
@@ -26,6 +28,7 @@
   --surface-2: var(--sunken);
   --surface-inverse: var(--night);
   --text: var(--ink);
+  --heading: var(--night);
   --text-soft: var(--muted);
   --seal: var(--orange);
   --accent-text: var(--rust);
@@ -58,6 +61,7 @@
   --surface-2: var(--night-2);
   --surface-inverse: var(--paper);
   --text: var(--on-dark);
+  --heading: var(--on-dark);
   --text-soft: var(--on-dark-soft);
   --accent-text: var(--orange);
   --hairline: var(--line-night);
@@ -97,11 +101,15 @@
   --radius-sm: 0;
   --radius-md: 0;
   --radius-lg: 0;
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-in-out: cubic-bezier(.7, 0, .2, 1);
+  --duration-press: 140ms;
+  --duration-slide: 500ms;
   --font-display: "Bricolage Grotesque", "IBM Plex Sans Thai", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --font-sans: "IBM Plex Sans Thai", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --font-sans: "Bricolage Grotesque", "IBM Plex Sans Thai", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-  --font-text: "IBM Plex Sans Thai", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
-  --font-text-vi: "IBM Plex Sans", "IBM Plex Sans Thai", system-ui, sans-serif;
+  --font-text: "Bricolage Grotesque", "IBM Plex Sans Thai", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --font-text-vi: "Bricolage Grotesque", "IBM Plex Sans", "IBM Plex Sans Thai", system-ui, sans-serif;
 }
 
 /* -- job-board components (../components/bundle.css) -- */

@@ -1,6 +1,7 @@
 {
   "name": "BoromTech CI",
   "version": 1,
+  "source": "BoromTech Brand Guidelines, version 1.0, October 2026",
   "color": {
     "themes": [
       {
@@ -16,7 +17,7 @@
       {
         "name": "night",
         "value": "#1e2235",
-        "usage": "The brand's dark ground: hero, footer, business card front, social posts. Text on it is on-dark (13.9:1) or on-dark-soft (8.2:1); the seal on it is orange (5.0:1)."
+        "usage": "Deep Navy, RGB 30 34 53. The main ground and the heading colour: covers, section dividers, hero, footer, the business card's brand side, social posts; on light grounds it sets headings and the wordmark (13.9:1 on ivory, 15.7:1 on paper). Text on it is on-dark (13.9:1) or on-dark-soft (8.2:1); the seal on it is orange (5.0:1)."
       },
       {
         "name": "night-2",
@@ -26,7 +27,7 @@
       {
         "name": "orange",
         "value": "#e56e3f",
-        "usage": "BoromTech Orange, the colour of the seal. On night: the seal and large accent text (5.0:1). On paper: the seal and fills only (3.2:1, never body text). Never on soft (2.7:1). Text on an orange fill is ink (5.4:1), never white (2.8:1)."
+        "usage": "Borom Orange, RGB 229 110 63. Accents, step numbers and actions: spend it only on what must be seen first. On night: the ring and accent text (5.0:1). On paper: the ring, large text and fills (3.2:1, never body text). On ivory (2.8:1) and soft (2.7:1): only as decoration (the cropped ring, a hairline), never as text or a functional mark. Text on an orange fill is ink (5.4:1), never white (2.8:1)."
       },
       {
         "name": "orange-deep",
@@ -36,12 +37,12 @@
       {
         "name": "rust",
         "value": "#b4471d",
-        "usage": "Orange as text on light grounds (5.4:1 on paper, 4.6:1 on soft) and the seal on soft. High severity in reports. Never on night (2.9:1)."
+        "usage": "Orange as text on light grounds (5.4:1 on paper, 4.8:1 on ivory, 4.6:1 on soft) and a small seal on soft or ivory. High severity in reports. Never on night (2.9:1)."
       },
       {
         "name": "soft",
         "value": "#fce9e1",
-        "usage": "The warm light ground for quiet sections and callouts. Text on it is ink (14.6:1) or muted (5.3:1); the seal on it is rust."
+        "usage": "Soft Peach, RGB 252 233 225. The secondary ground and highlight: quiet sections, callouts, highlighted rows. Text on it is ink (14.6:1) or muted (5.3:1); the seal on it is rust."
       },
       {
         "name": "ink",
@@ -54,9 +55,14 @@
         "usage": "Hover state of dark buttons on light grounds."
       },
       {
+        "name": "ivory",
+        "value": "#f2f1ee",
+        "usage": "Warm Ivory, RGB 242 241 238. Text on dark grounds, and the restful light ground: guideline and slide pages, diagrams, the business card's information side. Text on it is night or ink (13.9:1 / 15.2:1), muted (5.5:1), rust (4.8:1)."
+      },
+      {
         "name": "paper",
         "value": "#ffffff",
-        "usage": "The light ground: documents, reports, light sections, business card back."
+        "usage": "The plain light ground: documents, reports, web UI, dense detail. Text on it is ink or night."
       },
       {
         "name": "sunken",
@@ -65,8 +71,8 @@
       },
       {
         "name": "on-dark",
-        "value": "#f2f1ee",
-        "usage": "Text and the light seal on night (13.9:1) and night-2 (12.3:1)."
+        "value": "{ivory}",
+        "usage": "Warm Ivory as text, the wordmark and the light seal on night (13.9:1) and night-2 (12.3:1)."
       },
       {
         "name": "on-dark-soft",
@@ -76,7 +82,7 @@
       {
         "name": "muted",
         "value": "#5f6068",
-        "usage": "Secondary text on paper (6.3:1), sunken (5.4:1) and soft (5.3:1). Not on night (2.5:1)."
+        "usage": "Secondary text on paper (6.3:1), ivory (5.5:1), sunken (5.4:1) and soft (5.3:1): captions, job titles, meta lines. Not on night (2.5:1)."
       },
       {
         "name": "line",
@@ -136,6 +142,14 @@
         "usage": "Body text on surface and surface-2."
       },
       {
+        "name": "heading",
+        "value": {
+          "light": "{night}",
+          "dark": "{on-dark}"
+        },
+        "usage": "Headings and the wordmark on surface: Deep Navy on light grounds, Warm Ivory on night."
+      },
+      {
         "name": "text-soft",
         "value": {
           "light": "{muted}",
@@ -149,7 +163,7 @@
           "light": "{orange}",
           "dark": "{orange}"
         },
-        "usage": "The seal on surface: 3.2:1 on paper, 5.0:1 on night. On soft use rust instead."
+        "usage": "The ring on surface: 3.2:1 on paper, 5.0:1 on night. A small, functional ring on soft or ivory is rust; the big cropped ring may stay orange there as decoration."
       },
       {
         "name": "accent-text",
@@ -328,27 +342,28 @@
         "family": "Bricolage Grotesque",
         "file": "fonts/BricolageGrotesque-ExtraBold-latin.woff2",
         "weight": "800",
-        "style": "normal"
+        "style": "normal",
+        "usage": "The wordmark cut (weight 800). Weights 400 to 700 load from Google Fonts."
       }
     ],
     "families": {
       "display": "\"Bricolage Grotesque\", \"IBM Plex Sans Thai\", \"IBM Plex Sans\", \"Noto Sans SC\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
-      "sans": "\"IBM Plex Sans Thai\", \"IBM Plex Sans\", \"Noto Sans SC\", \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "sans": "\"Bricolage Grotesque\", \"IBM Plex Sans Thai\", \"IBM Plex Sans\", \"Noto Sans SC\", \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", system-ui, sans-serif",
       "mono": "\"IBM Plex Mono\", ui-monospace, Menlo, monospace",
-      "text": "\"IBM Plex Sans Thai\", \"IBM Plex Sans\", \"Noto Sans SC\", \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", system-ui, sans-serif",
-      "text-vi": "\"IBM Plex Sans\", \"IBM Plex Sans Thai\", system-ui, sans-serif"
+      "text": "\"Bricolage Grotesque\", \"IBM Plex Sans Thai\", \"IBM Plex Sans\", \"Noto Sans SC\", \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "text-vi": "\"Bricolage Grotesque\", \"IBM Plex Sans\", \"IBM Plex Sans Thai\", system-ui, sans-serif"
     },
     "groups": [
       {
         "name": "Display · Latin",
         "family": "display",
-        "note": "Bricolage Grotesque ExtraBold, the 96pt static cut the website ships (fonts/). Latin only: Thai and Chinese characters fall through to the text family.",
+        "note": "Bricolage Grotesque. Latin headings are Bold 700 (Google Fonts); the wordmark is ExtraBold 800, the 96pt static cut the website ships (fonts/). Latin only: Thai and Chinese fall through to IBM Plex Sans Thai and the CJK faces. Canva: font \"Bricolage Grotesque\"; the wordmark is Ultra Bold, letter spacing -30.",
         "styles": [
           {
             "name": "hero",
             "fontSize": "92px",
             "lineHeight": 1.12,
-            "fontWeight": 800,
+            "fontWeight": 700,
             "letterSpacing": "-0.025em",
             "sample": "AI can build it. Who will run it?",
             "usage": "One headline per page or poster. Fluid on the web: clamp(40px, 5.6vw, 92px)."
@@ -357,7 +372,7 @@
             "name": "title",
             "fontSize": "30px",
             "lineHeight": 1.25,
-            "fontWeight": 800,
+            "fontWeight": 700,
             "letterSpacing": "-0.01em",
             "sample": "From audit to guarantee",
             "usage": "Section titles. Fluid on the web: clamp(24px, 2.1vw, 30px)."
@@ -369,7 +384,7 @@
             "fontWeight": 800,
             "letterSpacing": "-0.03em",
             "sample": "BoromTech",
-            "usage": "The wordmark as live text in the site nav. Everywhere else use the outlined wordmark or lockup files."
+            "usage": "The wordmark, Bricolage Grotesque 800, stretch normal, 30px on the web (Canva: Ultra Bold, letter spacing -30). Live text only in the site nav; everywhere else use the outlined wordmark files. Clear space: at least the height of the B on every side."
           },
           {
             "name": "doc-mark",
@@ -385,7 +400,7 @@
       {
         "name": "Display · Thai and Chinese",
         "family": "text",
-        "note": "Same sizes as the Latin display styles so a layout swaps language without reflowing. Looser leading for stacked Thai marks and CJK; tracking stays 0.",
+        "note": "IBM Plex Sans Thai Bold 700 (600 for smaller headings). Same sizes as the Latin display styles so a layout swaps language without reflowing. Looser leading for stacked Thai marks and CJK; tracking stays 0. Never condense or stretch the letters.",
         "styles": [
           {
             "name": "hero-th",
@@ -419,7 +434,7 @@
       {
         "name": "Text",
         "family": "text",
-        "note": "IBM Plex Sans Thai for Thai and Latin. On Vietnamese pages use the text-vi stack (IBM Plex Sans first): Plex Sans Thai has no Vietnamese glyphs.",
+        "note": "Latin body is Bricolage Grotesque 400 to 600; Thai body is IBM Plex Sans Thai 400. The text stack puts Bricolage first and Bricolage has no Thai glyphs, so each script lands in its own face. Vietnamese uses text-vi: Bricolage covers Vietnamese, with IBM Plex Sans behind it.",
         "styles": [
           {
             "name": "subhead",
@@ -643,6 +658,30 @@
         "name": "seal-min-print",
         "value": "6mm",
         "usage": "Smallest seal in print. The lockup's minimum is the same height: 6mm tall (46mm wide), 24px tall on screen (183px wide)."
+      }
+    ]
+  },
+  "motion": {
+    "tokens": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(.2, .7, .2, 1)",
+        "usage": "Entrances: things arriving on screen (the web equivalent of Canva's Rise)."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(.7, 0, .2, 1)",
+        "usage": "Moving between states and between slides that share a layout."
+      },
+      {
+        "name": "duration-press",
+        "value": "140ms",
+        "usage": "Hover and press changes (120 to 160ms)."
+      },
+      {
+        "name": "duration-slide",
+        "value": "500ms",
+        "usage": "Slide-to-slide transitions (Canva Match & Move, 0.5s)."
       }
     ]
   }
