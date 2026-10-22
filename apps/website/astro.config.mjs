@@ -1,9 +1,23 @@
+import { writeFile } from 'node:fs/promises'
 import sitemap from '@astrojs/sitemap'
 import { defineConfig, fontProviders } from 'astro/config'
 import thaiLoanwords from './integrations/thai-loanwords.mjs'
 
+// MEDIA_ORIGIN (e.g. https://media.boromtech.com) moves built images to R2 bucket bt-public, which
+// scripts/upload-media.mjs fills, and keeps them out of the Worker's assets. Unset, images ship with the site.
+// JS, fonts and anything else always keep root-relative URLs on the site's own origin (the '/' fallback).
+const media = process.env.MEDIA_ORIGIN
+const mediaTypes = ['jpg', 'png', 'webp', 'avif'] // keep in step with scripts/upload-media.mjs
+const mediaInR2 = {
+  name: 'media-in-r2',
+  hooks: {
+    'astro:build:done': ({ dir }) =>
+      writeFile(new URL('.assetsignore', dir), mediaTypes.map((ext) => `_astro/*.${ext}\n`).join('')),
+  },
+}
+
 export default defineConfig({
-  site: 'https://boromtech.co',
+  site: 'https://boromtech.com',
   i18n: {
     locales: ['th', 'en', 'vi', 'zh'],
     defaultLocale: 'th',
@@ -12,8 +26,12 @@ export default defineConfig({
   integrations: [
     sitemap({ i18n: { defaultLocale: 'th', locales: { th: 'th', en: 'en', vi: 'vi', zh: 'zh-Hans' } } }),
     thaiLoanwords(),
+    ...(media ? [mediaInR2] : []),
   ],
-  build: { inlineStylesheets: 'always' },
+  build: {
+    inlineStylesheets: 'always',
+    assetsPrefix: media ? { fallback: '/', ...Object.fromEntries(mediaTypes.map((ext) => [ext, media])) } : undefined,
+  },
   image: { responsiveStyles: false },
   fonts: [
     {

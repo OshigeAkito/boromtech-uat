@@ -11,6 +11,7 @@ const canonical = new URL(localePath(locale), Astro.site)
 const og = await getImage({ src: sathorn, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 80 })
 const ogUrl = new URL(og.src, Astro.site)
 const preload = locale === defaultLocale ? 'thai' : 'latin'
+const media = process.env.MEDIA_ORIGIN // see astro.config.mjs
 
 const structuredData = [
   {
@@ -33,7 +34,7 @@ const structuredData = [
   },
 ]
 
-// Fallback for hosts without middleware.js: the Thai root sends a first-time visitor to their browser language.
+// Fallback for hosts without worker.mjs (astro dev, astro preview): the Thai root sends a first-time visitor to their browser language.
 const detect = `try{var l=(${pickLocale})({saved:(document.cookie.match(/(?:^|; )lang=(\\w+)/)||[])[1],languages:navigator.languages,userAgent:navigator.userAgent});if(l!=='${defaultLocale}')location.replace('/'+l+'/'+location.hash)}catch(e){}`
 ---
 
@@ -50,6 +51,7 @@ const detect = `try{var l=(${pickLocale})({saved:(document.cookie.match(/(?:^|; 
     <link rel="alternate" hreflang="x-default" href={new URL(localePath(defaultLocale), Astro.site)} />
     <meta name="theme-color" content="#1e2235" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {media && <link rel="preconnect" href={media} />}
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <meta property="og:type" content="website" />

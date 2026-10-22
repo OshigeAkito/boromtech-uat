@@ -1,0 +1,21 @@
+# The marketing site on boromtech.com. One Worker serves the Astro build (dist/) as static assets (unmetered; the
+# Worker code never runs for them), except for the paths in run_worker_first: the Thai root, where worker.mjs
+# sends first-time visitors to their language before the page loads. www.boromtech.com is a separate Worker that
+# only redirects to the apex (www/wrangler.toml).
+#
+# Images ship in dist/ by default. Building with MEDIA_ORIGIN=https://media.boromtech.com moves them to R2
+# bt-public instead (astro.config.mjs, scripts/upload-media.mjs); see DEPLOY.md.
+name = "boromtech-website"
+main = "worker.mjs"
+compatibility_date = "2026-10-01"
+routes = [{ pattern = "boromtech.com", custom_domain = true }]
+workers_dev = false # one public copy of the site, on its own domain
+preview_urls = false
+
+[assets]
+directory = "dist"
+binding = "ASSETS"
+run_worker_first = ["/"] # exact paths: "/" matches only the Thai root, not /en/ or /_astro/*
+
+[observability]
+enabled = true
