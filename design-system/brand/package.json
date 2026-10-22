@@ -2,12 +2,23 @@
   "name": "@boromtech/brand",
   "version": "0.1.0",
   "private": true,
-  "description": "BoromTech corporate identity: tokens, fonts and the logo as React components.",
+  "description": "BoromTech design system: the corporate identity (tokens, fonts, logo components) plus the job-board components.",
   "type": "module",
   "module": "dist/index.js",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" }, "./tokens.css": "./tokens.css" },
-  "peerDependencies": { "react": ">=18" },
-  "scripts": { "build": "node build.mjs" }
+  "types": "dist/types/brand/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/brand/src/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tokens.css": "./tokens.css",
+    "./brand.css": "./brand.css"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "scripts": {
+    "build": "node build.mjs"
+  }
 }

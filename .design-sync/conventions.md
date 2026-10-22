@@ -1,10 +1,13 @@
-# BoromTech CI: how to build with it
+# BoromTech design system: how to build with it
 
 BoromTech audits, rescues and maintains software ("AI can build it. Who will run it?"). Designs should look calm, exact and premium: deep night blue, one orange ring, square corners, lots of room.
 
 ## Setup
 
-No provider or wrapper. Load `styles.css` (tokens, fonts) and the components from `window.BoromTech`: `Seal`, `Wordmark`, `Lockup`, `AppIcon`, `HeroSeal`. Never draw the logo yourself; always use these components.
+No provider or wrapper. Load `styles.css` (tokens, fonts, component styles) and the components from `window.BoromTech`.
+
+- **Logo:** `Seal`, `Wordmark`, `Lockup`, `AppIcon`, `HeroSeal`. Never draw the logo yourself; always use these components.
+- **Job board** (the freelancer task app): `TaskCard`, `StatusPill`, `Button`, `StarRating`, `TierBadge`. Task states live in `BoromTech.STATUS` (`open`, `assigned`, `changes`, `submitted`, `approved`, `paid`). Use `Button variant="primary"` once per view or card.
 
 ## Styling idiom: CSS custom properties
 
@@ -19,6 +22,7 @@ There are no utility classes. Style your own layout with inline styles or CSS th
 | Lines | `--line` hairlines on paper, `--line-night` on night |
 | Type | `--font-display` (Latin headlines, weight 800, letter-spacing -0.025em), `--font-text` (Thai and Latin body, 400/600/700), `--font-mono` (IDs like BT-A-0412) |
 | Space, shape | `--space-m` 16, `--space-gap` 28, `--space-margin` 36, `--space-l` 48, `--space-section` 180; `--radius-none` 0, `--radius-pill` 999px |
+| Job-board UI | `--surface-raised` cards, `--surface-sunken` wells, `--line-strong` control borders, `--ink-muted` secondary text, `--brand` / `--on-brand` primary fills, `--brand-strong` links, `--success` / `--warning` / `--danger` states, `--space-1` to `--space-12` (4px grid), `--font-sans` |
 
 Rules the agent must keep:
 - Text on an `--orange` fill is `--ink`, never white. Orange text on white is too faint: use `--rust`.
