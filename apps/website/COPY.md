@@ -321,7 +321,7 @@ BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพ
 ## 12. Footer
 
 [footer.links] งานที่เรารับ · โปรเซส · ทีม · คำถาม
-[footer.email] ⚠ hello@boromtech.co
+[footer.email] ⚠ hello@boromtech.com
 [footer.city] กรุงเทพมหานคร
 [footer.copyright] © 2569 BoromTech
 [footer.cta] นัดออดิต
@@ -333,8 +333,8 @@ BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพ
 
 ## สรุปข้อมูลที่ต้องยืนยัน ⚠
 
-1. อีเมลติดต่อ: hello@boromtech.co
-2. โดเมนเว็บ: boromtech.co (ใช้ใน SEO และ sitemap)
+1. อีเมลติดต่อ: hello@boromtech.com
+2. โดเมนเว็บ: boromtech.com (ใช้ใน SEO และ sitemap)
 3. ระยะเวลา: ออดิต 5 วันทำการ, ใบเสนอราคา 2 วัน, แก้ไข 2–8 สัปดาห์
 4. การันตี 90 วัน และเงื่อนไขแก้ไขภายใน 2 วันทำการ
 5. คำสัญญาตอบกลับภายในหนึ่งวันทำการ

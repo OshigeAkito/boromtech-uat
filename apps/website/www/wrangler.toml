@@ -1,0 +1,8 @@
+# www.boromtech.com → https://boromtech.com, 301, path and query kept. A Worker of its own because static assets
+# are matched before any code runs, so the site's Worker can't tell www requests apart.
+name = "boromtech-www"
+main = "worker.mjs"
+compatibility_date = "2026-10-01"
+routes = [{ pattern = "www.boromtech.com", custom_domain = true }]
+workers_dev = false
+preview_urls = false

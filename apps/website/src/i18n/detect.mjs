@@ -1,7 +1,7 @@
 // Picks the locale for a visitor who lands on the Thai root (/).
-// Order: saved choice (lang cookie) → browser languages → Vercel IP country → Thai.
+// Order: saved choice (lang cookie) → browser languages → Cloudflare IP country → Thai.
 // Requests without browser languages, and bots, stay on Thai so crawlers index the original page.
-// Self-contained on purpose: Base.astro inlines its source for the client-side fallback, and middleware.js imports it.
+// Self-contained on purpose: Base.astro inlines its source for the client-side fallback, and worker.mjs imports it.
 export function pickLocale({ saved, languages, country, userAgent }) {
   const supported = ['th', 'en', 'vi', 'zh']
   if (supported.includes(saved)) return saved
