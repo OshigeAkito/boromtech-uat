@@ -33,11 +33,11 @@ Spend orange sparingly. One orange action per view; everything else is ink on su
 
 ## Iconography
 
-The logo is the CI's seal, a thick orange ring, with its wordmark and lockup. Use the files in the CI's Logos group (`design-system/brand/logos/` in the repo) and follow its seal and lockup rules; never redraw the seal or set the wordmark in live type.
+The logo is the CI's wordmark (BoromTech Brand Guidelines v1.0); the thick orange ring is the brand's supporting graphic and the app icon. Use the files in the CI's Logos group (`design-system/brand/logos/` in the repo) and follow its wordmark and ring rules; never redraw the ring or set the wordmark in live type.
 
-- Pick the file by ground: `lockup-on-paper.svg` on the light surfaces, `lockup-on-night.svg` on night and on the dark theme's surfaces, `lockup-on-soft.svg` on brand-soft, `lockup-ink.svg` for single-colour print.
-- Use the lockup where the seal is not already in view: the app header, sign-in, emails and documents. Use the wordmark alone (`wordmark-ink.svg`, `wordmark-light.svg`) next to a large seal. One seal per view.
-- Keep 1 stroke-width of the seal clear around the lockup. Minimum size is 24px tall.
+- Pick the wordmark by ground: `wordmark-navy.svg` (Deep Navy) on the light surfaces, `wordmark-light.svg` (Warm Ivory) on night and on the dark theme's surfaces, `wordmark-ink.svg` for single-colour print.
+- Use it in the app header, sign-in, emails and documents. Keep at least the height of the B clear around it. Minimum size is 10px tall (80px wide).
+- The lockup files are outside the v1.0 guidelines; don't use them in new screens. One ring per view, never over text.
 - At 16 to 23px (favicons, tab icons) use `seal-small-orange.svg` or `favicon.svg`.
 
 For icons, use a single-weight outline set at 1.5px stroke drawn with `currentColor` so it follows text color.

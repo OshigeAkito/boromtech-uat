@@ -15,7 +15,7 @@ const sealSmall = (color) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0
 // App icon: the favicon scaled x16 to 1024.
 const appIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><rect width="1024" height="1024" fill="${C.night}"/><circle cx="512" cy="512" r="304" fill="none" stroke="${C.orange}" stroke-width="144"/></svg>\n`
 
-// Wordmark: "BoromTech" outlined from Bricolage Grotesque 96pt ExtraBold, tracking -0.03em (site .wordmark).
+// Wordmark (Deep Navy on light grounds, Warm Ivory on dark): "BoromTech" outlined from Bricolage Grotesque 96pt ExtraBold, tracking -0.03em (site .wordmark).
 const TRACK = -30
 const glyphs = font.glyphsForString('BoromTech')
 // Pen positions measured in Chrome with the same file, so GPOS kerning (m-T, T-e) matches the site.
@@ -40,11 +40,12 @@ const files = {
   'seal-small-orange.svg': sealSmall(C.orange),
   'favicon.svg': readFileSync(faviconPath, 'utf8'),
   'app-icon.svg': appIcon,
+  'wordmark-navy.svg': wordmark(C.night),
   'wordmark-ink.svg': wordmark(C.ink),
   'wordmark-light.svg': wordmark(C.onDark),
   'lockup-on-night.svg': lockup(C.orange, C.onDark),
-  'lockup-on-paper.svg': lockup(C.orange, C.ink),
-  'lockup-on-soft.svg': lockup(C.rust, C.ink),
+  'lockup-on-paper.svg': lockup(C.orange, C.night),
+  'lockup-on-soft.svg': lockup(C.rust, C.night),
   'lockup-ink.svg': lockup(C.ink, C.ink),
 }
 for (const [n, s] of Object.entries(files)) writeFileSync(`${out}/${n}`, s)

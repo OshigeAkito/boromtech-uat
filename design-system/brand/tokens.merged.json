@@ -1,0 +1,688 @@
+{
+  "name": "BoromTech CI",
+  "version": 1,
+  "source": "BoromTech Brand Guidelines, version 1.0, October 2026",
+  "color": {
+    "themes": [
+      {
+        "id": "light",
+        "name": "Paper"
+      },
+      {
+        "id": "dark",
+        "name": "Night"
+      }
+    ],
+    "tokens": [
+      {
+        "name": "night",
+        "value": "#1e2235",
+        "usage": "Deep Navy, RGB 30 34 53. The main ground and the heading colour: covers, section dividers, hero, footer, the business card's brand side, social posts; on light grounds it sets headings and the wordmark (13.9:1 on ivory, 15.7:1 on paper). Text on it is on-dark (13.9:1) or on-dark-soft (8.2:1); the seal on it is orange (5.0:1)."
+      },
+      {
+        "name": "night-2",
+        "value": "#262b42",
+        "usage": "A second night step for panels and bands that sit on night. on-dark 12.3:1, on-dark-soft 7.2:1, orange 4.4:1 (large text and the seal only)."
+      },
+      {
+        "name": "orange",
+        "value": "#e56e3f",
+        "usage": "Borom Orange, RGB 229 110 63. Accents, step numbers and actions: spend it only on what must be seen first. On night: the ring and accent text (5.0:1). On paper: the ring, large text and fills (3.2:1, never body text). On ivory (2.8:1) and soft (2.7:1): only as decoration (the cropped ring, a hairline), never as text or a functional mark. Text on an orange fill is ink (5.4:1), never white (2.8:1)."
+      },
+      {
+        "name": "orange-deep",
+        "value": "#c9592c",
+        "usage": "Pressed and hover state of orange fills, and the darker facet in seal illustrations. 4.2:1 on paper, 3.6:1 on soft: large text and graphics only."
+      },
+      {
+        "name": "rust",
+        "value": "#b4471d",
+        "usage": "Orange as text on light grounds (5.4:1 on paper, 4.8:1 on ivory, 4.6:1 on soft) and a small seal on soft or ivory. High severity in reports. Never on night (2.9:1)."
+      },
+      {
+        "name": "soft",
+        "value": "#fce9e1",
+        "usage": "Soft Peach, RGB 252 233 225. The secondary ground and highlight: quiet sections, callouts, highlighted rows. Text on it is ink (14.6:1) or muted (5.3:1); the seal on it is rust."
+      },
+      {
+        "name": "ink",
+        "value": "#1a1b22",
+        "usage": "Text on paper (17.2:1), sunken and soft, and on orange fills (5.4:1). The one-colour seal and lockup for single-ink print."
+      },
+      {
+        "name": "ink-2",
+        "value": "#24252d",
+        "usage": "Hover state of dark buttons on light grounds."
+      },
+      {
+        "name": "ivory",
+        "value": "#f2f1ee",
+        "usage": "Warm Ivory, RGB 242 241 238. Text on dark grounds, and the restful light ground: guideline and slide pages, diagrams, the business card's information side. Text on it is night or ink (13.9:1 / 15.2:1), muted (5.5:1), rust (4.8:1)."
+      },
+      {
+        "name": "paper",
+        "value": "#ffffff",
+        "usage": "The plain light ground: documents, reports, web UI, dense detail. Text on it is ink or night."
+      },
+      {
+        "name": "sunken",
+        "value": "#eceef2",
+        "usage": "Wells, image placeholders, status pills and meters on paper. Text on it is ink or muted (5.4:1)."
+      },
+      {
+        "name": "on-dark",
+        "value": "{ivory}",
+        "usage": "Warm Ivory as text, the wordmark and the light seal on night (13.9:1) and night-2 (12.3:1)."
+      },
+      {
+        "name": "on-dark-soft",
+        "value": "#b9bac6",
+        "usage": "Secondary text on night (8.2:1) and night-2 (7.2:1): captions, ledes in small sizes, meta lines."
+      },
+      {
+        "name": "muted",
+        "value": "#5f6068",
+        "usage": "Secondary text on paper (6.3:1), ivory (5.5:1), sunken (5.4:1) and soft (5.3:1): captions, job titles, meta lines. Not on night (2.5:1)."
+      },
+      {
+        "name": "line",
+        "value": "#e6e3df",
+        "usage": "Hairlines on paper: document header rules, table rows. Decorative only (1.3:1); never the only cue for a control's edge."
+      },
+      {
+        "name": "line-night",
+        "value": "#3a4060",
+        "usage": "Hairlines on night. Decorative only (1.6:1). An addition: the website has no rule on dark grounds yet."
+      },
+      {
+        "name": "good",
+        "value": "#1f7a4d",
+        "usage": "Done, paid, credited, on paper (5.3:1) and soft (4.5:1). Always paired with a word."
+      },
+      {
+        "name": "warn",
+        "value": "#8a5a00",
+        "usage": "Medium severity, in review, due soon, on paper (5.9:1) and soft (5.1:1). Always paired with a word."
+      },
+      {
+        "name": "bad",
+        "value": "#c0362c",
+        "usage": "Critical severity, errors, overdue, on paper (5.5:1) and soft (4.7:1). Always paired with a word."
+      },
+      {
+        "name": "surface",
+        "value": {
+          "light": "{paper}",
+          "dark": "{night}"
+        },
+        "usage": "Page ground for the current theme."
+      },
+      {
+        "name": "surface-2",
+        "value": {
+          "light": "{sunken}",
+          "dark": "{night-2}"
+        },
+        "usage": "Wells and panels set into surface."
+      },
+      {
+        "name": "surface-inverse",
+        "value": {
+          "light": "{night}",
+          "dark": "{paper}"
+        },
+        "usage": "A band in the opposite ground: a night band on a paper page, a paper band on a night page."
+      },
+      {
+        "name": "text",
+        "value": {
+          "light": "{ink}",
+          "dark": "{on-dark}"
+        },
+        "usage": "Body text on surface and surface-2."
+      },
+      {
+        "name": "heading",
+        "value": {
+          "light": "{night}",
+          "dark": "{on-dark}"
+        },
+        "usage": "Headings and the wordmark on surface: Deep Navy on light grounds, Warm Ivory on night."
+      },
+      {
+        "name": "text-soft",
+        "value": {
+          "light": "{muted}",
+          "dark": "{on-dark-soft}"
+        },
+        "usage": "Secondary text on surface and surface-2 (at least 5.3:1 in both themes)."
+      },
+      {
+        "name": "seal",
+        "value": {
+          "light": "{orange}",
+          "dark": "{orange}"
+        },
+        "usage": "The ring on surface: 3.2:1 on paper, 5.0:1 on night. A small, functional ring on soft or ivory is rust; the big cropped ring may stay orange there as decoration."
+      },
+      {
+        "name": "accent-text",
+        "value": {
+          "light": "{rust}",
+          "dark": "{orange}"
+        },
+        "usage": "Orange as text on surface: links, eyebrow labels, inline emphasis (5.4:1 on paper, 5.0:1 on night)."
+      },
+      {
+        "name": "on-orange",
+        "value": "{ink}",
+        "usage": "Text and icons on an orange fill (5.4:1)."
+      },
+      {
+        "name": "hairline",
+        "value": {
+          "light": "{line}",
+          "dark": "{line-night}"
+        },
+        "usage": "Dividers on surface. Decorative only."
+      },
+      {
+        "name": "focus",
+        "value": {
+          "light": "{rust}",
+          "dark": "{orange}"
+        },
+        "usage": "Keyboard focus outline, 3px with a 3px offset (site :focus-visible). 5.4:1 on paper, 5.0:1 on night."
+      },
+      {
+        "name": "status-good",
+        "value": {
+          "light": "{good}",
+          "dark": "#5ccb8f"
+        },
+        "usage": "Good state as text on surface. Night value 7.8:1 on night; the brand's own green is 3.0:1 there."
+      },
+      {
+        "name": "status-warn",
+        "value": {
+          "light": "{warn}",
+          "dark": "#e3b341"
+        },
+        "usage": "Warning state as text on surface. Night value 8.1:1 on night."
+      },
+      {
+        "name": "status-bad",
+        "value": {
+          "light": "{bad}",
+          "dark": "#ff7b72"
+        },
+        "usage": "Critical state as text on surface. Night value 6.2:1 on night."
+      },
+      {
+        "name": "surface-sunken",
+        "value": {
+          "light": "#eceef2",
+          "dark": "#191a20"
+        },
+        "usage": "Wells, table stripes, code blocks, input fills. The light value is the website's and the CI's sunken. Text tokens pass on it (ink 14.8:1, ink-muted 5.4:1, brand-strong 4.7:1, status colours 4.6:1 or better), but line-strong control borders and unlit stars sit at 2.9:1, just under 3:1."
+      },
+      {
+        "name": "surface-raised",
+        "value": {
+          "light": "#ffffff",
+          "dark": "#1f2027"
+        },
+        "usage": "Cards, menus and dialogs. In light, separate from surface with a line, not a shadow."
+      },
+      {
+        "name": "line-strong",
+        "value": {
+          "light": "#8d8b93",
+          "dark": "#6b6c76"
+        },
+        "usage": "Input and control borders (3:1 against surface in both themes)."
+      },
+      {
+        "name": "ink-muted",
+        "value": {
+          "light": "#5f6068",
+          "dark": "#a3a3ad"
+        },
+        "usage": "Secondary text, metadata and placeholders, on any surface."
+      },
+      {
+        "name": "brand",
+        "value": {
+          "light": "#e56e3f",
+          "dark": "#e56e3f"
+        },
+        "usage": "BoromTech Orange, the identity color. Fills only: primary buttons, active tabs, highlights, illustration blocks. Never as text on white (3.2:1)."
+      },
+      {
+        "name": "brand-deep",
+        "value": "#c9592c",
+        "usage": "Pressed and hover state of brand fills, and the darker facet in illustrations: the CI's orange-deep. on-brand ink on it is 4.0:1, so it is a passing state or a graphic, never a resting fill behind body-size text."
+      },
+      {
+        "name": "on-brand",
+        "value": {
+          "light": "#1a1b22",
+          "dark": "#1a1b22"
+        },
+        "usage": "Text and icons on a brand fill. Dark ink, never white: white on brand fails at 3.2:1, ink passes at 5.4:1."
+      },
+      {
+        "name": "brand-strong",
+        "value": {
+          "light": "#b4471d",
+          "dark": "#f2916a"
+        },
+        "usage": "Orange as text: links, inline emphasis, selected labels. On the surfaces and brand-soft."
+      },
+      {
+        "name": "brand-soft",
+        "value": {
+          "light": "#fce9e1",
+          "dark": "#3a1f14"
+        },
+        "usage": "Tinted backgrounds behind brand-strong text: selected rows, info callouts."
+      },
+      {
+        "name": "night-ink",
+        "value": {
+          "light": "#f2f1ee",
+          "dark": "#f2f1ee"
+        },
+        "usage": "Text on a night fill."
+      },
+      {
+        "name": "night-ink-soft",
+        "value": "#b9bac6",
+        "usage": "Secondary text on night (8.2:1, 6.2:1 on the dark theme's night) and night-2 (7.2:1): captions, meta lines. The CI's on-dark-soft."
+      },
+      {
+        "name": "success",
+        "value": {
+          "light": "#1f7a4d",
+          "dark": "#5ccb8f"
+        },
+        "usage": "Passed, paid, online. As text on the surfaces."
+      },
+      {
+        "name": "warning",
+        "value": {
+          "light": "#8a5a00",
+          "dark": "#e3b341"
+        },
+        "usage": "Due soon, needs attention. As text on the surfaces."
+      },
+      {
+        "name": "danger",
+        "value": {
+          "light": "#c0362c",
+          "dark": "#ff7b72"
+        },
+        "usage": "Errors, overdue, destructive actions. As text on the surfaces."
+      },
+      {
+        "name": "link",
+        "value": "{brand-strong}",
+        "usage": "Links. An alias of brand-strong."
+      },
+      {
+        "name": "focus-ring",
+        "value": "{brand-strong}",
+        "usage": "Keyboard focus: a 2px ring with a 2px surface gap."
+      }
+    ]
+  },
+  "type": {
+    "fonts": [
+      {
+        "family": "Bricolage Grotesque",
+        "file": "fonts/BricolageGrotesque-ExtraBold-latin.woff2",
+        "weight": "800",
+        "style": "normal",
+        "usage": "The wordmark cut (weight 800). Weights 400 to 700 load from Google Fonts."
+      }
+    ],
+    "families": {
+      "display": "\"Bricolage Grotesque\", \"IBM Plex Sans Thai\", \"IBM Plex Sans\", \"Noto Sans SC\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "sans": "\"Bricolage Grotesque\", \"IBM Plex Sans Thai\", \"IBM Plex Sans\", \"Noto Sans SC\", \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "mono": "\"IBM Plex Mono\", ui-monospace, Menlo, monospace",
+      "text": "\"Bricolage Grotesque\", \"IBM Plex Sans Thai\", \"IBM Plex Sans\", \"Noto Sans SC\", \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "text-vi": "\"Bricolage Grotesque\", \"IBM Plex Sans\", \"IBM Plex Sans Thai\", system-ui, sans-serif"
+    },
+    "groups": [
+      {
+        "name": "Display · Latin",
+        "family": "display",
+        "note": "Bricolage Grotesque. Latin headings are Bold 700 (Google Fonts); the wordmark is ExtraBold 800, the 96pt static cut the website ships (fonts/). Latin only: Thai and Chinese fall through to IBM Plex Sans Thai and the CJK faces. Canva: font \"Bricolage Grotesque\"; the wordmark is Ultra Bold, letter spacing -30.",
+        "styles": [
+          {
+            "name": "hero",
+            "fontSize": "92px",
+            "lineHeight": 1.12,
+            "fontWeight": 700,
+            "letterSpacing": "-0.025em",
+            "sample": "AI can build it. Who will run it?",
+            "usage": "One headline per page or poster. Fluid on the web: clamp(40px, 5.6vw, 92px)."
+          },
+          {
+            "name": "title",
+            "fontSize": "30px",
+            "lineHeight": 1.25,
+            "fontWeight": 700,
+            "letterSpacing": "-0.01em",
+            "sample": "From audit to guarantee",
+            "usage": "Section titles. Fluid on the web: clamp(24px, 2.1vw, 30px)."
+          },
+          {
+            "name": "wordmark",
+            "fontSize": "30px",
+            "lineHeight": 1,
+            "fontWeight": 800,
+            "letterSpacing": "-0.03em",
+            "sample": "BoromTech",
+            "usage": "The wordmark, Bricolage Grotesque 800, stretch normal, 30px on the web (Canva: Ultra Bold, letter spacing -30). Live text only in the site nav; everywhere else use the outlined wordmark files. Clear space: at least the height of the B on every side."
+          },
+          {
+            "name": "doc-mark",
+            "fontSize": "18px",
+            "lineHeight": 1,
+            "fontWeight": 800,
+            "letterSpacing": "-0.02em",
+            "sample": "BoromTech",
+            "usage": "The wordmark in document headers: Audit Report, Weekly Update, Warranty."
+          }
+        ]
+      },
+      {
+        "name": "Display · Thai and Chinese",
+        "family": "text",
+        "note": "IBM Plex Sans Thai Bold 700 (600 for smaller headings). Same sizes as the Latin display styles so a layout swaps language without reflowing. Looser leading for stacked Thai marks and CJK; tracking stays 0. Never condense or stretch the letters.",
+        "styles": [
+          {
+            "name": "hero-th",
+            "fontSize": "92px",
+            "lineHeight": 1.3,
+            "fontWeight": 700,
+            "letterSpacing": "0",
+            "sample": "เอไอใครๆก็ทำได้ แต่ใครจะดูแล",
+            "usage": "Thai hero headline, IBM Plex Sans Thai Bold."
+          },
+          {
+            "name": "hero-zh",
+            "fontSize": "92px",
+            "lineHeight": 1.25,
+            "fontWeight": 700,
+            "letterSpacing": "0",
+            "sample": "AI 人人都会做，但谁来维护？",
+            "usage": "Simplified Chinese hero headline. Noto Sans SC Bold via the text stack."
+          },
+          {
+            "name": "title-th",
+            "fontSize": "30px",
+            "lineHeight": 1.45,
+            "fontWeight": 700,
+            "letterSpacing": "0",
+            "sample": "จากออดิต สู่การันตี",
+            "usage": "Thai and Chinese section titles."
+          }
+        ]
+      },
+      {
+        "name": "Text",
+        "family": "text",
+        "note": "Latin body is Bricolage Grotesque 400 to 600; Thai body is IBM Plex Sans Thai 400. The text stack puts Bricolage first and Bricolage has no Thai glyphs, so each script lands in its own face. Vietnamese uses text-vi: Bricolage covers Vietnamese, with IBM Plex Sans behind it.",
+        "styles": [
+          {
+            "name": "subhead",
+            "fontSize": "30px",
+            "lineHeight": 1.3,
+            "fontWeight": 600,
+            "letterSpacing": "-0.01em",
+            "sample": "Big-project standards for work of any size",
+            "usage": "h3 on the website: point headings and card titles."
+          },
+          {
+            "name": "lede",
+            "fontSize": "18px",
+            "lineHeight": 1.7,
+            "fontWeight": 400,
+            "sample": "เราดูแลระบบทั้งงานเล็กและใหญ่ พร้อมการันตีและราคาที่ชัดเจนตั้งแต่วันแรก",
+            "usage": "The paragraph under a hero headline. Max 32em."
+          },
+          {
+            "name": "body",
+            "fontSize": "18px",
+            "lineHeight": 1.6,
+            "fontWeight": 400,
+            "sample": "First, we audit the real code, servers and databases and report every risk.",
+            "usage": "Running text on the web. Thai body text may go to 1.7."
+          },
+          {
+            "name": "button",
+            "fontSize": "18px",
+            "lineHeight": 1,
+            "fontWeight": 600,
+            "sample": "Book a system audit",
+            "usage": "Button labels. Small buttons use 15px."
+          },
+          {
+            "name": "document",
+            "fontSize": "16px",
+            "lineHeight": 1.6,
+            "fontWeight": 400,
+            "sample": "Over five business days we open up your system layer by layer.",
+            "usage": "Body text in reports and printed documents (11pt in print)."
+          },
+          {
+            "name": "small",
+            "fontSize": "15px",
+            "lineHeight": 1.55,
+            "fontWeight": 400,
+            "sample": "Assessment window 3–7 Nov 2026 · 182,400 LOC · 3 production hosts",
+            "usage": "Captions, meta lines, findings rows."
+          },
+          {
+            "name": "label",
+            "fontSize": "13px",
+            "lineHeight": 1.4,
+            "fontWeight": 600,
+            "letterSpacing": "0.08em",
+            "sample": "AUDIT REPORT",
+            "usage": "Uppercase eyebrows, Latin only. Thai and Chinese labels keep their case and 0 tracking."
+          }
+        ]
+      },
+      {
+        "name": "Data",
+        "family": "mono",
+        "note": "IBM Plex Mono, an addition for document IDs and code. The website has no mono face yet.",
+        "styles": [
+          {
+            "name": "id",
+            "fontSize": "14px",
+            "lineHeight": 1.4,
+            "fontWeight": 500,
+            "sample": "BT-A-0412 · BT-W-0412",
+            "usage": "Document and ticket IDs, versions, commit hashes."
+          }
+        ]
+      }
+    ]
+  },
+  "spacing": {
+    "tokens": [
+      {
+        "name": "space-xs",
+        "value": "4px",
+        "usage": "Inside pills and tight inline gaps."
+      },
+      {
+        "name": "space-s",
+        "value": "8px",
+        "usage": "Gaps between pills, chips and stacked list rows."
+      },
+      {
+        "name": "space-m",
+        "value": "16px",
+        "usage": "The minimum page margin and gap on phones."
+      },
+      {
+        "name": "space-gap",
+        "value": "28px",
+        "usage": "Gap between columns and stacked blocks at desktop (site --gap: clamp(16px, 2vw, 28px)); also the hero copy gap."
+      },
+      {
+        "name": "space-margin",
+        "value": "36px",
+        "usage": "Page side margin at desktop (site --m: clamp(16px, 2.4vw, 36px))."
+      },
+      {
+        "name": "space-l",
+        "value": "48px",
+        "usage": "Document padding and gaps between groups inside a section."
+      },
+      {
+        "name": "space-section",
+        "value": "180px",
+        "usage": "Vertical padding of a chapter at desktop (site: clamp(96px, 12vw, 180px))."
+      },
+      {
+        "name": "space-1",
+        "value": "4px",
+        "usage": "Icon-to-label gap, tight inline gaps."
+      },
+      {
+        "name": "space-2",
+        "value": "8px",
+        "usage": "Gaps inside controls and between chips."
+      },
+      {
+        "name": "space-3",
+        "value": "12px",
+        "usage": "Control padding, list-row gaps."
+      },
+      {
+        "name": "space-4",
+        "value": "16px",
+        "usage": "Card padding on mobile, form field gaps, page gutter minimum."
+      },
+      {
+        "name": "space-6",
+        "value": "24px",
+        "usage": "Card padding on desktop, gaps between cards."
+      },
+      {
+        "name": "space-8",
+        "value": "32px",
+        "usage": "Gaps between page sections."
+      },
+      {
+        "name": "space-12",
+        "value": "48px",
+        "usage": "Hero and band padding."
+      }
+    ]
+  },
+  "radius": {
+    "tokens": [
+      {
+        "name": "radius-none",
+        "value": "0",
+        "usage": "Everything: buttons, cards, sheets, images, the app icon artwork. BoromTech corners are square; the seal is the brand's only curve."
+      },
+      {
+        "name": "radius-pill",
+        "value": "999px",
+        "usage": "Status pills and progress meters only, so a rounded shape always reads as a state."
+      },
+      {
+        "name": "radius-sm",
+        "value": "0",
+        "usage": "Badges, checkboxes, code chips. 0: BoromTech corners are square (the CI's radius-none); the name stays so components keep working."
+      },
+      {
+        "name": "radius-md",
+        "value": "0",
+        "usage": "Buttons, inputs, menus. 0: square, as radius-sm."
+      },
+      {
+        "name": "radius-lg",
+        "value": "0",
+        "usage": "Cards, dialogs, image frames. 0: square, as radius-sm."
+      }
+    ]
+  },
+  "seal": {
+    "note": "The seal's geometry, in SVG user units. The stroke width is the system's unit s: clear space and the lockup gap are measured in it.",
+    "tokens": [
+      {
+        "name": "seal-box",
+        "value": "1000",
+        "usage": "viewBox side of the standard seal (seal-*.svg) and of the website hero SVG."
+      },
+      {
+        "name": "seal-r",
+        "value": "400",
+        "usage": "Centre-line radius of the standard ring. Outer radius 475, inner 325."
+      },
+      {
+        "name": "seal-stroke",
+        "value": "150",
+        "usage": "Ring thickness = 1s. 37.5% of the radius; never change it."
+      },
+      {
+        "name": "seal-small-box",
+        "value": "64",
+        "usage": "viewBox side of the small-size seal and the favicon."
+      },
+      {
+        "name": "seal-small-r",
+        "value": "19",
+        "usage": "Centre-line radius of the small-size seal."
+      },
+      {
+        "name": "seal-small-stroke",
+        "value": "9",
+        "usage": "Small-size ring thickness, 47% of the radius: heavier so it holds at 16-32px."
+      },
+      {
+        "name": "seal-min-digital",
+        "value": "24px",
+        "usage": "Smallest standard seal on screen. From 16 to 23px use the small-size seal."
+      },
+      {
+        "name": "seal-min-print",
+        "value": "6mm",
+        "usage": "Smallest seal in print. The lockup's minimum is the same height: 6mm tall (46mm wide), 24px tall on screen (183px wide)."
+      }
+    ]
+  },
+  "motion": {
+    "tokens": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(.2, .7, .2, 1)",
+        "usage": "Entrances: things arriving on screen (the web equivalent of Canva's Rise)."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(.7, 0, .2, 1)",
+        "usage": "Moving between states and between slides that share a layout."
+      },
+      {
+        "name": "duration-press",
+        "value": "140ms",
+        "usage": "Hover and press changes (120 to 160ms)."
+      },
+      {
+        "name": "duration-slide",
+        "value": "500ms",
+        "usage": "Slide-to-slide transitions (Canva Match & Move, 0.5s)."
+      }
+    ]
+  }
+}
