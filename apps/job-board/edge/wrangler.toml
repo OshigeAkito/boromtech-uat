@@ -1,0 +1,26 @@
+# The job board's front door. One Worker on crew.boromtech.com serves the SPA as static assets (unmetered;
+# the Worker code never runs for them) and forwards /api and /api/* to the Go service on Cloud Run
+# (apps/job-board/api) through src/index.ts. Same origin, so cookies stay Strict and there is no CORS.
+#
+# Not needed for local development: `npm run job-board:dev` runs the Go service on :8080 and Vite on :5173,
+# and Vite proxies /api straight to Go. To exercise the Worker itself, see .dev.vars.example.
+name = "boromtech-crew"           # same Worker name as the old gateway: a deploy replaces it in place
+main = "src/index.ts"
+compatibility_date = "2025-10-01"
+
+routes = [{ pattern = "crew.boromtech.com", custom_domain = true }]
+
+[assets]
+directory = "../web/dist"
+not_found_handling = "single-page-application"
+run_worker_first = ["/api", "/api/*"]
+
+[vars]
+API_ORIGIN = "https://crew-api-REPLACE_ME-as.a.run.app"
+
+# Secret, set once by a human (same value as the Go service's EDGE_KEY):
+#   npx wrangler secret put EDGE_KEY
+# Local `wrangler dev` reads .dev.vars instead (gitignored); see .dev.vars.example.
+
+[observability]
+enabled = true

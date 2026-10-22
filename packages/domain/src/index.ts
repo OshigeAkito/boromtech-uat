@@ -1,13 +1,35 @@
-import type { TaskStatus, Tier } from '@boromtech/design-system/components/src'
+// @boromtech/domain — the vocabulary the job board renders and the contract it speaks to Postgres.
+//
+// Postgres (apps/job-board/db/api.sql) decides every state transition and who may make it. Nothing in
+// this package is a rule the server relies on. The value lists below mirror SQL enums and the cmd schema;
+// apps/job-board/db/test/contract.test.ts fails CI when they drift.
+//
+// There is no TRANSITIONS table here: the server ships `task.actions` (what this viewer may do to this
+// task now), computed from the one state machine in SQL.
 
-export type { TaskStatus, Tier }
+export * from './commands.ts'
+export * from './files.ts'
+
+import type { Attachment } from './files.ts'
+
+/** Mirrors `app.task_status`. */
+export const TASK_STATUSES = ['open', 'assigned', 'changes', 'submitted', 'approved', 'paid'] as const
+export type TaskStatus = (typeof TASK_STATUSES)[number]
+
+/** Mirrors `app.task_action`. */
+export const TASK_ACTIONS = ['claim', 'submit', 'approve', 'reject', 'pay'] as const
+export type TaskAction = (typeof TASK_ACTIONS)[number]
 
 export type Role = 'admin' | 'freelancer'
+export type Tier = 'Gold' | 'Silver' | 'Bronze' | 'Rookie' | 'Unranked'
 
 export interface Member {
+  /** Google OIDC `sub`. */
   uid: string
-  email: string
+  /** Lowercased. `null` when the viewer may not see it (freelancers see only their own). */
+  email: string | null
   name: string
+  /** '/api/files/<id>?v=file', or '' while the copy from Google hasn't happened. */
   photo: string
   role: Role
 }
@@ -17,52 +39,59 @@ export interface Job {
   title: string
   customer: string
   description: string
+  /** 'YYYY-MM-DD'. */
   customerDeadline: string
+  /** Epoch millis, server clock. */
   createdAt: number
+  /** Briefs, mockups and references the admin attached to the job. */
+  files: Attachment[]
 }
 
+/** Latest review. `grade` is 1..5 when approved and 0 when changes were requested. */
 export interface Review {
+  verdict: 'approved' | 'changes'
   grade: number
-  feedback: string
+  /** Absent when the viewer is neither an admin nor the assignee. */
+  feedback?: string
   at: number
 }
 
 export interface Task {
   id: string
   jobId: string
+  /** Joined from `jobs` on the client; never stored on the task. */
   jobTitle: string
   title: string
   description: string
+  /** Whole THB. */
   payout: number
+  /** 'YYYY-MM-DD'. */
   freelancerDeadline: string
   status: TaskStatus
   assigneeUid: string | null
+  /** Joined from `members` on the client. */
   assigneeName: string | null
+  /** `null` unless the viewer is an admin or the assignee. */
   submissionUrl: string | null
   submissionNote: string | null
+  /** Server time of the submit, epoch millis. */
   submittedAt: number | null
   review: Review | null
+  /** Briefs for everyone; submission files only for admins and the assignee (lib.file_visible). */
+  files: Attachment[]
+  /** Changes-requested reviews while the current assignee held the task. Derived in SQL. */
   rejections: number
+  /** What the viewer may do to this task now, from the SQL state machine. */
+  actions: TaskAction[]
 }
 
-export type TaskAction = 'claim' | 'submit' | 'approve' | 'reject' | 'pay'
-
-export const TRANSITIONS: Record<TaskAction, { from: TaskStatus[]; to: TaskStatus; by: Role | 'assignee' | 'member' }> = {
-  claim: { from: ['open'], to: 'assigned', by: 'member' },
-  submit: { from: ['assigned', 'changes'], to: 'submitted', by: 'assignee' },
-  approve: { from: ['submitted'], to: 'approved', by: 'admin' },
-  reject: { from: ['submitted'], to: 'changes', by: 'admin' },
-  pay: { from: ['approved'], to: 'paid', by: 'admin' },
-}
-
-export function allowedActions(task: Task, me: Member): TaskAction[] {
-  return (Object.keys(TRANSITIONS) as TaskAction[]).filter((action) => {
-    const t = TRANSITIONS[action]
-    if (!t.from.includes(task.status)) return false
-    if (t.by === 'admin') return me.role === 'admin'
-    if (t.by === 'assignee') return task.assigneeUid === me.uid
-    return me.role === 'freelancer'
-  })
+export interface Invite {
+  email: string
+  createdAt: number
+  /** True once someone has signed in with this email. */
+  joined: boolean
+  /** Their uid when joined, so an admin can remove them. */
+  uid: string | null
 }
 
 const DAY = 86_400_000

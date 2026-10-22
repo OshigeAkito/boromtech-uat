@@ -1,0 +1,8 @@
+# Optional. Day-to-day development does not run the Worker: `npm run job-board:dev` starts the Go service on
+# :8080 and Vite on :5173, and Vite proxies /api to Go directly.
+#
+# To exercise the Worker locally: copy this file to .dev.vars, build the SPA (`npm run ds:build &&
+# npm run build -w job-board`), start the Go service with PUBLIC_ORIGIN=http://localhost:8787 and the same
+# EDGE_KEY, then `npm run dev -w job-board-edge` and open http://localhost:8787.
+API_ORIGIN=http://localhost:8080
+EDGE_KEY=local-edge-key

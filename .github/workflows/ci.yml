@@ -1,0 +1,64 @@
+# Every PR and every push to main: build and test the job board end to end against throwaway Postgres and an
+# S3-compatible store. Needs no Neon, Cloudflare, Google or R2 credentials.
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  web-and-db:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17 # Neon's major version
+        env: { POSTGRES_PASSWORD: owner }
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 2s --health-retries 15
+    env:
+      OWNER_URL: postgres://postgres:owner@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 24, cache: npm }
+      - run: sudo apt-get install -y postgresql-client
+      - run: npm ci
+      - run: npm run ds:build
+      - run: npx tsc --noEmit -p packages/domain
+      - run: npx tsc --noEmit -p apps/job-board/edge
+      - run: npm run build -w job-board
+      - run: npm test -w job-board
+      - run: npm test -w job-board-db # migrates twice, then the contract, invariant and files suites per role
+      - run: npx wrangler deploy --dry-run --outdir /tmp/edge
+        working-directory: apps/job-board/edge
+
+  api:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env: { POSTGRES_PASSWORD: owner }
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 2s --health-retries 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with: { go-version-file: apps/job-board/api/go.mod, cache-dependency-path: apps/job-board/api/go.sum }
+      - run: sudo apt-get install -y postgresql-client
+      - name: S3-compatible store that enforces signatures (stands in for R2)
+        run: |
+          docker run -d --name s3 -p 59000:8333 -v "$PWD/apps/job-board/api/testdata:/cfg" chrislusf/seaweedfs:4.48 server -s3 -s3.config=/cfg/s3.json -dir=/data
+          for i in $(seq 1 60); do curl -s -o /dev/null http://localhost:59000/ && break; sleep 1; done
+      - name: Migrated database with test passwords
+        run: |
+          psql postgres://postgres:owner@localhost:5432/postgres -c 'create database bt_go'
+          DATABASE_URL=postgres://postgres:owner@localhost:5432/bt_go apps/job-board/db/migrate.sh
+          psql postgres://postgres:owner@localhost:5432/bt_go -c "alter role bt_gateway password 'test'" -c "alter role bt_sweeper password 'test'"
+      - run: go vet ./...
+        working-directory: apps/job-board/api
+      - run: go test -race ./...
+        working-directory: apps/job-board/api
+        env:
+          TEST_DATABASE_URL: postgres://postgres:owner@localhost:5432/bt_go
+          TEST_R2_ENDPOINT: http://localhost:59000
+      - run: docker build -t crew-api:ci apps/job-board/api

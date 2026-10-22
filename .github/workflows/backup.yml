@@ -1,0 +1,77 @@
+# Nightly, 03:00 Asia/Bangkok:
+#   dump   pg_dump as bt_backup (SELECT only) | age → R2 bt-backups/crew/. The runner can write backups but
+#          never read them: the age private key stays offline with the owner.
+#   files  copy new objects from bt-crew-files to bt-backups/files/ (copy only, never deletes). pg_dump holds
+#          the app.files rows; the bytes of owed-work evidence live in R2, so they get their own copy.
+#   sweep  crew-api sweep as bt_sweeper: deletes objects of files never attached, or detached 30+ days ago.
+#          Postgres picks them (gate.sweep); attached files are never offered.
+# bt-backups has a 30-day lock on crew/ and files/ (apps/job-board/infra/setup-r2.sh), so a leaked token
+# can't delete or overwrite recent backups.
+#
+# Secrets:   NEON_BACKUP_URL (bt_backup, direct host), SWEEPER_DATABASE_URL (bt_sweeper, direct host),
+#            R2_BACKUP_KEY_ID/R2_BACKUP_SECRET, R2_FILESRO_KEY_ID/R2_FILESRO_SECRET, R2_SWEEP_KEY_ID/R2_SWEEP_SECRET
+# Variables: BACKUP_AGE_RECIPIENT, R2_ACCOUNT_ID
+#
+# Restore: age -d -i key.txt bt-DATE.dump.age > bt.dump; pg_restore --no-owner -d <empty db> bt.dump;
+#          apps/job-board/db/migrate.sh; rclone copy bt-backups/files/f → bt-crew-files/f.
+name: backup
+on:
+  schedule: [{ cron: '0 20 * * *' }]
+  workflow_dispatch:
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    container: postgres:17 # pg_dump must be at least the server's major version
+    steps:
+      - run: apt-get update -qq && apt-get install -y -qq age curl >/dev/null
+      - name: Dump, encrypt, upload
+        env:
+          NEON_BACKUP_URL: ${{ secrets.NEON_BACKUP_URL }}
+          RECIPIENT: ${{ vars.BACKUP_AGE_RECIPIENT }}
+          KEY_ID: ${{ secrets.R2_BACKUP_KEY_ID }}
+          SECRET: ${{ secrets.R2_BACKUP_SECRET }}
+          ACCOUNT: ${{ vars.R2_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          file="bt-$(date -u +%F).dump.age"
+          pg_dump --format=custom --no-owner --no-privileges \
+            --exclude-schema=lib --exclude-schema=cmd --exclude-schema=gate "$NEON_BACKUP_URL" \
+            | age -r "$RECIPIENT" > "$file"
+          curl --fail-with-body --aws-sigv4 "aws:amz:auto:s3" --user "${KEY_ID}:${SECRET}" \
+            -T "$file" "https://${ACCOUNT}.r2.cloudflarestorage.com/bt-backups/crew/${file}"
+
+  files:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get install -y -qq rclone >/dev/null
+      - name: Copy new file objects
+        env:
+          RCLONE_CONFIG_SRC_TYPE: s3
+          RCLONE_CONFIG_SRC_PROVIDER: Cloudflare
+          RCLONE_CONFIG_SRC_ENDPOINT: https://${{ vars.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+          RCLONE_CONFIG_SRC_ACCESS_KEY_ID: ${{ secrets.R2_FILESRO_KEY_ID }}
+          RCLONE_CONFIG_SRC_SECRET_ACCESS_KEY: ${{ secrets.R2_FILESRO_SECRET }}
+          RCLONE_CONFIG_DST_TYPE: s3
+          RCLONE_CONFIG_DST_PROVIDER: Cloudflare
+          RCLONE_CONFIG_DST_ENDPOINT: https://${{ vars.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+          RCLONE_CONFIG_DST_ACCESS_KEY_ID: ${{ secrets.R2_BACKUP_KEY_ID }}
+          RCLONE_CONFIG_DST_SECRET_ACCESS_KEY: ${{ secrets.R2_BACKUP_SECRET }}
+        # Keys are never reused for different bytes, so --immutable is safe; --max-age keeps it to new objects.
+        run: rclone copy --immutable --max-age 72h --s3-no-check-bucket src:bt-crew-files/f dst:bt-backups/files/f
+
+  sweep:
+    needs: files # never delete an object before tonight's copy of it exists
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with: { go-version-file: apps/job-board/api/go.mod, cache-dependency-path: apps/job-board/api/go.sum }
+      - run: go run . sweep
+        working-directory: apps/job-board/api
+        env:
+          SWEEPER_DATABASE_URL: ${{ secrets.SWEEPER_DATABASE_URL }}
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_SWEEP_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SWEEP_SECRET }}
+          R2_BUCKET: bt-crew-files
