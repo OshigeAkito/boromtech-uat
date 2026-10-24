@@ -1,80 +1,44 @@
 ---
+import { sampleDocs } from '../data/showcase'
 import { useLocale } from '../i18n'
 
-const { t } = useLocale(Astro.currentLocale)
+const { locale, t } = useLocale(Astro.currentLocale)
 const s = t.showcase
+const doc = sampleDocs(locale)
 const findings = ['critical', 'critical', 'high', 'high', 'high'] as const
 const tasks = ['done', 'done', 'done', 'review', 'work'] as const
-
-// The sample deliverables read as the real documents do: in English, in the terms an engineering lead expects,
-// whatever language the rest of the page is in.
-const doc = {
-  severity: { critical: 'Critical', high: 'High', mid: 'Medium' },
-  audit: {
-    title: 'Inventory Management System · Sample Engagement',
-    meta: 'Assessment window 3–7 Nov 2026 · 182,400 LOC · 3 production hosts',
-    findings: [
-      'Hard-coded database credentials committed to source and replicated across every backup artifact',
-      'No automated backup policy. Effective RPO is 41 days, the age of the last restorable snapshot',
-      'Runtime is PHP 5.6, end-of-life with no security patches since December 2018',
-      'Sales reporting rounds before aggregation, introducing cumulative variance in totals',
-      'Configuration drift: production source is 7 months ahead of the version-controlled repository',
-    ],
-  },
-  weekly: {
-    ref: 'Sprint 3 of 6',
-    title: '7 of 12 work items closed',
-    status: { done: 'Verified', review: 'In review', work: 'In progress' },
-    tasks: [
-      'Recover production source and re-baseline it in Git',
-      'Migrate credentials out of code into a managed secrets store',
-      'Automated nightly backups at 02:00, with a tested restore',
-      'Fix the rounding defect in sales aggregation',
-      'Upgrade the inventory module to PHP 8.3',
-    ],
-    next: 'Next sprint: upgrade the orders module and run regression tests against October sales data.',
-  },
-  warranty: {
-    title: '90-Day Warranty',
-    terms: [
-      ['Scope', 'Work items BT-104 to BT-115 (12 items)'],
-      ['Effective', '1 Dec 2026'],
-      ['Expires', '1 Mar 2027'],
-      ['SLA', 'Defects attributable to BoromTech work are remediated at no cost within 2 business days of report.'],
-    ],
-  },
-}
 ---
 
-<section class="chapter showcase" aria-label={s.label}>
+<section class="chapter showcase" aria-labelledby="showcase-title">
+  <h2 id="showcase-title" class="l reveal showcase-title">{s.title}</h2>
   <div class="outputs" role="tablist" aria-label={s.tablist}>
-    <button role="tab" aria-selected="true" aria-controls="sheet-audit" data-sheet="audit">Audit Report</button>
-    <button role="tab" aria-selected="false" aria-controls="sheet-weekly" data-sheet="weekly">Weekly Update</button>
-    <button role="tab" aria-selected="false" aria-controls="sheet-warranty" data-sheet="warranty">Warranty</button>
+    <button role="tab" aria-selected="true" aria-controls="sheet-audit" data-sheet="audit">{doc.tabs.audit}</button>
+    <button role="tab" aria-selected="false" aria-controls="sheet-weekly" data-sheet="weekly">{doc.tabs.weekly}</button>
+    <button role="tab" aria-selected="false" aria-controls="sheet-warranty" data-sheet="warranty">{doc.tabs.warranty}</button>
     <p class="outputs-note">{s.note}</p>
     <p class="outputs-mock">{s.mock}</p>
   </div>
-  <div class="desk" lang="en">
-    <div class="sheet" id="sheet-audit" role="tabpanel" data-ui>
-      <div class="sheet-head"><strong>BoromTech</strong><span>Audit Report · BT-A-0412</span></div>
+  <div class="desk" lang={doc.lang}>
+    <div class="sheet sheet-narrow" id="sheet-audit" role="tabpanel" data-ui>
+      <div class="sheet-head"><strong>BoromTech</strong><span>{doc.audit.head}</span></div>
       <h3>{doc.audit.title}</h3>
       <p class="sheet-meta">{doc.audit.meta}</p>
       <div class="severity"><span class="sev sev-critical">{doc.severity.critical} <b>2</b></span><span class="sev sev-high">{doc.severity.high} <b>5</b></span><span class="sev sev-mid">{doc.severity.mid} <b>9</b></span></div>
       <ol class="findings">
-        {doc.audit.findings.map((text, i) => <li><b>{doc.severity[findings[i]]}</b> {text}</li>)}
+        {doc.audit.findings.map((text, i) => <li><b>{doc.severity[findings[i]]}</b><span>{text}</span></li>)}
       </ol>
     </div>
     <div class="sheet sheet-narrow" id="sheet-weekly" role="tabpanel" data-ui hidden>
-      <div class="sheet-head"><strong>BoromTech</strong><span>Weekly Update · {doc.weekly.ref}</span></div>
+      <div class="sheet-head"><strong>BoromTech</strong><span>{doc.weekly.head}</span></div>
       <h3>{doc.weekly.title}</h3>
       <div class="meter"><span style="width:58%"></span></div>
       <ul class="tasks">
-        {doc.weekly.tasks.map((text, i) => <li><span class={`pill pill-${tasks[i]}`}>{doc.weekly.status[tasks[i]]}</span>{text}</li>)}
+        {doc.weekly.tasks.map((text, i) => <li><span class={`pill pill-${tasks[i]}`}>{doc.weekly.status[tasks[i]]}</span><span>{text}</span></li>)}
       </ul>
       <p class="sheet-meta">{doc.weekly.next}</p>
     </div>
     <div class="sheet sheet-narrow" id="sheet-warranty" role="tabpanel" data-ui hidden>
-      <div class="sheet-head"><strong>BoromTech</strong><span>Warranty · BT-W-0412</span></div>
+      <div class="sheet-head"><strong>BoromTech</strong><span>{doc.warranty.head}</span></div>
       <h3>{doc.warranty.title}</h3>
       <dl class="terms">
         {doc.warranty.terms.map(([term, detail]) => <div><dt>{term}</dt><dd>{detail}</dd></div>)}

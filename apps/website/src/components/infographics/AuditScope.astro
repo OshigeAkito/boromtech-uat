@@ -1,9 +1,24 @@
 ---
+import codeIcon from '../../icons/audit/icon-code.svg?raw'
+import dataIcon from '../../icons/audit/icon-data.svg?raw'
+import infrastructureIcon from '../../icons/audit/icon-infrastructure.svg?raw'
+import interfaceIcon from '../../icons/audit/icon-interface.svg?raw'
+import knowledgeIcon from '../../icons/audit/icon-knowledge.svg?raw'
+import securityIcon from '../../icons/audit/icon-security.svg?raw'
 import { useLocale } from '../../i18n'
 
 const { t } = useLocale(Astro.currentLocale)
 const [title1, title2] = t.audit.title
 const layerKeys = ['interface', 'code', 'data', 'infrastructure', 'security', 'knowledge']
+// One icon per layer, drawn in currentColor so it takes each row's text colour.
+const icons: Record<string, string> = {
+  interface: interfaceIcon,
+  code: codeIcon,
+  data: dataIcon,
+  infrastructure: infrastructureIcon,
+  security: securityIcon,
+  knowledge: knowledgeIcon,
+}
 ---
 
 <section class="chapter audit-scope" aria-labelledby="audit-scope-title">
@@ -16,16 +31,15 @@ const layerKeys = ['interface', 'code', 'data', 'infrastructure', 'security', 'k
     {
       t.audit.layers.map(({ layer, check }, i) => (
         <div class={`audit-layer layer-${layerKeys[i]}`}>
-          <dt>{layer}</dt>
+          <dt>
+            <span class="layer-icon" aria-hidden="true" set:html={icons[layerKeys[i]]} />
+            <span class="layer-name">{layer}</span>
+          </dt>
           <dd>{check}</dd>
         </div>
       ))
     }
   </dl>
-
-  <footer class="audit-scope-closing">
-    <p class="reveal">{t.audit.closing}</p>
-  </footer>
 </section>
 
 <style>
@@ -40,18 +54,16 @@ const layerKeys = ['interface', 'code', 'data', 'infrastructure', 'security', 'k
   }
 
   .audit-scope-heading,
-  .audit-layer,
-  .audit-scope-closing {
+  .audit-layer {
     padding-inline-start: max(var(--m), env(safe-area-inset-left));
     padding-inline-end: max(var(--m), env(safe-area-inset-right));
   }
 
+  /* The title, with its intro right under it. */
   .audit-scope-heading {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 32px var(--gap);
-    align-items: end;
-    padding-block: clamp(96px, 12vw, 180px) 64px;
+    gap: 20px;
+    padding-block: clamp(48px, 5vw, 80px) 56px;
   }
 
   h2 {
@@ -100,6 +112,25 @@ const layerKeys = ['interface', 'code', 'data', 'infrastructure', 'security', 'k
     letter-spacing: -0.01em;
   }
 
+  .audit-layer dt {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .layer-icon {
+    flex: none;
+    width: 48px;
+    height: 48px;
+    color: inherit;
+  }
+
+  .layer-icon :global(svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
   .audit-layer dd {
     min-width: 0;
     max-width: 30em;
@@ -143,18 +174,8 @@ const layerKeys = ['interface', 'code', 'data', 'infrastructure', 'security', 'k
     color: var(--on-dark);
   }
 
-  .audit-scope-closing {
-    padding-block: 48px clamp(96px, 12vw, 180px);
-  }
-
-  .audit-scope-closing p {
-    max-width: 44em;
-  }
-
   @media (max-width: 900px) {
     .audit-scope-heading {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 24px;
       padding-block-end: 48px;
     }
   }
@@ -165,10 +186,6 @@ const layerKeys = ['interface', 'code', 'data', 'infrastructure', 'security', 'k
       align-content: center;
       row-gap: 10px;
       padding-block: 28px;
-    }
-
-    .audit-scope-closing {
-      padding-block-start: 36px;
     }
   }
 </style>

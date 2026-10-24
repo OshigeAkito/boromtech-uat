@@ -392,7 +392,7 @@ const below = t.iceberg.below
 
     /* The opening: the things you can see are callouts pinned to the tip, popping in one by one, while the
        title sits on the waterline and sinks, wavering where it is under water. The script places all of it.
-       The "what you see" heading stays for screen readers only. */
+       The "what you see" heading stays level with the berg's peak in orange, on the title's left edge, while the title sinks. */
     :global(.js) .above {
       position: absolute;
       inset: 0;
@@ -403,7 +403,12 @@ const below = t.iceberg.below
       opacity: var(--ao, 1);
     }
 
+    :global(.js) .above h2 {
+      color: color-mix(in srgb, var(--ink) 62%, var(--soft));
+    }
+
     :global(.js) .above h2,
+    :global(.js) .above h3,
     :global(.js) .title-under {
       position: absolute;
       top: 0;
@@ -430,12 +435,8 @@ const below = t.iceberg.below
     }
 
     :global(.js) .above h3 {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
+      font-size: var(--t-l);
+      color: var(--orange);
     }
 
     :global(.js) .above li {
@@ -683,6 +684,7 @@ const below = t.iceberg.below
     // The opening's pieces: the title above the water, its wavering copy below it, and the callouts on the tip.
     const title = section.querySelector<HTMLElement>('.above h2')!
     const under = section.querySelector<HTMLElement>('.title-under')!
+    const seen = section.querySelector<HTMLElement>('.above h3')!
     const callouts = [...section.querySelectorAll<HTMLElement>('.above li')]
     const canvas = section.querySelector<HTMLCanvasElement>('.gl')!
     let gl: IcebergGL | null = null
@@ -728,6 +730,9 @@ const below = t.iceberg.below
       const top = wl - h * mix(0.8, -0.35, sink)
       const dry = clamp(wl - top, 0, h) // how much of the title is still above the water
       title.style.transform = under.style.transform = `translate3d(0, ${top}px, 0)`
+      // The peak of the berg is 2.7 world units above the water; the label's top sits level with it.
+      const peak = gl ? gl.project(0, 2.7, 0).y : shot.y - 2.7 * k
+      seen.style.transform = `translate3d(0, ${peak}px, 0)`
       title.style.clipPath = `inset(0 0 ${h - dry}px 0)`
       under.style.clipPath = `inset(${dry}px 0 -24px 0)`
     }

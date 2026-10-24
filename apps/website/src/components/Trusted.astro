@@ -1,0 +1,215 @@
+---
+import { clients, industries } from '../data/trusted'
+import { useLocale } from '../i18n'
+
+const { t } = useLocale(Astro.currentLocale)
+const tr = t.trusted
+
+// Live: only clients who consented. Dev: the samples, when nobody has consented yet.
+const consented = clients.filter((c) => c.consent)
+const sample = consented.length === 0 && import.meta.env.DEV
+const shown = consented.length ? consented : sample ? clients : []
+const groups = industries.filter((g) => shown.some((c) => c.industry === g.id))
+// Thai labels live with the data; other locales translate them in i18n.
+const label = (id: string) => (tr.industries as Record<string, string>)[id] ?? industries.find((g) => g.id === id)!.label
+
+const logos = import.meta.glob<string>('/src/assets/trusted/*.svg', { query: '?raw', import: 'default', eager: true })
+const count = (n: number) => tr.count.replace('{n}', String(n)).replace('{total}', String(shown.length))
+---
+
+{
+  shown.length > 0 && (
+    <section class="chapter trusted" id="trusted" aria-labelledby="trusted-title" data-trusted>
+      <div class="trusted-head">
+        <h2 id="trusted-title" class="l reveal">{tr.title}</h2>
+      </div>
+      <div class="trusted-filters" role="group" aria-label={tr.filter}>
+        <button type="button" aria-pressed="true" data-industry="all">{tr.all}</button>
+        {groups.map((g) => <button type="button" aria-pressed="false" data-industry={g.id}>{label(g.id)}</button>)}
+      </div>
+      <ul class="trusted-grid" role="list">
+        {shown.map((c) => (
+          <li class="trusted-card" data-industry={c.industry}>
+            <span class="trusted-logo" role="img" aria-label={c.name} set:html={logos[c.logo]} />
+            <span class="trusted-industry">{label(c.industry)}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="trusted-count" aria-live="polite" data-count={tr.count} data-total={shown.length}>{count(shown.length)}</p>
+    </section>
+  )
+}
+
+<script>
+  const section = document.querySelector<HTMLElement>('[data-trusted]')
+  if (section) {
+    const buttons = [...section.querySelectorAll<HTMLButtonElement>('.trusted-filters button')]
+    const cards = [...section.querySelectorAll<HTMLElement>('.trusted-card')]
+    const count = section.querySelector<HTMLElement>('.trusted-count')!
+    const pick = (id: string) => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.industry === id)))
+      let n = 0
+      cards.forEach((card) => {
+        const on = id === 'all' || card.dataset.industry === id
+        card.hidden = !on
+        if (on) n++
+      })
+      count.textContent = count.dataset.count!.replace('{n}', String(n)).replace('{total}', count.dataset.total!)
+    }
+    buttons.forEach((b) => b.addEventListener('click', () => pick(b.dataset.industry!)))
+  }
+</script>
+
+<style>
+  .trusted {
+    min-height: 0;
+    padding-block: clamp(64px, 8vw, 120px);
+    background: var(--night);
+    color: var(--soft);
+  }
+
+  .trusted-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 20px;
+  }
+
+  h2 {
+    color: var(--soft);
+    word-break: keep-all;
+  }
+
+  /* Without JavaScript every logo shows, so the filters have nothing to do and stay hidden. */
+  .trusted-filters {
+    display: none;
+    gap: 8px;
+    margin-top: 32px;
+  }
+
+  :global(.js) .trusted-filters {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .trusted-filters button {
+    flex: none;
+    min-height: 44px;
+    padding: 0 20px;
+    border: 1px solid color-mix(in srgb, var(--soft) 40%, transparent);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--soft);
+    font: 600 var(--t-s) / 1 var(--f-text);
+    word-break: keep-all;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+  }
+
+  .trusted-filters button:hover,
+  .trusted-filters button:focus-visible {
+    border-color: var(--soft);
+  }
+
+  .trusted-filters button:focus-visible {
+    outline: 2px solid var(--soft);
+    outline-offset: 3px;
+  }
+
+  .trusted-filters button[aria-pressed='true'] {
+    background: var(--soft);
+    color: var(--night);
+  }
+
+  .trusted-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin: 32px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .trusted-card {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 14px;
+    min-height: 152px;
+    padding: 24px 16px;
+    background: rgb(255 255 255 / 0.06);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  /* display: grid above would otherwise override the hidden attribute. */
+  .trusted-card[hidden] {
+    display: none;
+  }
+
+  .trusted-logo {
+    display: block;
+    height: 40px;
+    color: var(--soft);
+  }
+
+  .trusted-logo :global(svg) {
+    display: block;
+    width: auto;
+    height: 100%;
+  }
+
+  .trusted-industry,
+  .trusted-count {
+    color: color-mix(in srgb, var(--soft) 70%, transparent);
+    font-size: var(--t-s);
+  }
+
+  .trusted-count {
+    margin: 20px 0 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* A card fades in whenever it is shown again. */
+    .trusted-card {
+      animation: trusted-in 320ms var(--ease-out) both;
+    }
+  }
+
+  @keyframes trusted-in {
+    from { opacity: 0; transform: translateY(6px); }
+  }
+
+  @media (max-width: 900px) {
+    .trusted-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .trusted-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* One scrolling row of filters; the section clips it, so the page never scrolls sideways. */
+    :global(.js) .trusted-filters {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      margin: 26px calc(-1 * var(--m)) 0;
+      padding: 6px var(--m);
+      scroll-padding-inline: var(--m);
+    }
+
+    .trusted-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .trusted-filters button {
+      scroll-snap-align: start;
+    }
+  }
+</style>

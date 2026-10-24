@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<defs>
+<mask id="al-infra-cloud-knockout" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+<rect width="24" height="24" fill="#fff" stroke="none"/>
+<path d="M20.46 21.54h-4.42a3.64 3.64 0 1 1 3.49-4.68h.93a2.34 2.34 0 1 1 0 4.68z" fill="#000" stroke="#000" stroke-width="4.75"/>
+</mask>
+</defs>
+<g mask="url(#al-infra-cloud-knockout)">
+<rect x="3" y="2.5" width="18" height="5.5" rx="1"/>
+<rect x="3" y="9.25" width="18" height="5.5" rx="1"/>
+<rect x="3" y="16" width="18" height="5.5" rx="1"/>
+<path d="M6.5 5.25h.01M6.5 12h.01M6.5 18.75h.01M9.5 5.25h3M9.5 12h3M9.5 18.75h2"/>
+</g>
+<path d="M20.46 21.54h-4.42a3.64 3.64 0 1 1 3.49-4.68h.93a2.34 2.34 0 1 1 0 4.68z"/>
+</svg>

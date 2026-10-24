@@ -5,12 +5,12 @@ import posterSrc from '../assets/photos/skytrain-poster.jpg'
 import { credits, site } from '../data/site'
 import { useLocale } from '../i18n'
 import LangSwitch from './LangSwitch.astro'
+import wordmark from '../../../../design-system/brand/logos/wordmark-light.svg?raw'
 
 const { t } = useLocale(Astro.currentLocale)
 const subject = encodeURIComponent(t.contact.emailSubject)
-const blocks = [
-  ['B', 100], ['O', 72], ['R', 88], ['O', 64], ['M', 94], ['T', 78], ['E', 60], ['C', 84], ['H', 70],
-] as const
+// The same wordmark as the header.
+const logo = wordmark.replace('<svg ', '<svg aria-hidden="true" focusable="false" ')
 ---
 
 <section class="chapter contact" id="contact" aria-labelledby="contact-title">
@@ -33,20 +33,20 @@ const blocks = [
 </section>
 
 <footer class="footer">
-  <div class="blocks" role="img" aria-label="BoromTech">
-    {blocks.map(([letter, h]) => <span style={`--h:${h}%`} aria-hidden="true">{letter}</span>)}
-  </div>
-  <div class="footer-grid">
-    <ul>
-      <li><a class="link" href="#cases">{t.nav.cases}</a></li>
-      <li><a class="link" href="#process">{t.nav.process}</a></li>
-    </ul>
-    <ul>
-      <li><a class="link" href="#team">{t.nav.team}</a></li>
-      <li><a class="link" href="#faq">{t.nav.faq}</a></li>
-    </ul>
+  <div class="footer-bar">
+    <a class="footer-logo" href="#top" aria-label="BoromTech"><Fragment set:html={logo} /></a>
+    <nav class="footer-nav" aria-label={t.nav.label}>
+      <a class="link" href="#cases">{t.nav.cases}</a>
+      <a class="link" href="#faq">{t.nav.faq}</a>
+    </nav>
     <LangSwitch list />
-    <address>{site.email}<br />{t.footer.city}</address>
+    <a class="button button-small" href="#contact">{t.nav.cta}</a>
+  </div>
+  <div class="footer-meta">
+    <span>{t.footer.copyright}</span>
+    <!-- Each part of the address stays whole; Thai line breaking does not know the place names. -->
+    <address lang="th">{site.address.split(' ').map((part, i) => <>{i > 0 && ' '}<span class="nb">{part}</span></>)}</address>
+    <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
   </div>
   <p class="credits">
     {t.footer.credits}{' '}
@@ -59,8 +59,4 @@ const blocks = [
       ))
     }
   </p>
-  <div class="footer-last">
-    <span>{t.footer.copyright}</span>
-    <a class="button button-small" href="#contact">{t.nav.cta}</a>
-  </div>
 </footer>

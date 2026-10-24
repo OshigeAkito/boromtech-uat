@@ -1,20 +1,30 @@
 ---
 import { Picture } from 'astro:assets'
-import sathorn from '../assets/photos/sathorn-unique-tower-ii.jpg'
+import house from '../assets/unfinished-luxury-house-cases.jpg'
 import { site } from '../data/site'
+import i1 from '../icons/symptoms/icon-01-broken-app.svg?raw'
+import i2 from '../icons/symptoms/icon-02-ai-misaligned-blocks.svg?raw'
+import i3 from '../icons/symptoms/icon-03-calling-unanswered.svg?raw'
+import i4 from '../icons/symptoms/icon-04-missing-code-docs.svg?raw'
+import i5 from '../icons/symptoms/icon-05-server-warning.svg?raw'
+import i6 from '../icons/symptoms/icon-06-gauge-redline.svg?raw'
+import i7 from '../icons/symptoms/icon-07-pro-team-support.svg?raw'
 import { useLocale } from '../i18n'
 
 const { t } = useLocale(Astro.currentLocale)
 const c = t.cases
+// One icon per symptom, in the same order as the symptoms in i18n.
+const icons = [i1, i2, i3, i4, i5, i6, i7]
 ---
 
 <section class="chapter cases" id="cases" aria-labelledby="cases-title">
   <div class="cases-picture">
     <figure class="shutter">
       <Picture
-        src={sathorn}
+        src={house}
         formats={['avif', 'webp']}
-        widths={[480, 800, 1200, 1600, 2000]}
+        width={768}
+        widths={[480, 768]}
         sizes="(max-width: 900px) 92vw, 40vw"
         alt={c.photoAlt}
         loading="lazy"
@@ -27,9 +37,10 @@ const c = t.cases
     <p class="reveal">{c.intro}</p>
     <ul class="symptoms" id="symptoms">
       {
-        c.symptoms.map(({ symptom, remedy }) => (
+        c.symptoms.map(({ symptom, remedy }, i) => (
           <li>
             <label>
+              <span class="symptom-icon" set:html={icons[i]} />
               <input type="checkbox" name="case" />
               <span class="symptom">{symptom}</span>
               <span class="remedy">{remedy}</span>

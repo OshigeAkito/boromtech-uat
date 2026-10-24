@@ -6,11 +6,20 @@ const { t } = useLocale(Astro.currentLocale)
 // What is in place before any work starts, drawn as the documents themselves: an NDA, the 5-day audit plan and
 // a fixed-price quote. They read as the real documents do, in English, like the samples in the showcase.
 const days = ['Discovery', 'Codebase', 'Data', 'Infra', 'Report']
+
+const pad = (n: number) => String(n).padStart(2, '0')
 ---
 
 <section class="chapter faq" id="faq" aria-labelledby="faq-title">
-  <div class="faq-head">
-    <h2 id="faq-title" class="l reveal">{t.faq.title}</h2>
+  <!-- Desktop: this column sticks while the questions scroll. -->
+  <div class="faq-aside">
+    <div class="faq-lead">
+      <p class="reveal">{t.faq.lead}</p>
+      <ul class="principles reveal" role="list">
+        {t.faq.principles.map((item) => <li>{item}</li>)}
+      </ul>
+      <h2 id="faq-title" class="l reveal">{t.faq.title}</h2>
+    </div>
     <div class="docs" aria-hidden="true">
       <div class="doc doc-nda">
         <div class="doc-head"><strong>BoromTech</strong><span>NDA · BT-N-0412</span></div>
@@ -40,22 +49,196 @@ const days = ['Discovery', 'Codebase', 'Data', 'Infra', 'Report']
       </div>
     </div>
   </div>
-  {
-    t.faq.items.map(({ q, a }) => (
-      <div class="qa">
-        <h3>{q}</h3>
-        <p>{a}</p>
-      </div>
-    ))
-  }
+  <div class="faq-list">
+    <h3 class="m faq-list-title">{t.faq.listTitle}</h3>
+    {
+      t.faq.items.map(({ q, a }, i) => (
+        <details class="qa" name="faq" open={i === 0}>
+          <summary>
+            <span class="qa-num" aria-hidden="true">{pad(i + 1)}</span>
+            <h4>{q}</h4>
+            <span class="qa-icon" aria-hidden="true" />
+          </summary>
+          <div class="qa-answer">
+            <p>{a}</p>
+          </div>
+        </details>
+      ))
+    }
+  </div>
 </section>
 
 <style>
-  /* Three cards fanned on the orange band, each header left showing, the quote on top. */
-  .docs {
-    grid-column: 7 / span 6;
+  /* Two columns on desktop: the lead and the documents on the left, sticky; the questions on the right. Global
+     .faq, .faq-lead, .principles and .qa rules in site.css are overridden here where they clash. */
+  .faq {
+    display: grid;
+    grid-template-columns: minmax(0, 5.5fr) minmax(0, 6.5fr);
+    column-gap: var(--gap);
+    align-items: start;
+    /* .chapter's overflow: hidden would make the section its own scroller and stop the aside sticking. */
+    overflow: clip;
+    /* The left side of the section is orange, edge to edge, up to the middle of the gap between the columns. */
+    --split: calc(var(--m) + (100% - 2 * var(--m) - var(--gap)) * 5.5 / 12 + var(--gap) / 2);
+    background: linear-gradient(to right, var(--orange) var(--split), var(--sunken) var(--split));
+    padding: clamp(64px, 8vw, 120px) max(var(--m), env(safe-area-inset-right)) clamp(64px, 8vw, 120px) max(var(--m), env(safe-area-inset-left));
+  }
+
+  .faq-aside {
+    position: sticky;
+    top: var(--m);
+    display: grid;
+    gap: 32px;
+    color: var(--ink);
+  }
+
+  /* site.css spans .faq-lead over six columns, which would add implicit columns to this grid. */
+  .faq-lead {
+    grid-column: auto;
+    gap: 16px;
+  }
+
+  .faq-lead p {
+    max-width: none;
+    font-size: var(--t-body);
+    font-weight: 700;
+  }
+
+  /* The three principles, one per line. */
+  .principles {
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+  }
+
+  /* The title is short enough to break only at spaces. The questions are longer, so they keep Thai's own word
+     breaking; loanwords are already held together by the thai-loanwords build step. */
+  h2 {
+    word-break: keep-all;
+  }
+
+
+  .faq-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .faq-list-title {
+    margin: 0 0 12px;
+    word-break: keep-all;
+  }
+
+  .qa {
+    display: block;
+    padding: 0;
+    background: var(--paper);
+    border: 1px solid transparent;
+    border-radius: 16px;
+    transition: border-color 160ms ease;
+    interpolate-size: allow-keywords;
+  }
+
+  .qa:has(summary:hover),
+  .qa:has(summary:focus-visible) {
+    border-color: var(--orange);
+  }
+
+  summary {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) 24px;
+    align-items: center;
+    gap: 16px;
+    padding: 22px 24px;
+    list-style: none;
+    cursor: pointer;
+    border-radius: 15px;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:focus-visible {
+    outline: 3px solid var(--orange-deep);
+    outline-offset: 3px;
+  }
+
+  .qa-num {
+    font: 700 var(--t-s) / 1 var(--f-display);
+    color: var(--orange-deep);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .qa h4 {
+    margin: 0;
+    font-size: var(--t-body);
+    line-height: 1.45;
+  }
+
+  /* A plus whose upright bar folds away, leaving a minus, when the question opens. */
+  .qa-icon {
     position: relative;
-    height: clamp(380px, 37vw, 500px);
+    width: 24px;
+    height: 24px;
+  }
+
+  .qa-icon::before,
+  .qa-icon::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 11px;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--ink);
+  }
+
+  .qa-icon::after {
+    rotate: 90deg;
+  }
+
+  .qa[open] .qa-icon {
+    rotate: 180deg;
+  }
+
+  .qa[open] .qa-icon::after {
+    rotate: 0deg;
+  }
+
+  .qa-answer {
+    padding: 0 24px 24px calc(24px + 2ch + 16px);
+  }
+
+  .qa-answer p {
+    grid-column: auto;
+    margin: 0;
+    max-width: 38em;
+    font-size: var(--t-body);
+    line-height: 1.7;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .qa-icon,
+    .qa-icon::after {
+      transition: rotate 220ms var(--ease-out);
+    }
+
+    .qa::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition: block-size 260ms var(--ease-out), content-visibility 260ms allow-discrete;
+    }
+
+    .qa[open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  /* Three cards fanned in the left column, each header left showing, the quote on top. */
+  .docs {
+    position: relative;
+    height: clamp(340px, 29vw, 420px);
   }
 
   .doc {
@@ -78,14 +261,15 @@ const days = ['Discovery', 'Codebase', 'Data', 'Infra', 'Report']
   }
 
   .doc-audit {
-    top: 22%;
-    left: 9%;
+    top: 25%;
+    left: 11%;
     rotate: 2deg;
   }
 
+  /* Pinned to the foot of the fan, so a card taller than expected never falls out of the panel. */
   .doc-quote {
-    top: 44%;
-    left: 18%;
+    bottom: 0;
+    left: 22%;
     rotate: -1.5deg;
   }
 
@@ -185,8 +369,35 @@ const days = ['Discovery', 'Codebase', 'Data', 'Infra', 'Report']
   }
 
   @media (max-width: 900px) {
+    /* One column, in reading order: lead and documents, then the questions. */
+    .faq {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 32px;
+      background: var(--sunken);
+    }
+
+    /* Stacked, the orange side becomes a full-width band behind the lead and the documents. */
+    .faq-aside {
+      position: static;
+      margin: calc(-1 * clamp(64px, 8vw, 120px)) calc(-1 * var(--m)) 0;
+      padding: clamp(48px, 8vw, 72px) var(--m) 40px;
+      background: var(--orange);
+    }
+
+
+    summary {
+      gap: 12px;
+      padding: 18px;
+    }
+
+    .qa-answer {
+      padding: 0 18px 20px;
+    }
+
     .docs {
-      height: 400px;
+      height: 424px;
     }
 
     .doc {
@@ -195,12 +406,19 @@ const days = ['Discovery', 'Codebase', 'Data', 'Infra', 'Report']
     }
 
     .doc-audit {
-      left: 6%;
+      left: 7%;
     }
 
     .doc-quote {
-      left: 12%;
+      left: 14%;
       padding-bottom: 56px; /* room for the stamp below the terms */
+    }
+  }
+
+  /* Narrow phones wrap the card text more, so the fan needs a little more height. */
+  @media (max-width: 480px) {
+    .docs {
+      height: 512px;
     }
   }
 </style>

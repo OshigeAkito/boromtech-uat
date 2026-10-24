@@ -1,6 +1,6 @@
 ---
 import { Font, getImage } from 'astro:assets'
-import sathorn from '../assets/photos/sathorn-unique-tower-ii.jpg'
+import house from '../assets/unfinished-luxury-house-cases.jpg'
 import { site } from '../data/site'
 import { pickLocale } from '../i18n/detect.mjs'
 import { defaultLocale, languages, localePath, locales, useLocale } from '../i18n'
@@ -8,7 +8,8 @@ import '../styles/site.css'
 
 const { locale, t, lang } = useLocale(Astro.currentLocale)
 const canonical = new URL(localePath(locale), Astro.site)
-const og = await getImage({ src: sathorn, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 80 })
+// The share image keeps the photo's own width (864px) rather than enlarging it to 1200.
+const og = await getImage({ src: house, width: 864, height: 454, fit: 'cover', format: 'jpg', quality: 80 })
 const ogUrl = new URL(og.src, Astro.site)
 const preload = locale === defaultLocale ? 'thai' : 'latin'
 const media = process.env.MEDIA_ORIGIN // see astro.config.mjs
@@ -62,8 +63,8 @@ const detect = `try{var l=(${pickLocale})({saved:(document.cookie.match(/(?:^|; 
     <meta property="og:description" content={t.meta.description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogUrl} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content="864" />
+    <meta property="og:image:height" content="454" />
     <meta property="og:image:alt" content={t.meta.ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
 

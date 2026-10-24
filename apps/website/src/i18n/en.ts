@@ -5,19 +5,17 @@ export default {
     title: 'BoromTech · Anyone can build with AI. We keep it running.',
     description:
       'Paid for a project that never worked, or built with AI and no one to maintain it? BoromTech takes over systems big and small. Fixed-price audit, 90-day guarantee.',
-    ogImageAlt: 'The unfinished Sathorn Unique Tower among completed buildings in Bangkok',
+    ogImageAlt: 'A luxury house left unfinished mid-build, with a bare concrete shell, an unfinished swimming pool and abandoned scaffolding',
   },
   nav: {
     label: 'Main menu',
     cases: 'What we fix',
-    process: 'Process',
-    team: 'Team',
     faq: 'FAQ',
-    cta: 'Consult with us',
+    cta: 'Talk to us',
     language: 'Language',
   },
   hero: {
-    cta: 'Consult with us',
+    cta: 'Talk to us',
     slides: [
       ['Anyone can build it with AI. But is it properly engineered?', 'BoromTech sends experts to audit it.'],
       ['A multi-million project that still doesn’t work', 'BoromTech sends experts to repair it and finish the job.'],
@@ -32,10 +30,11 @@ export default {
     above: ['Screens that work', 'Features that passed the demo'],
     belowLabel: 'What someone has to look after',
     below: [
-      'Backups that actually restore',
-      'Security and patch updates',
-      'Monitoring and alerts when it goes down',
-      'Documentation the next person can follow',
+      'Backups you can restore',
+      'Security looked after',
+      'Alerts when the system goes down',
+      'Fixes made remotely',
+      'Documentation that actually works',
       'Upgrades before support ends',
       'Someone who picks up the phone at 3 a.m.',
     ],
@@ -44,11 +43,11 @@ export default {
     fixed: 'Fixed',
   },
   cases: {
-    title: 'What we take on',
+    title: 'Have you run into these problems?',
     intro: 'Pick the symptoms that match your project and see where we step in.',
-    photoAlt: 'The unfinished Sathorn Unique Tower standing among completed buildings in Sathorn, Bangkok',
+    photoAlt: 'A luxury house left unfinished mid-build, with a bare concrete shell, an unfinished swimming pool and abandoned scaffolding',
     photoCaption:
-      'Sathorn Unique Tower, a vast project abandoned mid-construction in 1997. A lot of expensive software and half-finished projects get left the same way.',
+      'Anyone who has built a house knows the budget tends to balloon, and sometimes the contractor walks off halfway. Software can go the same way: a lot already invested, but the work is stuck halfway because no one takes it over.',
     symptoms: [
       { symptom: 'We paid a lot for a project that still isn’t usable', remedy: 'We operate on the existing structure, fix what is broken and get the system running for real, without tearing it all down and starting over.' },
       { symptom: 'We built it ourselves or with AI, but no one keeps it stable', remedy: 'We clean up the code, close security holes and take on looking after the system so it keeps working in the long run.' },
@@ -64,19 +63,9 @@ export default {
     emailSubject: 'Booking a system audit',
     emailBody: 'Hello,\n\nOur system has these symptoms:\n{symptoms}\n\nSystem / project name:\nTechnology used (if known):\nPhone:\n',
   },
-  process: {
-    title: 'From audit to guarantee',
-    times: ['5 business days', '2 days', '2–8 weeks', '90 days'],
-    notes: [
-      'First, we audit the real code, servers and databases and report every risk.',
-      'Then a fixed-price quote, itemised line by line.',
-      'During the work, fixes ship as small, reviewable tasks, with weekly delivery and updates.',
-      'After handover, a 90-day guarantee. If our work has a problem, we fix it at no cost.',
-    ],
-  },
   audit: {
-    title: ['Every layer, ', 'audited'],
-    intro: 'Over five business days we open up your system layer by layer, from the screens down to the people who run it.',
+    title: ['Every layer of ', 'your software, checked'],
+    intro: "We check the whole system, from the software's screens to the people who look after it, within 5 business days, then summarise the findings, sort out the issues and start with the highest risks.",
     layers: [
       { layer: 'Screens and features', check: 'Does every feature in the contract actually work?' },
       { layer: 'Code', check: 'Does the source match what is running? Can the structure be built on?' },
@@ -85,32 +74,25 @@ export default {
       { layer: 'Security', check: 'Known vulnerabilities, passwords in code and permissions left wide open.' },
       { layer: 'People and knowledge', check: 'Who knows what, and what nobody has written down yet.' },
     ],
-    closing: 'The result is an Audit Report that tells you what is broken, what is at risk and what to fix first.',
   },
   showcase: {
-    label: 'What you get',
+    title: 'Sample reports',
     tablist: 'Documents you receive',
     note: 'Real examples of the documents you receive, from a real engagement: a distributor’s inventory system.',
     mock: 'Note: all data shown is mock-up, to protect client confidentiality.',
   },
-  team: {
-    title: ['A team from', 'global consulting'],
-    photoCaption: 'Photo: Borommaratchachonnani Road, Bangkok',
-    photoAlt: 'Borommaratchachonnani Road, Bangkok, an elevated expressway above heavy traffic',
-    points: [
-      {
-        heading: 'Big-project standards for work of any size',
-        body: 'Now that anyone can generate code with AI, what separates projects that survive from projects that fail is who looks after them. Our team comes from global consulting firms and brings their approach to auditing, architecture and high-standard delivery to fixing and running your systems, from small jobs to enterprise scale.',
-      },
-      {
-        heading: 'Rescue expensive projects without runaway bills',
-        body: 'We know the pain of paying a large sum and getting a system that doesn’t work. So we never bill open-ended hourly rates. Every task has a fixed price agreed before it starts, itemised line by line in the quote.',
-      },
-    ],
-    cta: 'Talk to the team',
+  trusted: {
+    title: 'Clients who trust us',
+    filter: 'Filter by industry',
+    all: 'All',
+    count: 'Showing {n} of {total}',
+    industries: { retail: 'Retail', finance: 'Finance', logistics: 'Logistics', manufacturing: 'Manufacturing' },
   },
   faq: {
     title: 'Before we start',
+    lead: 'We work openly and explain clearly how the work gets done.',
+    principles: ['Confidentiality', 'A complete summary of the issues', 'Straightforward pricing'],
+    listTitle: 'Frequently asked questions',
     items: [
       {
         q: 'We built a system with AI, or paid for a project that broke. Will you take it on?',
@@ -146,7 +128,6 @@ export default {
     photoAlt: 'An old server rack with its network cables neatly rewired',
   },
   footer: {
-    city: 'Bangkok',
     copyright: '© 2026 BoromTech',
     credits: 'Some illustrations made with AI · Photos from Wikimedia Commons:',
     by: 'by',
