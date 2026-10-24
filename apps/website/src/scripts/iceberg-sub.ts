@@ -28,10 +28,13 @@ import {
   SpotLight,
   Vector3,
 } from 'three'
+import { LOGO_NAVY, LOGO_ORANGE, PATHS, WORDMARK_HEIGHT, WORDMARK_WIDTH, WORDMARK_X } from '../../../../design-system/brand/src/wordmark'
 
-const HULL = new Color('#3b74f2')
-const DECK = new Color('#2a56c4')
-const ORANGE = new Color('#e56e3f')
+// Painted after the logo: an ivory hull carrying the navy-and-orange logo, a warm grey sail and fins (navy would
+// vanish in the night water), and the T's orange on the collar and the periscope.
+const HULL = new Color('#f2f1ee')
+const DECK = new Color('#cfccc4')
+const ORANGE = new Color(LOGO_ORANGE)
 const STEEL = new Color('#c9ccd6')
 const LAMP = new Color('#fff1d6')
 const BUG = new Color('#ff3b2f')
@@ -41,32 +44,22 @@ const smooth = (t: number) => {
   return c * c * (3 - 2 * c)
 }
 
-// The B roundel, drawn once the brand font has loaded so the letter is in the site's display face.
-function badge() {
+// The logo, rasterised from its outlines for the hull's flanks: navy letters and the orange T on a clear ground.
+function livery() {
   const canvas = document.createElement('canvas')
-  canvas.width = canvas.height = 256
+  canvas.width = 1024
+  canvas.height = Math.round((1024 * WORDMARK_HEIGHT) / WORDMARK_WIDTH)
   const texture = new CanvasTexture(canvas)
   texture.colorSpace = SRGBColorSpace
-  const draw = () => {
-    const g = canvas.getContext('2d')!
-    g.clearRect(0, 0, 256, 256)
-    g.fillStyle = '#ffffff'
-    g.beginPath()
-    g.arc(128, 128, 118, 0, Math.PI * 2)
-    g.fill()
-    g.lineWidth = 14
-    g.strokeStyle = '#e56e3f'
-    g.stroke()
-    const face = getComputedStyle(document.documentElement).getPropertyValue('--font-display').trim() || 'sans-serif'
-    g.fillStyle = '#1e2235'
-    g.font = `800 172px ${face}`
-    g.textAlign = 'center'
-    g.textBaseline = 'middle'
-    g.fillText('B', 132, 140)
+  texture.anisotropy = 4
+  const paths = PATHS.map(([d, t]) => `<path fill-rule="evenodd" fill="${t ? LOGO_ORANGE : LOGO_NAVY}" d="${d}"/>`).join('')
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}" viewBox="0 0 ${WORDMARK_WIDTH} ${WORDMARK_HEIGHT}"><g transform="translate(${WORDMARK_X} 0)">${paths}</g></svg>`
+  const image = new Image()
+  image.onload = () => {
+    canvas.getContext('2d')!.drawImage(image, 0, 0, canvas.width, canvas.height)
     texture.needsUpdate = true
   }
-  draw()
-  document.fonts.ready.then(draw)
+  image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
   return texture
 }
 
@@ -76,25 +69,29 @@ function hull() {
   const body = new Mesh(new SphereGeometry(1, 12, 8), paint(HULL))
   body.scale.set(1.35, 0.55, 0.55)
   sub.add(body)
-  // A B on each flank: a patch of the hull's own ellipsoid, a hair larger, so the roundel hugs the curve.
-  // The patch is narrower in angle than it is tall because the hull is stretched 1.35 : 0.55.
-  const mark = new MeshBasicMaterial({ map: badge(), transparent: true, depthWrite: false })
+  // The logo along each flank, mid-hull and clear of the portholes: a patch of the hull's own ellipsoid, a hair
+  // larger, so the livery hugs the curve. Its angles give the logo's 5.9 : 1 once the hull's 1.35 : 0.55 stretch applies.
+  const mark = new MeshBasicMaterial({ map: livery(), transparent: true, depthWrite: false })
   for (const centre of [Math.PI / 2, (Math.PI * 3) / 2]) {
-    const patch = new Mesh(new SphereGeometry(1.012, 24, 16, centre - 0.245, 0.49, Math.PI / 2 - 0.6, 1.2), mark)
+    const patch = new Mesh(new SphereGeometry(1.012, 48, 8, centre - 0.5, 1, Math.PI / 2 - 0.2, 0.4), mark)
     patch.scale.copy(body.scale)
-    patch.position.x = -0.15
     sub.add(patch)
   }
-  const band = new Mesh(new CylinderGeometry(0.57, 0.57, 0.16, 12, 1, true), paint(ORANGE))
+  // An orange collar toward the tail, behind the livery.
+  const band = new Mesh(new CylinderGeometry(0.43, 0.43, 0.12, 12, 1, true), paint(ORANGE))
   band.rotation.z = Math.PI / 2
-  band.position.x = 0.62
+  band.position.x = -0.95
   sub.add(band)
   const tower = new Mesh(new BoxGeometry(0.7, 0.42, 0.3), paint(DECK))
   tower.position.set(-0.1, 0.6, 0)
   sub.add(tower)
-  const scope = new Mesh(new CylinderGeometry(0.03, 0.03, 0.4, 6), paint(STEEL))
+  // The periscope is the logo's T: an orange mast with a crossbar.
+  const scope = new Mesh(new CylinderGeometry(0.035, 0.035, 0.4, 6), paint(ORANGE))
   scope.position.set(0.05, 0.95, 0)
   sub.add(scope)
+  const crossbar = new Mesh(new BoxGeometry(0.26, 0.07, 0.09), paint(ORANGE))
+  crossbar.position.set(0.05, 1.16, 0)
+  sub.add(crossbar)
   const fin = new Mesh(new BoxGeometry(0.35, 0.5, 0.06), paint(DECK))
   fin.position.set(-1.25, 0.25, 0)
   sub.add(fin)

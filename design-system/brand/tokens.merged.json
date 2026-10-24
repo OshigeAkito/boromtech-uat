@@ -384,7 +384,7 @@
             "fontWeight": 800,
             "letterSpacing": "-0.03em",
             "sample": "BoromTech",
-            "usage": "The wordmark, Bricolage Grotesque 800, stretch normal, 30px on the web (Canva: Ultra Bold, letter spacing -30). Live text only in the site nav; everywhere else use the outlined wordmark files. Clear space: at least the height of the B on every side."
+            "usage": "The wordmark, Bricolage Grotesque 800, stretch normal, 30px on the web (Canva: Ultra Bold, letter spacing -30). Historical: the site nav now shows the outlined logo files too; use them everywhere. Clear space: at least the height of the B on every side."
           },
           {
             "name": "doc-mark",

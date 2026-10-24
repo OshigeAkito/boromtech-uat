@@ -1,15 +1,17 @@
 import type { CSSProperties } from 'react'
-import { CAP, GLYPHS, WORDMARK_WIDTH } from './wordmark'
+import { BASELINE, CAP, CAP_TOP, LOGO_NAVY, LOGO_ORANGE, PATHS, WORDMARK_HEIGHT, WORDMARK_WIDTH, WORDMARK_X } from './wordmark'
 
 // Each ink falls back to the brand hex, so the marks render right even without tokens.css.
 const INK = {
   orange: 'var(--orange, #e56e3f)',
   rust: 'var(--rust, #b4471d)',
   ink: 'var(--ink, #1a1b22)',
-  navy: 'var(--night, #1e2235)',
+  navy: LOGO_NAVY,
   light: 'var(--on-dark, #f2f1ee)',
   night: 'var(--night, #1e2235)',
 } as const
+// The wordmark's T keeps the logo's own orange on every ground but single-colour print.
+const T_INK: Record<WordmarkTone, string> = { navy: LOGO_ORANGE, light: LOGO_ORANGE, ink: INK.ink }
 
 export type SealTone = 'orange' | 'rust' | 'ink' | 'light'
 export type WordmarkTone = 'navy' | 'light' | 'ink'
@@ -52,18 +54,18 @@ export function Seal({ tone = 'orange', size = 48, title, className, style }: Se
   )
 }
 
-const wordmarkPaths = (fill: string, x = 0, baseline = CAP) => (
-  <g transform={`translate(${x} ${baseline}) scale(1 -1)`} style={{ fill }}>
-    {GLYPHS.map(([dx, d]) => (
-      <path key={dx} transform={`translate(${dx} 0)`} d={d} />
+const wordmarkPaths = (word: string, accent: string, x = 0, y = 0) => (
+  <g transform={`translate(${x + WORDMARK_X} ${y})`}>
+    {PATHS.map(([d, t], i) => (
+      <path key={i} fillRule="evenodd" d={d} style={{ fill: t ? accent : word }} />
     ))}
   </g>
 )
 
 export interface WordmarkProps {
-  /** `navy` (Deep Navy) on ivory, paper, sunken and soft; `light` (Warm Ivory) on night; `ink` for single-colour print. Never orange. */
+  /** `navy` (Logo Navy) on ivory, paper, sunken and soft; `light` (Warm Ivory) on night; `ink` for single-colour print. The T stays orange except in `ink`. */
   tone?: WordmarkTone
-  /** Cap height in px (the SVG's height). The width follows at 8.1 times the height. Minimum 10 (80px wide). */
+  /** Height in px (the SVG's height). The width follows at 5.92 times the height. Minimum 14 (80px wide). */
   height?: number
   /** Accessible name. Defaults to "BoromTech". */
   title?: string
@@ -72,7 +74,7 @@ export interface WordmarkProps {
 }
 
 /**
- * The BoromTech wordmark, the primary logo: outlined from Bricolage Grotesque ExtraBold at -0.03em with the site's kerning.
+ * The BoromTech wordmark, the primary logo: the outlined logo artwork, its T drawn as an orange periscope.
  * Keep clear space of at least its cap height (the height of the B) on every side.
  */
 export function Wordmark({ tone = 'navy', height = 24, title = 'BoromTech', className, style }: WordmarkProps) {
@@ -81,11 +83,11 @@ export function Wordmark({ tone = 'navy', height = 24, title = 'BoromTech', clas
       {...label(title)}
       className={className}
       height={height}
-      width={(height * WORDMARK_WIDTH) / CAP}
-      viewBox={`0 0 ${WORDMARK_WIDTH} ${CAP}`}
+      width={(height * WORDMARK_WIDTH) / WORDMARK_HEIGHT}
+      viewBox={`0 0 ${WORDMARK_WIDTH} ${WORDMARK_HEIGHT}`}
       style={{ display: 'block', flex: 'none', ...style }}
     >
-      {wordmarkPaths(INK[tone])}
+      {wordmarkPaths(INK[tone], T_INK[tone])}
     </svg>
   )
 }
@@ -94,11 +96,11 @@ export function Wordmark({ tone = 'navy', height = 24, title = 'BoromTech', clas
 const D = CAP * 1.25
 const K = D / 950
 const LOCKUP_WIDTH = D + 150 * K + WORDMARK_WIDTH
-const LOCKUP_INKS: Record<LockupGround, readonly [string, string]> = {
-  night: [INK.orange, INK.light],
-  paper: [INK.orange, INK.navy],
-  soft: [INK.rust, INK.navy],
-  mono: [INK.ink, INK.ink],
+const LOCKUP_INKS: Record<LockupGround, readonly [string, string, string]> = {
+  night: [INK.orange, INK.light, LOGO_ORANGE],
+  paper: [INK.orange, INK.navy, LOGO_ORANGE],
+  soft: [INK.rust, INK.navy, LOGO_ORANGE],
+  mono: [INK.ink, INK.ink, INK.ink],
 }
 
 export interface LockupProps {
@@ -117,7 +119,7 @@ export interface LockupProps {
  * small square-ish slots (email signatures, partner slides) where the seal is not already on the page.
  */
 export function Lockup({ ground = 'paper', height = 32, title = 'BoromTech', className, style }: LockupProps) {
-  const [seal, word] = LOCKUP_INKS[ground]
+  const [seal, word, accent] = LOCKUP_INKS[ground]
   return (
     <svg
       {...label(title)}
@@ -128,7 +130,7 @@ export function Lockup({ ground = 'paper', height = 32, title = 'BoromTech', cla
       style={{ display: 'block', flex: 'none', ...style }}
     >
       <circle cx={D / 2} cy={D / 2} r={400 * K} fill="none" strokeWidth={150 * K} style={{ stroke: seal }} />
-      {wordmarkPaths(word, D + 150 * K, D / 2 + CAP / 2)}
+      {wordmarkPaths(word, accent, D + 150 * K, D / 2 - (CAP_TOP + BASELINE) / 2)}
     </svg>
   )
 }

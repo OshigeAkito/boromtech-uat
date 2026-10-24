@@ -73,11 +73,11 @@ Two families: **Bricolage Grotesque** for English, the wordmark and headings; **
 
 ## Wordmark and ring
 
-The **wordmark** is the logo: "BoromTech" outlined from Bricolage Grotesque 800. Use the files in **Logos** (`logos/`); never retype it.
+The **wordmark** is the logo: the "BoromTech" logo artwork (`logos/source/logo.svg`), whose orange T doubles as a periscope. Use the files in **Logos** (`logos/`); never retype it.
 
-- On dark grounds it is Warm Ivory (`wordmark-light.svg`). On light grounds it is Deep Navy (`wordmark-navy.svg`). `wordmark-ink.svg` is for single-colour print only.
+- On dark grounds its letters are Warm Ivory (`wordmark-light.svg`). On light grounds they are Logo Navy #13233B (`wordmark-navy.svg`). The T is Logo Orange #FE651E on both. `wordmark-ink.svg` is for single-colour print only.
 - Keep clear space of at least the height of the B on every side.
-- No shadow, no stretching, no change of proportion, never orange.
+- No shadow, no stretching, no change of proportion; only the T is orange.
 
 The **ring** is the brand's supporting graphic: a thick orange ring, `seal-r` 400 and `seal-stroke` 150 in a `seal-box` of 1000. Its home is cropped into the edge of the medium, as on the guideline cover and the website hero, and it never sits over text. The full rules for construction, sizes and grounds are in **The seal**.
 

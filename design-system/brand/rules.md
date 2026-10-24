@@ -2,7 +2,7 @@
 
 ## Do
 
-- Use the wordmark alone as the logo: Warm Ivory on Deep Navy, Deep Navy on light grounds.
+- Use the wordmark alone as the logo: Warm Ivory letters on Deep Navy, Logo Navy letters on light grounds, the T in Logo Orange on both.
 - Keep at least the height of the B clear around the wordmark.
 - Put covers and section dividers on Deep Navy; put diagrams and detailed content on light grounds.
 - Crop the big ring off the right edge of a cover, hero, card's brand side or post, as the website does.
@@ -27,5 +27,5 @@
 - Don't crop the ring from the left edge, or cut away more than half of it.
 - Don't show more than one ring per view, and don't use the lockup in new work.
 - Don't round the corners of buttons, cards or images.
-- Don't set the wordmark in any face but the outlined Bricolage files, and don't recolour it orange.
+- Don't retype or redraw the wordmark; use the files built from `logos/source/logo.svg`, and don't recolour any letter but the T orange.
 - Don't track Thai text tighter than 0 or set it in uppercase-style eyebrows.

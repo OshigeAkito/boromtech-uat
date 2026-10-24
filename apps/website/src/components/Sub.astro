@@ -1,0 +1,164 @@
+---
+// The BoromTech sub in the hero: it noses in from the right edge into the hole of the ring, raises the logo's T as
+// its periscope and idles there, prop turning, lamp on. The hull carries the logo. Pure SVG and CSS, so the first
+// screen ships no extra script; the 3D sub in the iceberg dive is the same boat.
+import { LOGO_NAVY, LOGO_ORANGE, PATHS, WORDMARK_X } from '../../../../design-system/brand/src/wordmark'
+
+const letters = PATHS.filter(([, t]) => !t).map(([d]) => d)
+const [periscope] = PATHS.filter(([, t]) => t).map(([d]) => d)
+// The T's box in logo units: x 427.9 to 565.2 (centre 496.5), y 0 to 137.5.
+const T_CX = 496.5 + WORDMARK_X
+const T_H = 137.5
+const HULL = 'M72 96H372C412 96 440 120 452 138C440 156 412 180 372 180H72C49 180 30 161 30 138C30 115 49 96 72 96Z'
+---
+
+<div class="hero-sub" aria-hidden="true">
+  <div class="bob">
+    <svg viewBox="0 0 480 220" focusable="false">
+      <defs>
+        <clipPath id="hero-sub-hull"><path d={HULL} /></clipPath>
+        <linearGradient id="hero-sub-beam" x1="1" x2="0" y1="0" y2="0">
+          <stop offset="0" stop-color="#fff1d6" stop-opacity="0.42" />
+          <stop offset="1" stop-color="#fff1d6" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+
+      <polygon class="beam" points="38,130 -150,84 -150,192 38,146" fill="url(#hero-sub-beam)" />
+
+      <g class="bubbles" fill="none" stroke="#f2f1ee" stroke-width="2">
+        <circle cx="470" cy="128" r="5" />
+        <circle cx="474" cy="146" r="3.5" />
+        <circle cx="466" cy="136" r="4" />
+        <circle cx="478" cy="132" r="2.5" />
+      </g>
+
+      <!-- The periscope rises from inside the sail, so it is drawn first. -->
+      <g class="scope">
+        <path transform={`translate(${222 - T_CX * 0.34} ${54 - T_H * 0.34}) scale(0.34)`} fill-rule="evenodd" fill={LOGO_ORANGE} d={periscope} />
+      </g>
+      <path fill="#cfccc4" d="M166 98L182 54H262C271 54 277 59 279 66L292 98Z" />
+
+      <path fill="#cfccc4" d="M402 102L432 72H448L436 114Z" />
+      <path fill="#cfccc4" d="M402 174L432 204H448L436 162Z" />
+
+      <path fill="#f2f1ee" d={HULL} />
+      <g clip-path="url(#hero-sub-hull)">
+        <rect x="0" y="150" width="480" height="40" fill="#d9d6cf" />
+        <rect x="352" y="90" width="12" height="100" fill={LOGO_ORANGE} />
+      </g>
+      <g transform="translate(80 113) scale(0.3)" fill={LOGO_NAVY}>
+        <g transform={`translate(${WORDMARK_X} 0)`}>
+          {letters.map((d) => <path fill-rule="evenodd" d={d} />)}
+          <path fill-rule="evenodd" fill={LOGO_ORANGE} d={periscope} />
+        </g>
+      </g>
+
+      <circle cx="455" cy="138" r="6" fill="#cfccc4" />
+      <ellipse class="prop" cx="463" cy="138" rx="5" ry="26" fill={LOGO_ORANGE} />
+      <circle class="lamp" cx="38" cy="138" r="7" fill="#fff1d6" />
+    </svg>
+  </div>
+</div>
+
+<style>
+  .hero-sub {
+    position: absolute;
+    left: calc(88% - 35vh);
+    top: 55%;
+    width: 40vh;
+    translate: 0 -50%;
+    pointer-events: none;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .bubbles {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .hero-sub {
+      left: 50%;
+      top: calc(56svh + 26vw);
+      width: 46vw;
+      translate: -50% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-sub {
+      animation: arrive 3.2s var(--ease-out) 0.3s both;
+      will-change: transform;
+    }
+
+    .bob {
+      animation: bob 4.6s ease-in-out 3.5s infinite alternate;
+      will-change: transform;
+    }
+
+    /* Shapes inside the SVG repaint on the main thread, so the prop and bubbles wait until the page has loaded
+       and the sub has come to rest; the glide in is all compositor work. */
+    .prop {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: prop 0.32s linear 3.5s infinite;
+    }
+
+    .scope {
+      animation: scope 0.9s var(--ease-out) 3.3s both;
+    }
+
+    .beam,
+    .lamp {
+      animation: lamp 0.8s linear 2.9s both;
+    }
+
+    .bubbles {
+      display: inline;
+    }
+
+    .bubbles circle {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: bubble 2.6s ease-out 3.5s infinite both;
+    }
+
+    .bubbles circle:nth-child(2) { animation-delay: 4.2s; }
+    .bubbles circle:nth-child(3) { animation-delay: 4.9s; }
+    .bubbles circle:nth-child(4) { animation-delay: 5.5s; }
+  }
+
+  @keyframes arrive {
+    from { transform: translateX(70vw); }
+  }
+
+  @keyframes bob {
+    from { transform: translateY(-5px) rotate(-0.8deg); }
+    to { transform: translateY(5px) rotate(0.8deg); }
+  }
+
+  @keyframes prop {
+    50% { transform: scaleY(0.2); }
+  }
+
+  @keyframes scope {
+    from { transform: translateY(48px); }
+  }
+
+  /* The lamp stutters on as the sub comes to rest. */
+  @keyframes lamp {
+    0%, 20%, 45% { opacity: 0; }
+    10%, 30%, 100% { opacity: 1; }
+  }
+
+  @keyframes bubble {
+    from { transform: translate(0, 0) scale(0.6); opacity: 0; }
+    20% { opacity: 0.8; }
+    to { transform: translate(22px, -70px) scale(1.2); opacity: 0; }
+  }
+</style>

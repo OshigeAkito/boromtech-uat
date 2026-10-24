@@ -17,7 +17,7 @@ The seal, called the ring in Brand Guidelines v1.0, is a ring and nothing else: 
 ## The wordmark
 
 - Keep at least the height of the B (its cap height) clear on every side.
-- Deep Navy on light grounds (`wordmark-navy.svg`), Warm Ivory on dark (`wordmark-light.svg`), `wordmark-ink.svg` for single-colour print.
+- Logo Navy letters on light grounds (`wordmark-navy.svg`), Warm Ivory on dark (`wordmark-light.svg`), the T orange on both; `wordmark-ink.svg` for single-colour print.
 
 ## Minimum size
 

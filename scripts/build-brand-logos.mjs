@@ -1,12 +1,12 @@
-// Usage: node scripts/build-brand-logos.mjs  (from the repo root). Reads the display font in design-system/brand/fonts and writes design-system/brand/logos.
+// Usage: node scripts/build-brand-logos.mjs  (from the repo root). Reads the logo artwork in design-system/brand/logos/source and writes design-system/brand/logos.
 import { readFileSync, writeFileSync } from 'node:fs'
-const root = new URL('../', import.meta.url).pathname
-const fontPath = `${root}design-system/brand/fonts/BricolageGrotesque-ExtraBold-latin.woff2`
+import { fileURLToPath } from 'node:url'
+const root = fileURLToPath(new URL('../', import.meta.url))
 const faviconPath = `${root}apps/website/public/favicon.svg`
 const out = `${root}design-system/brand/logos`
-const { create } = await import('fontkitten')
-const font = create(readFileSync(fontPath))
 const C = { orange: '#e56e3f', rust: '#b4471d', ink: '#1a1b22', onDark: '#f2f1ee', night: '#1e2235' }
+// The logo's own inks, as drawn in the source artwork: Logo Navy letters and the Logo Orange T.
+const LOGO = { navy: '#13233B', orange: '#FE651E' }
 
 // The seal exactly as the website draws it: r=400, stroke 150, in a 1000 box.
 const seal = (color) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="500" cy="500" r="400" fill="none" stroke="${color}" stroke-width="150"/></svg>\n`
@@ -15,22 +15,20 @@ const sealSmall = (color) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0
 // App icon: the favicon scaled x16 to 1024.
 const appIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><rect width="1024" height="1024" fill="${C.night}"/><circle cx="512" cy="512" r="304" fill="none" stroke="${C.orange}" stroke-width="144"/></svg>\n`
 
-// Wordmark (Deep Navy on light grounds, Warm Ivory on dark): "BoromTech" outlined from Bricolage Grotesque 96pt ExtraBold, tracking -0.03em (site .wordmark).
-const TRACK = -30
-const glyphs = font.glyphsForString('BoromTech')
-// Pen positions measured in Chrome with the same file, so GPOS kerning (m-T, T-e) matches the site.
-const XS = [0, 692, 1304, 1750, 2362, 3272, 3784, 4377, 4948, 5591]
-const parts = glyphs.map((g, i) => `<path transform="translate(${XS[i] + i * TRACK} 0)" d="${g.path.toSVG()}"/>`)
-const wmWidth = XS[glyphs.length] + (glyphs.length - 1) * TRACK
-const CAP = 660
-const wordmarkGroup = (color, tx, baseline) => `<g fill="${color}" transform="translate(${tx} ${baseline}) scale(1 -1)">${parts.join('')}</g>`
-const wordmark = (color) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Math.ceil(wmWidth)} ${CAP}">${wordmarkGroup(color, 0, CAP)}</svg>\n`
+// Wordmark: the logo artwork, letters in one ink and the T (its periscope) in another. The source's B starts at
+// x = -4, so every path shifts right by 4 into a 829 x 140 box; the B's cap runs from y 15 to the baseline at 137.
+const source = readFileSync(`${out}/source/logo.svg`, 'utf8')
+const paths = [...source.matchAll(/<path d="([^"]+)"[^>]*fill="(#[0-9A-Fa-f]{6})"/g)].map(([, d, fill]) => [d, fill.toUpperCase() === LOGO.orange])
+const WM_X = 4, wmWidth = 829, WM_H = 140, CAP_TOP = 15, BASE = 137, CAP = BASE - CAP_TOP
+const wordmarkGroup = (word, accent, tx, ty) =>
+  `<g transform="translate(${tx + WM_X} ${ty})">${paths.map(([d, t]) => `<path fill-rule="evenodd" fill="${t ? accent : word}" d="${d}"/>`).join('')}</g>`
+const wordmark = (word, accent) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${wmWidth} ${WM_H}">${wordmarkGroup(word, accent, 0, 0)}</svg>\n`
 
 // Horizontal lockup: seal outer diameter = 1.25 x cap height, centred on the cap middle,
 // gap to the wordmark = one seal stroke (the system's unit "s").
 const D = CAP * 1.25, k = D / 950, R = 400 * k, S = 150 * k
-const cy = D / 2, baseline = cy + CAP / 2, wx = D + S
-const lockup = (sealColor, wordColor) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Math.ceil(wx + wmWidth)} ${D}"><circle cx="${D / 2}" cy="${cy}" r="${R.toFixed(2)}" fill="none" stroke="${sealColor}" stroke-width="${S.toFixed(2)}"/>${wordmarkGroup(wordColor, wx.toFixed(2), baseline)}</svg>\n`
+const cy = D / 2, wy = cy - (CAP_TOP + BASE) / 2, wx = D + S
+const lockup = (sealColor, word, accent) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Math.ceil(wx + wmWidth)} ${D}"><circle cx="${D / 2}" cy="${cy}" r="${R.toFixed(2)}" fill="none" stroke="${sealColor}" stroke-width="${S.toFixed(2)}"/>${wordmarkGroup(word, accent, +wx.toFixed(2), +wy.toFixed(2))}</svg>\n`
 
 const files = {
   'seal-orange.svg': seal(C.orange),
@@ -40,23 +38,30 @@ const files = {
   'seal-small-orange.svg': sealSmall(C.orange),
   'favicon.svg': readFileSync(faviconPath, 'utf8'),
   'app-icon.svg': appIcon,
-  'wordmark-navy.svg': wordmark(C.night),
-  'wordmark-ink.svg': wordmark(C.ink),
-  'wordmark-light.svg': wordmark(C.onDark),
-  'lockup-on-night.svg': lockup(C.orange, C.onDark),
-  'lockup-on-paper.svg': lockup(C.orange, C.night),
-  'lockup-on-soft.svg': lockup(C.rust, C.night),
-  'lockup-ink.svg': lockup(C.ink, C.ink),
+  'wordmark-navy.svg': wordmark(LOGO.navy, LOGO.orange),
+  'wordmark-ink.svg': wordmark(C.ink, C.ink),
+  'wordmark-light.svg': wordmark(C.onDark, LOGO.orange),
+  'lockup-on-night.svg': lockup(C.orange, C.onDark, LOGO.orange),
+  'lockup-on-paper.svg': lockup(C.orange, LOGO.navy, LOGO.orange),
+  'lockup-on-soft.svg': lockup(C.rust, LOGO.navy, LOGO.orange),
+  'lockup-ink.svg': lockup(C.ink, C.ink, C.ink),
 }
 for (const [n, s] of Object.entries(files)) writeFileSync(`${out}/${n}`, s)
 
 // The same outlines for the React components in design-system/brand/src.
-const ts = `// Generated by scripts/build-brand-logos.mjs from Bricolage Grotesque ExtraBold. Do not edit.
-// Font units: cap height ${CAP}, wordmark width ${wmWidth}. Each glyph is [x offset, path].
-export const CAP = ${CAP}
+const ts = `// Generated by scripts/build-brand-logos.mjs from design-system/brand/logos/source/logo.svg. Do not edit.
+// Units: the wordmark box is ${wmWidth} x ${WM_H}; the B's cap runs from y ${CAP_TOP} to the baseline at ${BASE}.
+// Each path is [d, isT]: the T takes the accent ink, the letters the word ink. Draw them shifted right by WORDMARK_X.
 export const WORDMARK_WIDTH = ${wmWidth}
-export const GLYPHS: ReadonlyArray<readonly [number, string]> = [
-${glyphs.map((g, i) => `  [${XS[i] + i * TRACK}, '${g.path.toSVG()}'],`).join('\n')}
+export const WORDMARK_HEIGHT = ${WM_H}
+export const WORDMARK_X = ${WM_X}
+export const CAP_TOP = ${CAP_TOP}
+export const BASELINE = ${BASE}
+export const CAP = ${CAP}
+export const LOGO_NAVY = '${LOGO.navy}'
+export const LOGO_ORANGE = '${LOGO.orange}'
+export const PATHS: ReadonlyArray<readonly [string, boolean]> = [
+${paths.map(([d, t]) => `  ['${d}', ${t}],`).join('\n')}
 ]
 `
 writeFileSync(`${root}design-system/brand/src/wordmark.ts`, ts)
