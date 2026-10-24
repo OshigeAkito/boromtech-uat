@@ -13,7 +13,7 @@ export default {
     process: 'โปรเซส',
     team: 'ทีม',
     faq: 'คำถาม',
-    cta: 'นัดออดิต',
+    cta: 'ขอคำปรึกษา',
     language: 'ภาษา',
   },
   hero: {

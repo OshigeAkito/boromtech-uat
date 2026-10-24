@@ -30,7 +30,7 @@ BoromTech · เอไอใครๆ ก็ทำได้ แต่เรา�
 [nav.process] โปรเซส
 [nav.team] ทีม
 [nav.faq] คำถาม
-[nav.cta] นัดออดิต
+[nav.cta] ขอคำปรึกษา
 
 ---
 
