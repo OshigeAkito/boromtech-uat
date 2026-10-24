@@ -36,7 +36,7 @@ pages still cached in browsers keep working.
 
 ## Worth knowing
 
-- **Email:** the site lists hello@boromtech.com. Mail to it only arrives once MX records exist (for example from
+- **Email:** the site lists sales@boromtech.com. Mail to it only arrives once MX records exist (for example from
   Google Workspace, Zoho, or Cloudflare Email Routing to an existing inbox).
 - **boromtech.co** is not registered. Buying it and redirecting it to .com would catch typos.
 - **Lighthouse:** every image is `loading="lazy"` and below the fold. If Lighthouse reports the media preconnect

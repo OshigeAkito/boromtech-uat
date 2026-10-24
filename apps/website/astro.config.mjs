@@ -53,6 +53,16 @@ export default defineConfig({
       fallbacks: [],
     },
     {
+      // Latin letters in the hero copy. No Vietnamese subset, so Vietnamese pages keep their own fonts there.
+      provider: fontProviders.fontsource(),
+      name: 'Outfit',
+      cssVariable: '--font-hero',
+      weights: [400, 600, 700],
+      styles: ['normal'],
+      subsets: ['latin', 'latin-ext'],
+      fallbacks: [],
+    },
+    {
       // IBM Plex Sans Thai has no Vietnamese subset; its Latin is IBM Plex Sans, so Vietnamese pages use that.
       provider: fontProviders.fontsource(),
       name: 'IBM Plex Sans',

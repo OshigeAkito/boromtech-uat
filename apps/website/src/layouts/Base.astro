@@ -75,6 +75,7 @@ const detect = `try{var l=(${pickLocale})({saved:(document.cookie.match(/(?:^|; 
       )
     }
     <Font cssVariable="--font-display" />
+    {locale !== 'vi' && <Font cssVariable="--font-hero" preload={locale === 'en' ? [{ subset: 'latin', weight: 700 }, { subset: 'latin', weight: 400 }] : undefined} />}
 
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <script is:inline>document.documentElement.classList.add('js')</script>

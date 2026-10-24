@@ -44,7 +44,7 @@ const logo = wordmark.replace('<svg ', '<svg aria-hidden="true" focusable="false
       )}
     </div>
     <div data-slot="lede">
-      {t.hero.slides.map(([, lede], i) => <p class="lede" data-slide data-on={i === 0}>{lede}</p>)}
+      {t.hero.slides.map(([, lede], i) => <p class="lede" data-slide data-on={i === 0 ? '' : undefined}>{lede}</p>)}
     </div>
     <div class="dots">
       {t.hero.slides.map(([title], i) => <button type="button" aria-label={title} aria-current={i === 0 ? 'true' : undefined} data-dot={i}></button>)}
