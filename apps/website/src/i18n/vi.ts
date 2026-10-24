@@ -20,6 +20,13 @@ export default {
     title: ['Ai cũng làm được với AI.', 'Nhưng ai sẽ duy trì?'],
     lede: 'Bạn từng chi nhiều tiền cho một dự án mà rốt cuộc không dùng được? Ngày nay ai cũng có thể làm phần mềm, nhưng giữ cho nó ổn định và có người chịu trách nhiệm khi gặp sự cố lại là chuyện khác. Chúng tôi tiếp quản và bảo trì dự án lớn nhỏ, có bảo hành và báo giá rõ ràng ngay từ ngày đầu.',
     cta: 'Đặt lịch kiểm định hệ thống',
+    slides: [
+      ['Ai cũng làm được với AI. Nhưng có đúng kỹ thuật không?', 'BoromTech cử chuyên gia vào kiểm tra.'],
+      ['Dự án hàng triệu mà vẫn không dùng được', 'BoromTech cử chuyên gia sửa chữa và hoàn thiện.'],
+      ['Làm ra bao nhiêu app, ai sẽ duy trì?', 'BoromTech cử chuyên gia bảo trì định kỳ.'],
+      ['Network khó hiểu quá, cần người giải thích', 'BoromTech cử chuyên gia tư vấn và bắt tay làm.'],
+      ['Thuê outsource làm một dự án, đắt quá', 'BoromTech tập hợp chuyên gia với giá hợp lý.'],
+    ],
   },
   iceberg: {
     title: ['Phần ', 'không nhìn thấy'],

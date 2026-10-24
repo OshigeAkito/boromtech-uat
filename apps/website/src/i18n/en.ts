@@ -20,6 +20,13 @@ export default {
     title: ['AI can build it.', 'Who will run it?'],
     lede: 'Ever paid for an expensive project that never really worked? Anyone can build software today. Keeping it stable, with someone accountable when it breaks, is another matter. We take over and look after projects big and small, with a guarantee and clear pricing from day one.',
     cta: 'Book a system audit',
+    slides: [
+      ['Anyone can build it with AI. But is it properly engineered?', 'BoromTech sends experts to audit it.'],
+      ['A multi-million project that still doesn’t work', 'BoromTech sends experts to repair it and finish the job.'],
+      ['So many apps built. Who looks after them?', 'BoromTech sends experts for regular care.'],
+      ['Networking is hard to follow. I need someone to explain it', 'BoromTech sends experts to advise and do the work.'],
+      ['Outsourcing one project costs a fortune', 'BoromTech brings the experts together at a fair price.'],
+    ],
   },
   iceberg: {
     title: ['What you ', "don't see"],

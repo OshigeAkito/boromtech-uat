@@ -24,9 +24,52 @@ const logo = wordmark.replace('<svg ', '<svg aria-hidden="true" focusable="false
 <section class="chapter hero" aria-labelledby="hero-title">
   <svg class="seal" viewBox="0 0 1000 1000" aria-hidden="true"><circle cx="500" cy="500" r="400"></circle></svg>
   <Sub />
-  <div class="hero-copy">
-    <h1 id="hero-title" class="xl"><span class="line">{line1}</span> <span class="line">{line2}</span></h1>
-    <p class="lede">{t.hero.lede}</p>
+  <!-- The title and lede turn through the problem/answer slides: each slide's title is set as the hero title,
+       its answer as the lede, stacked in the same place. The h1 stays the page's heading. -->
+  <div class="hero-copy" data-slides>
+    <div data-slot="title">
+      <h1 id="hero-title" class="xl" data-slide data-on><span class="line">{line1}</span> <span class="line">{line2}</span></h1>
+      {t.hero.slides.map(([title]) => <p class="xl" data-slide>{title}</p>)}
+    </div>
+    <div data-slot="lede">
+      <p class="lede" data-slide data-on>{t.hero.lede}</p>
+      {t.hero.slides.map(([, lede]) => <p class="lede" data-slide>{lede}</p>)}
+    </div>
     <a class="button" href="#contact">{t.hero.cta}</a>
   </div>
 </section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-slides]')
+  if (root && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const slots = [...root.querySelectorAll('[data-slot]')].map((slot) => [...slot.querySelectorAll<HTMLElement>('[data-slide]')])
+    const count = slots[0].length
+    let at = 0
+
+    const show = (next: number) => {
+      for (const slides of slots) {
+        slides[at].removeAttribute('data-on')
+        slides[at].setAttribute('data-was', '')
+        // A slide that left earlier is parked above; drop it back below first so it always rises in.
+        slides[next].removeAttribute('data-was')
+        void slides[next].offsetWidth
+        slides[next].setAttribute('data-on', '')
+      }
+      at = next
+    }
+
+    // Hold while someone is reading or using the hero, while it is off screen and while the tab is hidden.
+    const holds = new Set<string>()
+    const hold = (why: string, on: boolean) => (on ? holds.add(why) : holds.delete(why))
+    root.addEventListener('pointerenter', () => hold('pointer', true))
+    root.addEventListener('pointerleave', () => hold('pointer', false))
+    root.addEventListener('focusin', () => hold('focus', true))
+    root.addEventListener('focusout', () => hold('focus', false))
+    new IntersectionObserver(([entry]) => hold('away', !entry.isIntersecting)).observe(root)
+    document.addEventListener('visibilitychange', () => hold('hidden', document.hidden))
+
+    setInterval(() => {
+      if (!holds.size) show((at + 1) % count)
+    }, 6000)
+  }
+</script>
