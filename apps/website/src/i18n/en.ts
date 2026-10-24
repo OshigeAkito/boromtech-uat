@@ -13,13 +13,11 @@ export default {
     process: 'Process',
     team: 'Team',
     faq: 'FAQ',
-    cta: 'Book an audit',
+    cta: 'Consult with us',
     language: 'Language',
   },
   hero: {
-    title: ['AI can build it.', 'Who will run it?'],
-    lede: 'Ever paid for an expensive project that never really worked? Anyone can build software today. Keeping it stable, with someone accountable when it breaks, is another matter. We take over and look after projects big and small, with a guarantee and clear pricing from day one.',
-    cta: 'Book a system audit',
+    cta: 'Consult with us',
     slides: [
       ['Anyone can build it with AI. But is it properly engineered?', 'BoromTech sends experts to audit it.'],
       ['A multi-million project that still doesn’t work', 'BoromTech sends experts to repair it and finish the job.'],

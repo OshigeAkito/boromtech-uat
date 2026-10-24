@@ -592,12 +592,12 @@
       {
         "name": "radius-none",
         "value": "0",
-        "usage": "Everything: buttons, cards, sheets, images, the app icon artwork. BoromTech corners are square; the seal is the brand's only curve."
+        "usage": "Everything but buttons: cards, sheets, images, the app icon artwork. BoromTech corners are square; the seal is the brand's only curve."
       },
       {
         "name": "radius-pill",
         "value": "999px",
-        "usage": "Status pills and progress meters only, so a rounded shape always reads as a state."
+        "usage": "Buttons, status pills and progress meters."
       },
       {
         "name": "radius-sm",

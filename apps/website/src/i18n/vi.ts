@@ -13,13 +13,11 @@ export default {
     process: 'Quy trình',
     team: 'Đội ngũ',
     faq: 'Hỏi đáp',
-    cta: 'Hẹn kiểm định',
+    cta: 'Yêu cầu tư vấn',
     language: 'Ngôn ngữ',
   },
   hero: {
-    title: ['Ai cũng làm được với AI.', 'Nhưng ai sẽ duy trì?'],
-    lede: 'Bạn từng chi nhiều tiền cho một dự án mà rốt cuộc không dùng được? Ngày nay ai cũng có thể làm phần mềm, nhưng giữ cho nó ổn định và có người chịu trách nhiệm khi gặp sự cố lại là chuyện khác. Chúng tôi tiếp quản và bảo trì dự án lớn nhỏ, có bảo hành và báo giá rõ ràng ngay từ ngày đầu.',
-    cta: 'Đặt lịch kiểm định hệ thống',
+    cta: 'Yêu cầu tư vấn',
     slides: [
       ['Ai cũng làm được với AI. Nhưng có đúng kỹ thuật không?', 'BoromTech cử chuyên gia vào kiểm tra.'],
       ['Dự án hàng triệu mà vẫn không dùng được', 'BoromTech cử chuyên gia sửa chữa và hoàn thiện.'],

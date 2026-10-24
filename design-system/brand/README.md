@@ -90,7 +90,7 @@ The **ring** is the brand's supporting graphic: a thick orange ring, `seal-r` 40
 
 - Readable hierarchy and room: a big headline, then clear body text.
 - Deep Navy grounds for covers and section dividers. Light grounds (ivory, paper, soft) for diagrams and detailed content. Orange only on what must be seen first.
-- Corners are square (`radius-none`) on buttons, cards, sheets and images. The ring is the only curve in the identity. `radius-pill` is for status pills and progress meters only.
+- Corners are square (`radius-none`) on cards, sheets and images. Buttons, status pills and progress meters are pills (`radius-pill`).
 - No shadows and no gradients. Depth comes from grounds: `night` against `ivory` or `paper`, `paper` against `sunken`.
 - Hairlines (`line` on light grounds, `line-night` on night) separate document rows and header rules. They are decorative; a control still needs a fill or a word.
 - Page margins `space-m` to `space-margin`, column gap `space-m` to `space-gap`, chapter padding 96px to `space-section`. The website lays these out fluidly with `clamp()`.

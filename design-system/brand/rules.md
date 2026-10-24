@@ -10,7 +10,7 @@
 - Use `rust` for orange text on light grounds, and for a small ring on `soft` or `ivory`.
 - Set text on orange fills in `ink`.
 - Set Latin in Bricolage Grotesque (headings 700, body 400 to 600) and Thai in IBM Plex Sans Thai (headings 600 to 700, body 400).
-- Keep corners square. Let the ring be the only curve.
+- Keep corners square, except buttons, status pills and progress meters, which are pills.
 - Give Thai and Chinese headlines their own leading (`hero-th`, `hero-zh`) and 0 tracking.
 - Name the document, the ID and the date in every document header: "BoromTech · Audit Report · BT-A-0412".
 - Pair every status colour with a word: "Critical 2", not a red dot.

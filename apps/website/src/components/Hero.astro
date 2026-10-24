@@ -5,7 +5,6 @@ import Sub from './Sub.astro'
 import wordmark from '../../../../design-system/brand/logos/wordmark-light.svg?raw'
 
 const { t } = useLocale(Astro.currentLocale)
-const [line1, line2] = t.hero.title
 const logo = wordmark.replace('<svg ', '<svg aria-hidden="true" focusable="false" ')
 ---
 
@@ -22,18 +21,33 @@ const logo = wordmark.replace('<svg ', '<svg aria-hidden="true" focusable="false
 </header>
 
 <section class="chapter hero" aria-labelledby="hero-title">
-  <svg class="seal" viewBox="0 0 1000 1000" aria-hidden="true"><circle cx="500" cy="500" r="400"></circle></svg>
+  <!-- The berg from the iceberg chapter, still. -->
+  <svg class="berg" viewBox="0 0 600 900" aria-hidden="true" focusable="false">
+    <polygon class="f-light" points="300,0 250,95 215,205 170,270 290,270 305,140" />
+    <polygon class="f-mid" points="300,0 340,80 355,160 305,140" />
+    <polygon class="f-deep" points="305,140 355,160 395,215 430,270 290,270" />
+    <polygon class="f-deep" points="170,270 290,270 250,470 45,390" />
+    <polygon class="f-rust" points="290,270 430,270 560,350 400,430 250,470" />
+    <polygon class="f-rust" points="45,390 250,470 220,650 0,560" />
+    <polygon class="f-deep" points="250,470 400,430 560,350 600,520 430,640 220,650" />
+    <polygon class="f-dark" points="0,560 220,650 220,900 80,770" />
+    <polygon class="f-rust" points="220,650 430,640 545,700 410,880 220,900" />
+    <polygon class="f-dark" points="430,640 600,520 545,700" />
+  </svg>
   <Sub />
-  <!-- The title and lede turn through the problem/answer slides: each slide's title is set as the hero title,
-       its answer as the lede, stacked in the same place. The h1 stays the page's heading. -->
+  <!-- The title and lede turn through the problem/answer slides: each slide's problem is set as the hero title,
+       its answer as the lede, stacked in the same place. The first problem is the page's h1. -->
   <div class="hero-copy" data-slides>
     <div data-slot="title">
-      <h1 id="hero-title" class="xl" data-slide data-on><span class="line">{line1}</span> <span class="line">{line2}</span></h1>
-      {t.hero.slides.map(([title]) => <p class="xl" data-slide>{title}</p>)}
+      {t.hero.slides.map(([title], i) =>
+        i === 0 ? <h1 id="hero-title" class="xl" data-slide data-on>{title}</h1> : <p class="xl" data-slide>{title}</p>
+      )}
     </div>
     <div data-slot="lede">
-      <p class="lede" data-slide data-on>{t.hero.lede}</p>
-      {t.hero.slides.map(([, lede]) => <p class="lede" data-slide>{lede}</p>)}
+      {t.hero.slides.map(([, lede], i) => <p class="lede" data-slide data-on={i === 0}>{lede}</p>)}
+    </div>
+    <div class="dots">
+      {t.hero.slides.map(([title], i) => <button type="button" aria-label={title} aria-current={i === 0 ? 'true' : undefined} data-dot={i}></button>)}
     </div>
     <a class="button" href="#contact">{t.hero.cta}</a>
   </div>
@@ -41,12 +55,17 @@ const logo = wordmark.replace('<svg ', '<svg aria-hidden="true" focusable="false
 
 <script>
   const root = document.querySelector<HTMLElement>('[data-slides]')
-  if (root && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (root) {
     const slots = [...root.querySelectorAll('[data-slot]')].map((slot) => [...slot.querySelectorAll<HTMLElement>('[data-slide]')])
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-dot]')]
     const count = slots[0].length
     let at = 0
 
     const show = (next: number) => {
+      next = (next + count) % count
+      if (next === at) return
+      dots[at].removeAttribute('aria-current')
+      dots[next].setAttribute('aria-current', 'true')
       for (const slides of slots) {
         slides[at].removeAttribute('data-on')
         slides[at].setAttribute('data-was', '')
@@ -58,6 +77,41 @@ const logo = wordmark.replace('<svg ', '<svg aria-hidden="true" focusable="false
       at = next
     }
 
+    // Visitors turn the slides themselves: a dot jumps to its slide, a sideways swipe or drag (or a sideways
+    // trackpad scroll) steps one either way. Any of these restarts the auto turn's clock.
+    let tick = 0
+    const step = (next: number) => {
+      show(next)
+      tick = 0
+    }
+    dots.forEach((dot, i) => dot.addEventListener('click', () => step(i)))
+
+    let startX = 0
+    let startY = 0
+    let tracking = false
+    root.addEventListener('pointerdown', (e) => {
+      if ((e.target as Element).closest('a, button')) return
+      tracking = true
+      startX = e.clientX
+      startY = e.clientY
+    })
+    root.addEventListener('pointerup', (e) => {
+      if (!tracking) return
+      tracking = false
+      const dx = e.clientX - startX
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(e.clientY - startY)) step(at + (dx < 0 ? 1 : -1))
+    })
+    root.addEventListener('pointercancel', () => (tracking = false))
+
+    let wheelAt = 0
+    root.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaX) < 30 || Math.abs(e.deltaX) < Math.abs(e.deltaY)) return
+      e.preventDefault()
+      if (e.timeStamp - wheelAt < 700) return
+      wheelAt = e.timeStamp
+      step(at + (e.deltaX > 0 ? 1 : -1))
+    }, { passive: false })
+
     // Hold while someone is reading or using the hero, while it is off screen and while the tab is hidden.
     const holds = new Set<string>()
     const hold = (why: string, on: boolean) => (on ? holds.add(why) : holds.delete(why))
@@ -68,8 +122,12 @@ const logo = wordmark.replace('<svg ', '<svg aria-hidden="true" focusable="false
     new IntersectionObserver(([entry]) => hold('away', !entry.isIntersecting)).observe(root)
     document.addEventListener('visibilitychange', () => hold('hidden', document.hidden))
 
-    setInterval(() => {
-      if (!holds.size) show((at + 1) % count)
-    }, 6000)
+    // Under reduced motion the slides only turn when the visitor turns them.
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setInterval(() => {
+        if (holds.size) return
+        if (++tick >= 6) step(at + 1)
+      }, 1000)
+    }
   }
 </script>

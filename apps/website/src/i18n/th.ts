@@ -17,10 +17,8 @@ export default {
     language: 'ภาษา',
   },
   hero: {
-    title: ['เอไอใครๆก็ทำได้', 'แต่ใครจะดูแล'],
-    lede: 'เคยทำโปรเจกต์แพงๆ แล้วใช้ไม่ได้จริงไหม? ยุคนี้ใครก็สร้างซอฟต์แวร์ได้ แต่การทำให้เสถียรและมีคนรับผิดชอบตอนระบบมีปัญหาคืออีกเรื่อง เรารับช่วงต่อและดูแลทั้งงานเล็กและใหญ่ พร้อมการันตีและราคาที่ชัดเจนตั้งแต่วันแรก',
     cta: 'ขอคำปรึกษา',
-    // After the title and lede above, the hero turns through these: [problem in place of the title, answer in place of the lede].
+    // The hero turns through these: [problem set as the hero title, answer as the lede]. The first one is the page's h1.
     slides: [
       ['AI ที่ใครๆ ก็สร้างได้ แต่ถูกต้องตามวิศวกรรมหรือเปล่า', 'ให้ BoromTech ส่งผู้เชี่ยวชาญเข้าตรวจสอบ'],
       ['Project หลักล้านแต่ใช้งานไม่ได้', 'ให้ BoromTech ส่งผู้เชี่ยวชาญซ่อมแซมและปิดงาน'],
