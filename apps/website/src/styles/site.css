@@ -84,7 +84,7 @@ h3 { font-size: var(--t-m); line-height: 1.3; font-weight: 600; letter-spacing: 
 .chapter { position: relative; min-height: 90svh; padding: clamp(96px, 12vw, 180px) max(var(--m), env(safe-area-inset-right)) clamp(96px, 12vw, 180px) max(var(--m), env(safe-area-inset-left)); overflow: hidden; }
 
 .hero { background: var(--night); display: flex; align-items: center; min-height: 100svh; padding-top: 120px; padding-bottom: 64px; --t-xl: clamp(40px, min(5.6vw, 8.4svh), 92px); } /* the title also scales with the screen height, so four English lines fit on a laptop */
-.berg { position: absolute; height: 110vh; aspect-ratio: 2 / 3; left: 86%; top: 50%; translate: -50% -50%; }
+.berg { position: absolute; height: 110vh; aspect-ratio: 2 / 3; left: 86%; top: 45%; translate: -50% -50%; }
 .berg .f-light { fill: #f3a07c; }
 .berg .f-mid { fill: var(--orange); }
 .berg .f-deep { fill: var(--orange-deep); }
@@ -252,7 +252,7 @@ html:lang(th) [data-slot="title"] { line-height: 1.24; }
      bottom). The minimum height already fits the longest title and lede slides, so the hero's height, and with it
      the sub, stays put when the web fonts swap in. */
   .hero { --t-xl: var(--t-l); align-items: flex-start; padding-top: max(15svh, 112px); padding-bottom: calc(90vw + 32px); min-height: max(100svh, calc(max(15svh, 112px) + 308px + 22vw + 90vw)); }
-  .berg { height: 120vw; left: 50%; top: auto; bottom: -30vw; translate: -50% 0; }
+  .berg { height: 120vw; left: 50%; top: auto; bottom: calc(14px - 30vw); translate: -50% 0; }
   .hero-copy { max-width: 90%; padding-left: 0; gap: 22px; }
   .lede { font-size: 20px; }
   :root { --t-l: clamp(28px, 7.6vw, 56px); } /* ≈28.5px at 375, 30px at 390, 33px at 430 */
