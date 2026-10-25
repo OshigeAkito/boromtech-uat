@@ -193,23 +193,15 @@ const count = (n: number) => tr.count.replace('{n}', String(n)).replace('{total}
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    /* One scrolling row of filters; the section clips it, so the page never scrolls sideways. */
+    /* The filters wrap onto a second row on phones, so every industry stays visible (a scrolling row cut the last
+       one off at the screen edge). */
     :global(.js) .trusted-filters {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-      margin: 26px calc(-1 * var(--m)) 0;
-      padding: 6px var(--m);
-      scroll-padding-inline: var(--m);
-    }
-
-    .trusted-filters::-webkit-scrollbar {
-      display: none;
+      gap: 8px;
     }
 
     .trusted-filters button {
-      scroll-snap-align: start;
+      min-height: 40px;
+      padding: 0 16px;
     }
   }
 

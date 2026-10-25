@@ -2,7 +2,7 @@ import type th from './th'
 
 export default {
   meta: {
-    title: 'BoromTech · Anyone can build with AI. We maintain and rescue systems so they actually work.',
+    title: 'BoromTech · We make your systems solid',
     description:
       'Paid for a project that never worked, or built with AI and no one to maintain it? BoromTech takes over and looks after systems big and small. Fixed-price audit, 90-day guarantee.',
     ogImageAlt: 'A luxury house left unfinished mid-build, with a bare concrete shell, an unfinished swimming pool and abandoned scaffolding',

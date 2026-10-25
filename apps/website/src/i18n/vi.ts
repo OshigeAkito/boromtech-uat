@@ -2,7 +2,7 @@ import type th from './th'
 
 export default {
   meta: {
-    title: 'BoromTech · Ai cũng làm được với AI. Chúng tôi bảo trì và khôi phục hệ thống để dùng được thật.',
+    title: 'BoromTech · Giúp hệ thống của bạn vững vàng',
     description:
       'Dự án tốn kém mà không dùng được, hay viết code bằng AI mà không ai bảo trì? BoromTech tiếp quản và bảo trì hệ thống lớn nhỏ. Kiểm tra với giá trọn gói, bảo hành 90 ngày.',
     ogImageAlt: 'Một căn nhà sang trọng bị bỏ dở giữa chừng, với khung bê tông trơ trụi, bể bơi chưa hoàn thiện và giàn giáo bị bỏ lại',
