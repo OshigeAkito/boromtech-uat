@@ -85,7 +85,6 @@ export default {
     backTitle: 'ประสบการณ์',
     yearsLabel: 'ปีในสายงาน',
     pending: 'กำลังรวบรวมข้อมูลประสบการณ์และโปรเจกต์',
-    consent: 'ชื่อลูกค้าแสดงเมื่อได้รับความยินยอม',
     back: 'กลับ',
     prev: 'การ์ดก่อนหน้า',
     next: 'การ์ดถัดไป',
@@ -159,7 +158,7 @@ export default {
   },
   footer: {
     copyright: '© 2569 BoromTech',
-    credits: 'ภาพประกอบบางส่วนสร้างด้วย AI · ภาพถ่ายจาก Wikimedia Commons:',
+    credits: 'ภาพถ่ายจาก Wikimedia Commons:',
     by: 'โดย',
     video: 'วิดีโอ',
   },

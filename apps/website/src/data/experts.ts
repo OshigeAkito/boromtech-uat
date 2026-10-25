@@ -20,7 +20,7 @@ export const experts: Expert[] = [
   { id: 'automation', icon: 'icon-automation', title: 'Automation', chips: ['Workflow Automation', 'RPA', 'Power Automate', 'n8n / Zapier', 'API Integration'], experience: empty() },
   { id: 'software', icon: 'icon-software', title: 'Software Development', chips: ['Requirements', 'Web Application', 'API Integration', 'Maintenance', 'Agile/Scrum'], experience: empty() },
   { id: 'frontend', icon: 'icon-frontend', title: 'Frontend & UX', chips: ['React', 'Angular', 'Vue.js', 'TypeScript', 'Figma'], experience: empty() },
-  { id: 'backend', icon: 'icon-backend', title: 'Backend', chips: ['Node.js', 'Python', 'PHP/Laravel', 'Java', '.NET'], experience: empty() },
+  { id: 'backend', icon: 'icon-backend', title: 'Backend', chips: ['Node.js', 'Python', 'PHP/Laravel', 'WordPress', 'Java', '.NET'], experience: empty() },
   { id: 'mobile', icon: 'icon-mobile', title: 'Mobile App', chips: ['iOS', 'Android', 'Flutter', 'React Native', 'App Store / Play Store'], experience: empty(), hidden: true },
   { id: 'bi', icon: 'icon-bi', title: 'Business Intelligence (BI)', chips: ['Power BI', 'Tableau', 'SQL', 'ETL/Data Pipeline', 'Dashboard'], experience: empty() },
   { id: 'cloud', icon: 'icon-cloud', title: 'Cloud & DevOps', chips: ['AWS/Azure', 'Docker', 'CI/CD', 'Monitoring', 'Backup'], experience: empty() },

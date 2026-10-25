@@ -57,7 +57,6 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
                     {projects.map((p) => <span class="expert-project">{p}</span>)}
                   </span>
                 )}
-                <span class="expert-consent">{tr.consent}</span>
                 <span class="expert-hint" aria-hidden="true"><span class="turn" set:html={turn} />{tr.back}</span>
               </span>
             </button>
@@ -217,7 +216,7 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
     position: relative;
     display: block;
     width: 100%;
-    height: 440px;
+    height: 500px;
     padding: 0;
     border: 0;
     background: none;
@@ -251,9 +250,21 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
     flex-shrink: 0;
   }
 
+  /* The front is orange; everything on it is ink (5.42:1), since the orange icon, grey text and rust hint would
+     vanish or fail contrast there. */
   .front {
-    background: var(--paper);
-    border: 1px solid var(--sunken);
+    background: var(--orange);
+    color: var(--ink);
+  }
+
+  .front .expert-icon,
+  .front .expert-desc,
+  .front .expert-hint {
+    color: var(--ink);
+  }
+
+  .front .chip {
+    background: var(--soft);
   }
 
   .back {
@@ -346,12 +357,6 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
 
   .expert-project {
     color: var(--on-dark-soft);
-  }
-
-  .expert-consent {
-    color: var(--on-dark-soft);
-    font-size: 13px;
-    line-height: 1.5;
   }
 
   /* Under the track: a progress bar on desktop, dots on phones. */
@@ -471,6 +476,16 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
     .chip {
       padding: 3px 9px;
       font-size: 12px;
+    }
+  }
+
+  /* Desktop: description and experience text at body size. */
+  @media (min-width: 901px) {
+    .expert-desc,
+    .expert-pending,
+    .expert-experience {
+      font-size: 18px;
+      line-height: 1.55;
     }
   }
 </style>
