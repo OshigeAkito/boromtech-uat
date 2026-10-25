@@ -1,0 +1,476 @@
+---
+import { experts as allExperts } from '../data/experts'
+import { useLocale } from '../i18n'
+
+const { t } = useLocale(Astro.currentLocale)
+const tr = t.experts
+const desc = tr.desc as Record<string, string>
+const experts = allExperts.filter((e) => !e.hidden)
+
+// One line icon per card, in the same family as the audit-layer icons; currentColor makes it orange.
+const icons = import.meta.glob<string>('/src/icons/experts/*.svg', { query: '?raw', import: 'default', eager: true })
+const icon = (name: string) => icons[`/src/icons/experts/${name}.svg`]
+// The turn arrow is drawn, not typed: the text fonts have no ↻ glyph.
+const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4.5h-4.5"/></svg>'
+---
+
+<section id="experts" class="chapter experts" aria-labelledby="experts-title" data-experts>
+  <div class="experts-head">
+    <div>
+      <h2 id="experts-title" class="l reveal">{tr.title}</h2>
+      <p class="experts-lead reveal">{tr.lead}</p>
+    </div>
+    <div class="experts-arrows">
+      <button type="button" class="experts-arrow" data-dir="-1" aria-label={tr.prev} aria-disabled="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 6l-6 6 6 6" /></svg>
+      </button>
+      <button type="button" class="experts-arrow" data-dir="1" aria-label={tr.next}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 6l6 6-6 6" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="experts-track" role="region" aria-roledescription="carousel" aria-labelledby="experts-title">
+    {
+      experts.map((e) => {
+        const { years, projects } = e.experience
+        const empty = years === null && projects.length === 0
+        return (
+          <div class="expert">
+            <button type="button" class="expert-card" aria-pressed="false" aria-label={e.title} aria-describedby={`expert-${e.id}-desc expert-${e.id}-back`}>
+              <span class="face front">
+                <span class="expert-icon" set:html={icon(e.icon)} />
+                <span class="expert-title" lang="en">{e.title}</span>
+                <span class="expert-desc" id={`expert-${e.id}-desc`}>{desc[e.id]}</span>
+                <span class="expert-chips" lang="en">
+                  {e.chips.map((c) => <span class="chip">{c}</span>)}
+                </span>
+                <span class="expert-hint" aria-hidden="true">{tr.flipHint}<span class="turn" set:html={turn} /></span>
+              </span>
+              <span class="face back" id={`expert-${e.id}-back`}>
+                <span class="expert-back-title">{tr.backTitle}</span>
+                {empty ? (
+                  <span class="expert-pending">{tr.pending}</span>
+                ) : (
+                  <span class="expert-experience">
+                    {years !== null && <span class="expert-years">{years} {tr.yearsLabel}</span>}
+                    {projects.map((p) => <span class="expert-project">{p}</span>)}
+                  </span>
+                )}
+                <span class="expert-consent">{tr.consent}</span>
+                <span class="expert-hint" aria-hidden="true"><span class="turn" set:html={turn} />{tr.back}</span>
+              </span>
+            </button>
+          </div>
+        )
+      })
+    }
+  </div>
+
+  <div class="experts-progress" aria-hidden="true"><span></span></div>
+  <div class="experts-dots" aria-hidden="true">
+    {experts.map(() => <span></span>)}
+  </div>
+</section>
+
+<script>
+  // Arrows, progress bar, dots and flipping, for every Experts section on the page (one per language page).
+  document.querySelectorAll<HTMLElement>('[data-experts]').forEach((section) => {
+    const track = section.querySelector<HTMLElement>('.experts-track')!
+    const cards = [...track.querySelectorAll<HTMLElement>('.expert')]
+    const arrows = [...section.querySelectorAll<HTMLButtonElement>('.experts-arrow')]
+    const fill = section.querySelector<HTMLElement>('.experts-progress span')!
+    const dots = [...section.querySelectorAll<HTMLElement>('.experts-dots span')]
+    const calm = matchMedia('(prefers-reduced-motion: reduce)')
+
+    const step = () => {
+      const [a, b] = cards
+      return b ? b.offsetLeft - a.offsetLeft : track.clientWidth
+    }
+
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth
+      const at = track.scrollLeft
+      const atStart = at <= 1
+      const atEnd = at >= max - 1
+      arrows[0].setAttribute('aria-disabled', String(atStart))
+      arrows[1].setAttribute('aria-disabled', String(atEnd))
+      fill.style.width = `${max > 0 ? Math.max(8, (at / max) * 100) : 100}%`
+      // At the very end the last card cannot reach the start of the track, so it counts as current.
+      const current = atEnd ? cards.length - 1 : Math.round(at / step())
+      dots.forEach((d, i) => d.classList.toggle('is-on', i === current))
+    }
+
+    arrows.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        if (btn.getAttribute('aria-disabled') === 'true') return
+        track.scrollBy({ left: Number(btn.dataset.dir) * step(), behavior: calm.matches ? 'auto' : 'smooth' })
+      }),
+    )
+
+    // A button already turns Enter and Space into a click, so one handler covers mouse, touch and keyboard.
+    track.querySelectorAll<HTMLButtonElement>('.expert-card').forEach((card) =>
+      card.addEventListener('click', () => card.setAttribute('aria-pressed', String(card.getAttribute('aria-pressed') !== 'true'))),
+    )
+
+    track.addEventListener('scroll', update, { passive: true })
+    addEventListener('resize', update)
+    update()
+  })
+</script>
+
+<style>
+  .experts {
+    min-height: 0;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .experts-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--gap);
+  }
+
+  h2 {
+    margin: 0;
+    word-break: keep-all;
+  }
+
+  .experts-lead {
+    margin: 12px 0 0;
+    max-width: 40em;
+    color: var(--muted);
+  }
+
+  .experts-arrows {
+    display: flex;
+    flex: none;
+    gap: 12px;
+  }
+
+  .experts-arrow {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1.5px solid var(--night);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--night);
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease, opacity 160ms ease;
+  }
+
+  .experts-arrow svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .experts-arrow:hover:not([aria-disabled='true']) {
+    background: var(--night);
+    color: var(--on-dark);
+  }
+
+  .experts-arrow[aria-disabled='true'] {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .experts-arrow:focus-visible,
+  .expert-card:focus-visible {
+    outline: 2px solid var(--orange);
+    outline-offset: 3px;
+  }
+
+  /* The track scrolls sideways and snaps to each card; the scrollbar is hidden but scrolling still works. */
+  .experts-track {
+    display: flex;
+    gap: 24px;
+    /* Inner room on every side so the focus ring is not clipped by the scroller, cancelled out by the margin. */
+    margin: 36px -6px 0;
+    padding: 6px 6px 10px;
+    scroll-padding-inline: 6px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .experts-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .expert {
+    flex: 0 0 calc((100% - 3 * 24px) / 3.5);
+    scroll-snap-align: start;
+    perspective: 1400px;
+  }
+
+  .expert-card {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 440px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 400ms ease-in-out;
+    border-radius: 16px;
+  }
+
+  .expert-card[aria-pressed='true'] {
+    transform: rotateY(180deg);
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 28px;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    overflow: hidden;
+  }
+
+  /* Nothing on a face may shrink: a squeezed description would be cut mid-line instead of clamped. */
+  .face > * {
+    flex-shrink: 0;
+  }
+
+  .front {
+    background: var(--paper);
+    border: 1px solid var(--sunken);
+  }
+
+  .back {
+    background: var(--night);
+    color: var(--on-dark);
+    transform: rotateY(180deg);
+  }
+
+  .expert-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--orange);
+  }
+
+  .expert-icon :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .expert-title {
+    font: 700 22px / 1.25 var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  .expert-desc {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .expert-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--sunken);
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .expert-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    color: var(--rust); /* --orange-deep is 4.24:1 on paper at this size; --rust is 5.44:1 */
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .turn :global(svg) {
+    display: block;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .back .expert-hint {
+    color: var(--on-dark-soft);
+  }
+
+  .expert-back-title {
+    font: 700 22px / 1.25 var(--f-display);
+  }
+
+  .expert-pending,
+  .expert-experience {
+    display: grid;
+    gap: 8px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .expert-years {
+    font-weight: 600;
+  }
+
+  .expert-project {
+    color: var(--on-dark-soft);
+  }
+
+  .expert-consent {
+    color: var(--on-dark-soft);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* Under the track: a progress bar on desktop, dots on phones. */
+  .experts-progress {
+    height: 3px;
+    margin-top: 24px;
+    border-radius: 999px;
+    background: var(--sunken);
+    overflow: hidden;
+  }
+
+  .experts-progress span {
+    display: block;
+    width: 8%;
+    height: 100%;
+    background: var(--orange);
+    transition: width 120ms linear;
+  }
+
+  .experts-dots {
+    display: none;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .experts-dots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--sunken);
+  }
+
+  .experts-dots span.is-on {
+    background: var(--orange);
+  }
+
+  /* Without motion the card does not turn; the faces crossfade instead. */
+  @media (prefers-reduced-motion: reduce) {
+    .expert-card,
+    .expert-card[aria-pressed='true'] {
+      transform: none;
+      transition: none;
+    }
+
+    .face {
+      backface-visibility: visible;
+      transition: opacity 200ms ease;
+    }
+
+    .back {
+      transform: none;
+      opacity: 0;
+    }
+
+    .expert-card[aria-pressed='true'] .front {
+      opacity: 0;
+    }
+
+    .expert-card[aria-pressed='true'] .back {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .experts-arrows,
+    .experts-progress {
+      display: none;
+    }
+
+    .experts-dots {
+      display: flex;
+    }
+
+    /* Edge to edge on phones, so the next card peeks to the screen edge; the inner padding and scroll padding of
+       var(--m) keep the first card lined up with the section's text. */
+    .experts-track {
+      gap: 16px;
+      margin: 24px calc(-1 * var(--m)) 0;
+      padding: 6px var(--m) 10px;
+      scroll-padding-inline: var(--m);
+    }
+
+    .expert {
+      flex: 0 0 76%;
+      max-width: 300px;
+    }
+
+    .expert-card {
+      height: 340px;
+    }
+
+    .face {
+      gap: 8px;
+      padding: 18px 18px 16px;
+    }
+
+    .expert-icon {
+      width: 36px;
+      height: 36px;
+    }
+
+    .expert-desc {
+      -webkit-line-clamp: 2;
+    }
+
+    .expert-title,
+    .expert-back-title {
+      font-size: 19px;
+    }
+
+    /* The narrower cards: a two-line description and smaller chips keep every front inside the fixed 340px height. */
+    .expert-chips {
+      gap: 5px;
+    }
+
+    .chip {
+      padding: 3px 9px;
+      font-size: 12px;
+    }
+  }
+</style>

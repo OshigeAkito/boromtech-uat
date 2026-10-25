@@ -392,7 +392,8 @@ const below = t.iceberg.below
 
     /* The opening: the things you can see are callouts pinned to the tip, popping in one by one, while the
        title sits on the waterline and sinks, wavering where it is under water. The script places all of it.
-       The "what you see" heading stays level with the berg's peak in orange, on the title's left edge, while the title sinks. */
+       The "what you see" heading stays in orange on the title's left edge, level with the berg's peak (above it on
+       phones), while the title sinks. */
     :global(.js) .above {
       position: absolute;
       inset: 0;
@@ -749,9 +750,10 @@ const below = t.iceberg.below
       const top = wl - h * mix(0.8, -0.35, sink)
       const dry = clamp(wl - top, 0, h) // how much of the title is still above the water
       title.style.transform = under.style.transform = `translate3d(0, ${top}px, 0)`
-      // The peak of the berg is 2.7 world units above the water; the label's top sits level with it.
+      // The peak of the berg is 2.7 world units above the water. Beside the berg (wide screens) the label's top
+      // sits level with it; on phones the label shares the berg's column, so it sits just above the peak instead.
       const peak = gl ? gl.project(0, 2.7, 0).y : shot.y - 2.7 * k
-      seen.style.transform = `translate3d(0, ${peak}px, 0)`
+      seen.style.transform = `translate3d(0, ${L.wide ? peak : peak - seen.offsetHeight - 16}px, 0)`
       title.style.clipPath = `inset(0 0 ${h - dry}px 0)`
       under.style.clipPath = `inset(${dry}px 0 -24px 0)`
     }

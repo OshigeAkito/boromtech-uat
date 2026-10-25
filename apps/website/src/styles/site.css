@@ -91,6 +91,7 @@ h3 { font-size: var(--t-m); line-height: 1.3; font-weight: 600; letter-spacing: 
 .berg .f-rust { fill: var(--rust); }
 .berg .f-dark { fill: #8f3816; }
 .hero-copy { position: relative; display: grid; gap: 28px; justify-items: start; max-width: min(58vw, 900px); padding-left: 5vw; }
+@media (min-width: 1600px) { .hero-copy { max-width: 1000px; } } /* big screens have room for longer title lines */
 .lede { font-size: var(--t-m); line-height: 1.5; max-width: 18em; text-wrap: balance; color: var(--on-dark); }
 /* Hero slides: every title shares one cell and every lede another, so each slot is as tall as its longest
    slide and nothing below moves on a change. Titles sit on the cell's foot, ledes at its head, so the pair
@@ -109,7 +110,7 @@ html:is(:lang(en), :lang(vi)) [data-slot="title"] { min-height: 4lh; }
 html:lang(zh) [data-slot="title"] { line-height: 1.3; min-height: 2lh; }
 /* 1.12 is too tight for Thai tone marks over three lines; min-height stays in lh, so the slot still holds 3 lines. */
 html:lang(th) [data-slot="title"] { line-height: 1.24; }
-[data-slot="title"] > [data-slide] { text-wrap: balance; }
+[data-slot="title"] > [data-slide] { text-wrap: balance; white-space: pre-line; } /* a \n in a slide title starts a new line */
 [data-slot] > [data-slide] { grid-area: 1 / 1; visibility: hidden; transition: visibility 0s .7s; }
 [data-slot="title"] > [data-slide] { align-self: end; }
 [data-slot="lede"] > [data-slide] { align-self: start; }
