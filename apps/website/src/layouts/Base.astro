@@ -51,8 +51,10 @@ const detect = `try{var l=(${pickLocale})({saved:(document.cookie.match(/(?:^|; 
     {locales.map((l) => <link rel="alternate" hreflang={languages[l].tag} href={new URL(localePath(l), Astro.site)} />)}
     <link rel="alternate" hreflang="x-default" href={new URL(localePath(defaultLocale), Astro.site)} />
     <meta name="theme-color" content="#1e2235" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- ?v= changes with the artwork so browsers drop a cached old icon; the PNG serves browsers without SVG icons. -->
+    <link rel="icon" href="/favicon-32.png?v=2" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2" />
     {media && <link rel="preconnect" href={media} />}
     <link rel="sitemap" href="/sitemap-index.xml" />
 
