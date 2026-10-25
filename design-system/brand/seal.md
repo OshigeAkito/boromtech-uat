@@ -1,12 +1,12 @@
 # The seal
 
-The seal, called the ring in Brand Guidelines v1.0, is a ring and nothing else: no letters inside, no gap, no second ring. It stands for the one thing BoromTech promises, a system that is closed, looked after and accounted for. Since v1.0 the wordmark is the logo and the ring is the brand's supporting graphic: at its best cropped into the edge of the medium, never over text. The whole ring stays the app icon and favicon.
+The seal, called the ring in Brand Guidelines v1.0, is a ring and nothing else: no letters inside, no gap, no second ring. It stands for the one thing BoromTech promises, a system that is closed, looked after and accounted for. Since v1.0 the wordmark is the logo and the ring is the brand's supporting graphic: at its best cropped into the edge of the medium, never over text. The favicon and app icon are the BoromTech submarine (see below), not the ring.
 
 ## Construction
 
 - Standard seal: centre-line radius `seal-r` 400, stroke `seal-stroke` 150, in a `seal-box` of 1000. The outer edge sits at 475, so the file keeps a 25-unit margin.
 - The stroke width is the unit **s**. Everything around the mark is measured in s.
-- Small-size seal: radius `seal-small-r` 19 and stroke `seal-small-stroke` 9 in a box of 64. Its stroke is 47% of the radius instead of 37.5%, so the ring stays open and solid at favicon sizes. It is the website's `favicon.svg` ring.
+- Small-size seal: radius `seal-small-r` 19 and stroke `seal-small-stroke` 9 in a box of 64. Its stroke is 47% of the radius instead of 37.5%, so the ring stays open and solid at favicon sizes. It is no longer the favicon, which is the submarine.
 
 ## Clear space
 
@@ -44,8 +44,8 @@ The lockup is not part of Brand Guidelines v1.0, whose logo is the wordmark alon
 | `seal-ink.svg` | an `orange` fill; single-colour print, emboss and stamps |
 | `seal-light.svg` | dark photographs where orange would be lost |
 | `seal-small-orange.svg` | 16 to 23px on any ground orange passes on |
-| `favicon.svg` | browser tabs: the small seal on a `night` square |
-| `app-icon.svg` | app and touch icons at 1024px: the favicon scaled ×16. The platform applies its own corner mask; the artwork stays square |
+| `favicon.svg` | browser tabs: the BoromTech submarine (ivory hull, orange T periscope and stripe) on a `night` square, drawn in 64 |
+| `app-icon.svg` | app and touch icons at 1024px: the favicon scaled ×16 (the website ships it as a 180px `apple-touch-icon.png`). The platform applies its own corner mask; the artwork stays square |
 | `wordmark-navy.svg` | the logo on light grounds: `ivory`, `paper`, `soft`, `sunken` |
 | `wordmark-light.svg` | the logo on `night` and `night-2` |
 | `wordmark-ink.svg` | single-colour print |

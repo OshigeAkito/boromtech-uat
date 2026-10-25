@@ -82,7 +82,7 @@ The **wordmark** is the logo: the "BoromTech" logo artwork (`logos/source/logo.s
 The **ring** is the brand's supporting graphic: a thick orange ring, `seal-r` 400 and `seal-stroke` 150 in a `seal-box` of 1000. Its home is cropped into the edge of the medium, as on the guideline cover and the website hero, and it never sits over text. The full rules for construction, sizes and grounds are in **The seal**.
 
 - The cropped hero ring: 124% of the frame's height, centred 88% across and 55% down, so the right edge crops it (the top and bottom may graze it). Use it on covers, section dividers, the business card's brand side, social posts and the website hero. Never crop from the left and never cut away more than half the ring.
-- The whole ring, small, is the app icon and favicon (`app-icon.svg`, `favicon.svg`). At 16 to 23px use `seal-small-orange.svg`; from 24px up, the standard ring.
+- The app icon and favicon (`app-icon.svg`, `favicon.svg`) are the BoromTech submarine on a night square: ivory hull and tower, the logo's orange T as its periscope, one orange stripe. For the ring at 16 to 23px use `seal-small-orange.svg`; from 24px up, the standard ring.
 - On `night` and `paper` the ring is `orange`. On `ivory` and `soft` the big cropped ring may stay orange as decoration; a small ring there is `rust`. On an `orange` fill it is `ink`.
 - The lockup (ring before wordmark) is not part of the v1.0 guidelines. The files stay for slots that already use them; new work uses the wordmark alone.
 

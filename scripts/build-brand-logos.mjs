@@ -12,8 +12,9 @@ const LOGO = { navy: '#13233B', orange: '#FE651E' }
 const seal = (color) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="500" cy="500" r="400" fill="none" stroke="${color}" stroke-width="150"/></svg>\n`
 // The small-size seal: the live favicon's ring (r=19, stroke 9 in 64), heavier for 16-32px.
 const sealSmall = (color) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="19" fill="none" stroke="${color}" stroke-width="9"/></svg>\n`
-// App icon: the favicon scaled x16 to 1024.
-const appIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><rect width="1024" height="1024" fill="${C.night}"/><circle cx="512" cy="512" r="304" fill="none" stroke="${C.orange}" stroke-width="144"/></svg>\n`
+// App icon: the website's favicon (the submarine on a night square, drawn in 64) scaled x16 to 1024.
+const favicon = readFileSync(faviconPath, 'utf8')
+const appIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><g transform="scale(16)">${favicon.replace(/^<svg[^>]*>|<\/svg>\s*$/g, '')}</g></svg>\n`
 
 // Wordmark: the logo artwork, letters in one ink and the T (its periscope) in another. The source's B starts at
 // x = -4, so every path shifts right by 4 into a 829 x 140 box; the B's cap runs from y 15 to the baseline at 137.
@@ -36,7 +37,7 @@ const files = {
   'seal-ink.svg': seal(C.ink),
   'seal-light.svg': seal(C.onDark),
   'seal-small-orange.svg': sealSmall(C.orange),
-  'favicon.svg': readFileSync(faviconPath, 'utf8'),
+  'favicon.svg': favicon,
   'app-icon.svg': appIcon,
   'wordmark-navy.svg': wordmark(LOGO.navy, LOGO.orange),
   'wordmark-ink.svg': wordmark(C.ink, C.ink),
