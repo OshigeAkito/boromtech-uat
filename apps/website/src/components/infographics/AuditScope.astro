@@ -21,7 +21,7 @@ const icons: Record<string, string> = {
 }
 ---
 
-<section class="chapter audit-scope" aria-labelledby="audit-scope-title">
+<section class="chapter audit-scope" id="audit" aria-labelledby="audit-scope-title">
   <header class="audit-scope-heading">
     <h2 id="audit-scope-title" class="reveal"><span>{title1}</span><wbr /><span>{title2}</span></h2>
     <p class="reveal">{t.audit.intro}</p>
@@ -176,7 +176,7 @@ const icons: Record<string, string> = {
 
   @media (max-width: 900px) {
     .audit-scope-heading {
-      padding-block-end: 48px;
+      padding-block: 48px;
     }
   }
 
@@ -186,6 +186,12 @@ const icons: Record<string, string> = {
       align-content: center;
       row-gap: 10px;
       padding-block: 28px;
+    }
+  }
+
+  @media (min-width: 901px) {
+    .audit-scope-heading {
+      padding-top: 115px;
     }
   }
 </style>

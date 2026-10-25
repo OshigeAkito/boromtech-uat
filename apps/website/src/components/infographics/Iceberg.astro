@@ -657,6 +657,25 @@ const below = t.iceberg.below
     .track {
       --link: 5svh;
     }
+
+    .above {
+      padding-top: 48px;
+    }
+
+    .below {
+      padding-bottom: 48px;
+    }
+  }
+
+  /* Desktop still layout (reduced motion or no JavaScript); the scroll animation positions these itself. */
+  @media (min-width: 901px) {
+    .above {
+      padding-top: 115px;
+    }
+
+    .below {
+      padding-bottom: 115px;
+    }
   }
 </style>
 

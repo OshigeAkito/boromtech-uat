@@ -212,4 +212,16 @@ const count = (n: number) => tr.count.replace('{n}', String(n)).replace('{total}
       scroll-snap-align: start;
     }
   }
+
+  @media (max-width: 900px) {
+    .trusted {
+      padding-block: 48px;
+    }
+  }
+
+  @media (min-width: 901px) {
+    .trusted {
+      padding-block: 115px;
+    }
+  }
 </style>

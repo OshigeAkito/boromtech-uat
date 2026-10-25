@@ -9,7 +9,7 @@ const findings = ['critical', 'critical', 'high', 'high', 'high'] as const
 const tasks = ['done', 'done', 'done', 'review', 'work'] as const
 ---
 
-<section class="chapter showcase" aria-labelledby="showcase-title">
+<section class="chapter showcase" id="report" aria-labelledby="showcase-title">
   <h2 id="showcase-title" class="l reveal showcase-title">{s.title}</h2>
   <div class="outputs" role="tablist" aria-label={s.tablist}>
     <button role="tab" aria-selected="true" aria-controls="sheet-audit" data-sheet="audit">{doc.tabs.audit}</button>

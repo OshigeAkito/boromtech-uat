@@ -14,11 +14,11 @@ const pad = (n: number) => String(n).padStart(2, '0')
   <!-- Desktop: this column sticks while the questions scroll. -->
   <div class="faq-aside">
     <div class="faq-lead">
+      <h2 id="faq-title" class="l reveal">{t.faq.title}</h2>
       <p class="reveal">{t.faq.lead}</p>
       <ul class="principles reveal" role="list">
         {t.faq.principles.map((item) => <li>{item}</li>)}
       </ul>
-      <h2 id="faq-title" class="l reveal">{t.faq.title}</h2>
     </div>
     <div class="docs" aria-hidden="true">
       <div class="doc doc-nda">
@@ -70,7 +70,7 @@ const pad = (n: number) => String(n).padStart(2, '0')
 
 <style>
   /* Two columns on desktop: the lead and the documents on the left, sticky; the questions on the right. Global
-     .faq, .faq-lead, .principles and .qa rules in site.css are overridden here where they clash. */
+     .faq, .faq-lead and .principles rules in site.css are overridden here where they clash. */
   .faq {
     display: grid;
     grid-template-columns: minmax(0, 5.5fr) minmax(0, 6.5fr);
@@ -375,25 +375,27 @@ const pad = (n: number) => String(n).padStart(2, '0')
       flex-direction: column;
       align-items: stretch;
       gap: 32px;
+      padding-top: 48px;
+      padding-bottom: 48px;
       background: var(--sunken);
     }
 
     /* Stacked, the orange side becomes a full-width band behind the lead and the documents. */
     .faq-aside {
       position: static;
-      margin: calc(-1 * clamp(64px, 8vw, 120px)) calc(-1 * var(--m)) 0;
-      padding: clamp(48px, 8vw, 72px) var(--m) 40px;
+      margin: -48px calc(-1 * var(--m)) 0; /* equals the section's top padding, so the band starts at its top edge */
+      padding: 48px var(--m) 40px;
       background: var(--orange);
     }
 
 
     summary {
       gap: 12px;
-      padding: 18px;
+      padding: 18px 20px;
     }
 
     .qa-answer {
-      padding: 0 18px 20px;
+      padding: 0 20px 20px;
     }
 
     .docs {
@@ -419,6 +421,13 @@ const pad = (n: number) => String(n).padStart(2, '0')
   @media (max-width: 480px) {
     .docs {
       height: 512px;
+    }
+  }
+
+  @media (min-width: 901px) {
+    .faq {
+      padding-top: 115px;
+      padding-bottom: 115px;
     }
   }
 </style>
