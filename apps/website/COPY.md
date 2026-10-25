@@ -26,7 +26,9 @@ BoromTech · เอไอใครๆ ก็ทำได้ แต่เรา�
 
 ## 2. เมนูด้านบน
 
-[nav.cases] งานที่เรารับ
+[nav.cases] ปัญหาที่เราแก้
+[nav.audit] ขอบเขตการตรวจ
+[nav.report] ตัวอย่างรายงาน
 [nav.faq] คำถาม
 [nav.cta] คุยกับเรา
 
@@ -39,13 +41,23 @@ BoromTech · เอไอใครๆ ก็ทำได้ แต่เรา�
 
 สไลด์ในฮีโร่: ฮีโร่เปิดด้วยสไลด์ที่ 1 แล้วเปลี่ยนเองทุก 6 วินาที ปัญหาขึ้นเป็นหัวเรื่อง คำตอบขึ้นเป็นคำโปรย วนครบ 5 สไลด์แล้วกลับมาที่สไลด์ที่ 1 (จาก Figma "BoromTech Hero — ปัญหา พร้อมคำตอบ") 📏 ปัญหาไม่เกินราว 3 บรรทัดในขนาดหัวเรื่อง
 
-[hero.slides.1.title] AI ที่ใครๆ ก็สร้างได้ / แต่ถูกต้องตาม / วิศวกรรมหรือเปล่า (/ = ขึ้นบรรทัดใหม่)
+[hero.slides.1.title] 📏 ขึ้นบรรทัดใหม่ตามที่แบ่งไว้ 3 บรรทัด
+AI ที่ใครๆ ก็สร้างได้
+แต่ถูกต้องตาม
+วิศวกรรมหรือเปล่า
+
 [hero.slides.1.lede] ให้ BoromTech ส่งผู้เชี่ยวชาญเข้าตรวจสอบ
 [hero.slides.2.title] Project หลักล้านแต่ใช้งานไม่ได้
 [hero.slides.2.lede] ให้ BoromTech ส่งผู้เชี่ยวชาญซ่อมแซมและปิดงาน
-[hero.slides.3.title] สร้าง App มามากมาย / ใครจะดูแล (/ = ขึ้นบรรทัดใหม่)
+[hero.slides.3.title] 📏 ขึ้นบรรทัดใหม่ตามที่แบ่งไว้ 2 บรรทัด
+สร้าง App มามากมาย
+ใครจะดูแล
+
 [hero.slides.3.lede] ให้ BoromTech ส่งผู้เชี่ยวชาญเข้าดูแลเป็นระยะ
-[hero.slides.4.title] เรื่อง Network เข้าใจยาก / อยากได้คนอธิบาย (/ = ขึ้นบรรทัดใหม่)
+[hero.slides.4.title] 📏 ขึ้นบรรทัดใหม่ตามที่แบ่งไว้ 2 บรรทัด
+เรื่อง Network เข้าใจยาก
+อยากได้คนอธิบาย
+
 [hero.slides.4.lede] ให้ BoromTech ส่งผู้เชี่ยวชาญให้คำแนะนำพร้อมลงมือทำ
 [hero.slides.5.title] จ้าง outsource ทำ project นึง แพงมาก
 [hero.slides.5.lede] ให้ BoromTech รวบรวมผู้เชี่ยวชาญในราคายุติธรรม
@@ -58,7 +70,7 @@ BoromTech · เอไอใครๆ ก็ทำได้ แต่เรา�
 ส่วนที่มองไม่เห็น
 
 [iceberg.above.label] ป้ายส่วนเหนือน้ำ แสดงเป็นตัวส้มเหนือหัวเรื่อง
-ส่วนที่เห็น
+สิ่งที่มองเห็น
 
 [iceberg.above.1] หน้าจอที่ใช้งานได้
 [iceberg.above.2] ฟีเจอร์ที่เดโมผ่าน
@@ -176,7 +188,7 @@ BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพ
 
 ## 7. เอกสารที่คุณได้รับ (กดชื่อซ้ายมือเพื่อสลับเอกสารด้านขวา)
 
-[showcase.title] หัวเรื่องของส่วนนี้
+[showcase.title] 📏 2–4 คำ
 ตัวอย่างรายงาน
 
 [showcase.tab.1] ผลการตรวจสอบ
@@ -194,36 +206,36 @@ BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพ
 หมายเหตุ: ข้อมูลทั้งหมดเป็น mock up เพื่อรักษาความเป็นส่วนตัวของลูกค้า
 
 ⚠ มาจากผลงานจริง แต่ตัวเลขและรายละเอียดในเอกสารทั้งหมดเป็น mock up
-เอกสารตัวอย่างทั้ง 3 ชิ้นเป็นภาษาอังกฤษในทุกภาษาของเว็บ ใช้ศัพท์เทคนิคแบบเอกสารจริง
+หน้าไทยแสดงเอกสารตัวอย่างเป็นภาษาไทย หน้าภาษาอื่นแสดงเป็นภาษาอังกฤษ (src/data/showcase.ts)
 
 ### Audit Report
-[sheet.audit.ref] Audit Report · BT-A-0412
-[sheet.audit.title] Inventory Management System · Sample Engagement
-[sheet.audit.meta] Assessment window 3–7 Nov 2026 · 182,400 LOC · 3 production hosts
-[sheet.audit.severity] Critical 2 · High 5 · Medium 9
-[sheet.audit.1] Critical · Hard-coded database credentials committed to source and replicated across every backup artifact
-[sheet.audit.2] Critical · No automated backup policy. Effective RPO is 41 days, the age of the last restorable snapshot
-[sheet.audit.3] High · Runtime is PHP 5.6, end-of-life with no security patches since December 2018
-[sheet.audit.4] High · Sales reporting rounds before aggregation, introducing cumulative variance in totals
-[sheet.audit.5] High · Configuration drift: production source is 7 months ahead of the version-controlled repository
+[sheet.audit.ref] ผลการตรวจสอบ · BT-A-0412
+[sheet.audit.title] ระบบบริหารสต็อกสินค้า · ตัวอย่างงานจริง
+[sheet.audit.meta] ช่วงตรวจสอบ 3–7 พ.ย. 2569 · โค้ด 182,400 บรรทัด · เซิร์ฟเวอร์โปรดักชัน 3 เครื่อง
+[sheet.audit.severity] วิกฤต 2 · สูง 5 · ปานกลาง 9
+[sheet.audit.1] วิกฤต · รหัสผ่านฐานข้อมูลถูกเขียนไว้ในซอร์สโค้ด และติดไปกับไฟล์แบ็กอัปทุกชุด
+[sheet.audit.2] วิกฤต · ไม่มีนโยบายแบ็กอัปอัตโนมัติ ข้อมูลล่าสุดที่กู้คืนได้มีอายุ 41 วัน
+[sheet.audit.3] สูง · รันบน PHP 5.6 ที่หมดซัพพอร์ตแล้ว ไม่มีแพตช์ความปลอดภัยตั้งแต่ ธ.ค. 2561
+[sheet.audit.4] สูง · รายงานยอดขายปัดเศษก่อนรวมยอด ทำให้ยอดรวมคลาดเคลื่อนสะสม
+[sheet.audit.5] สูง · โค้ดบนโปรดักชันล้ำหน้าโค้ดใน Git ไป 7 เดือน เวอร์ชันไม่ตรงกัน
 
 ### Weekly Update
-[sheet.weekly.ref] Weekly Update · Sprint 3 of 6
-[sheet.weekly.title] 7 of 12 work items closed
-[sheet.weekly.1] Verified · Recover production source and re-baseline it in Git
-[sheet.weekly.2] Verified · Migrate credentials out of code into a managed secrets store
-[sheet.weekly.3] Verified · Automated nightly backups at 02:00, with a tested restore
-[sheet.weekly.4] In review · Fix the rounding defect in sales aggregation
-[sheet.weekly.5] In progress · Upgrade the inventory module to PHP 8.3
-[sheet.weekly.next] Next sprint: upgrade the orders module and run regression tests against October sales data.
+[sheet.weekly.ref] สรุปงานรายสัปดาห์ · สปรินต์ 3 จาก 6
+[sheet.weekly.title] ปิดงานแล้ว 7 จาก 12 รายการ
+[sheet.weekly.1] ตรวจแล้ว · กู้ซอร์สโค้ดจากโปรดักชัน แล้วเก็บเข้า Git ใหม่
+[sheet.weekly.2] ตรวจแล้ว · ย้ายรหัสผ่านออกจากโค้ดไปเก็บในระบบจัดการรหัสลับ
+[sheet.weekly.3] ตรวจแล้ว · ตั้งแบ็กอัปอัตโนมัติทุกคืนเวลา 02:00 พร้อมทดสอบกู้คืน
+[sheet.weekly.4] รอตรวจ · แก้บั๊กการปัดเศษในการรวมยอดขาย
+[sheet.weekly.5] กำลังทำ · อัปเกรดโมดูลสต็อกเป็น PHP 8.3
+[sheet.weekly.next] สปรินต์ถัดไป: อัปเกรดโมดูลคำสั่งซื้อ และทดสอบย้อนหลังกับข้อมูลยอดขายเดือนตุลาคม
 
 ### Warranty
-[sheet.warranty.ref] Warranty · BT-W-0412
-[sheet.warranty.title] 90-Day Warranty
-[sheet.warranty.scope] Scope · Work items BT-104 to BT-115 (12 items)
-[sheet.warranty.start] Effective · 1 Dec 2026
-[sheet.warranty.end] Expires · 1 Mar 2027
-[sheet.warranty.terms] SLA · Defects attributable to BoromTech work are remediated at no cost within 2 business days of report.
+[sheet.warranty.ref] ใบรับประกัน · BT-W-0412
+[sheet.warranty.title] รับประกัน 90 วัน
+[sheet.warranty.scope] ขอบเขต · งาน BT-104 ถึง BT-115 (12 รายการ)
+[sheet.warranty.start] เริ่มมีผล · 1 ธ.ค. 2569
+[sheet.warranty.end] สิ้นสุด · 1 มี.ค. 2570
+[sheet.warranty.terms] SLA · หากพบข้อบกพร่องจากงานของ BoromTech เราแก้ไขให้โดยไม่มีค่าใช้จ่าย ภายใน 2 วันทำการหลังได้รับแจ้ง
 
 ---
 
@@ -231,28 +243,28 @@ BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพ
 
 ข้อความชุดนี้ Google อ่านไปแสดงในผลค้นหาด้วย คำตอบควรตอบตรงคำถามในประโยคแรก
 
-[faq.lead] ย่อหน้าเหนือหัวเรื่อง
+[faq.lead] แสดงเป็นย่อหน้าเหนือหัวเรื่อง
 เรายึดหลักการทำงานอย่างตรงไปตรงมา อธิบายการทำงานชัดเจน
 
-[faq.principles] สามข้อใต้ย่อหน้า
+[faq.principles] แสดงเป็นสามข้อใต้ย่อหน้า
 รักษาความลับ · สรุปปัญหาครบถ้วน · เสนอราคาตรงไปตรงมา
 
 [faq.title] 📏 2–4 คำ
 ก่อนเริ่มงาน
 
-[faq.listTitle] หัวข้อเหนือรายการคำถาม
+[faq.listTitle] แสดงเหนือรายการคำถาม
 คำถามที่พบบ่อย
 
 ข้างหัวข้อเป็นกราฟิกเอกสาร 3 ใบซ้อนกัน (NDA, แผนตรวจสอบ 5 วัน, ใบเสนอราคาฟิกซ์ไพรซ์) เป็นภาษาอังกฤษเหมือนเอกสารตัวอย่าง
 
 [faq.1.q] ใช้ AI สร้างระบบมา หรือทำโปรเจกต์แพงๆ แล้วพัง รับดูแลไหม
-[faq.1.a] รับครับ ไม่ว่าจะเป็นโค้ดที่เจนจาก AI แล้วรันจริงไม่ไหว หรือโปรเจกต์ราคาแพงที่เวนเดอร์เดิมทำค้างไว้ เราเข้าไปตรวจสอบ แก้ไขจุดที่พัง และรับดูแลต่อให้ใช้งานได้จริง
+[faq.1.a] รับดูแลทั้งหมด ไม่ว่าจะเป็นโค้ดที่เจนจาก AI แล้วรันจริงไม่ไหว หรือโปรเจกต์ราคาแพงที่เวนเดอร์เดิมทำค้างไว้ เราเข้าไปตรวจสอบ แก้ไขจุดที่พัง และรับดูแลต่อให้ใช้งานได้จริง
 
 [faq.2.q] รับทั้งงานเล็กและงานใหญ่เลยไหม
-[faq.2.a] รับทั้งงานขนาดเล็กและระบบองค์กรขนาดใหญ่ครับ เราซอยงานเป็นทาสก์ย่อยตามขนาดปัญหาจริง คุณจึงเลือกลำดับความสำคัญและคุมงบประมาณได้เอง
+[faq.2.a] รับทั้งงานขนาดเล็กและระบบองค์กรขนาดใหญ่ เราซอยงานเป็นทาสก์ย่อยตามขนาดปัญหาจริง คุณจึงเลือกลำดับความสำคัญและคุมงบประมาณได้เอง
 
 [faq.3.q] ไม่มีซอร์สโค้ดเลย ยังกู้คืนได้ไหม
-[faq.3.a] ได้ในเคสส่วนใหญ่ เรารีคัฟเวอร์จากเซิร์ฟเวอร์โปรดักชันหรือไฟล์ที่ดีพลอยอยู่ หากกู้ไม่ได้ คุณจะรู้ตั้งแต่ในAudit Report ก่อนจ่ายค่าทำระบบใดๆ
+[faq.3.a] ได้ในเคสส่วนใหญ่ เรารีคัฟเวอร์จากเซิร์ฟเวอร์โปรดักชันหรือไฟล์ที่ดีพลอยอยู่ หากกู้ไม่ได้ คุณจะรู้ตั้งแต่ใน Audit Report ก่อนจ่ายค่าทำระบบใดๆ
 
 [faq.4.q] การันตีครอบคลุมอะไรบ้าง
 [faq.4.a] ⚠ ทุกทาสก์ที่เราส่งมอบ การันตี 90 วัน หากปัญหาเกิดจากงานของเรา เราแก้ให้โดยไม่มีค่าใช้จ่าย ไม่รวมฟีเจอร์ใหม่ และส่วนที่มีผู้อื่นแก้ไขภายหลัง
@@ -286,7 +298,7 @@ BoromTech ดูแลส่วนที่อยู่ใต้น้ำ เพ
 
 ## 10. Footer
 
-[footer.links] งานที่เรารับ · คำถาม
+[footer.links] ปัญหาที่เราแก้ · ขอบเขตการตรวจ · ตัวอย่างรายงาน · คำถาม
 [footer.email] ⚠ sales@boromtech.com
 [footer.address] ที่อยู่ (แสดงเป็นภาษาไทยทุกภาษา อยู่ใน src/data/site.ts)
 178/1 หมู่ 17 ถนนพุทธมณฑล สาย 2 แขวงศาลาธรรมสพน์ เขตทวีวัฒนา กรุงเทพฯ 10170

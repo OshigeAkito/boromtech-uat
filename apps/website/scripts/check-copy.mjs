@@ -52,12 +52,23 @@ console.log(`th: ${values.length} copy entries checked, ${missing} missing`)
 const leaves = (node, path = []) =>
   typeof node === 'string' ? [[path.join('.'), node]] : Object.entries(node).flatMap(([k, v]) => leaves(v, [...path, k]))
 
+// Strings for content the site leaves out on purpose, worked out from the data and the built page rather than listed:
+// the trusted section until a client consents, hidden expert cards, and the years label until a card has years.
+const { experts } = await import('../src/data/experts.ts')
+const hiddenExperts = experts.filter((e) => e.hidden).map((e) => e.id)
+const anyYears = experts.some((e) => !e.hidden && e.experience.years !== null)
+const unused = (key, page) =>
+  (key.startsWith('trusted.') && !page.includes('id="trusted"')) ||
+  hiddenExperts.some((id) => key === `experts.desc.${id}`) ||
+  (key === 'experts.yearsLabel' && !anyYears)
+
 for (const locale of ['en', 'vi', 'zh']) {
   const { default: strings } = await import(`../src/i18n/${locale}.ts`)
   const page = read(`../dist/${locale}/index.html`)
   const text = corpusOf(page)
   let localeMissing = 0
   for (const [key, value] of leaves(strings)) {
+    if (unused(key, page)) continue
     const parts = value.split(/\{\w+\}|\n/).map((p) => p.replace(/\s+/g, ' ').trim()).filter((p) => p.length > 1)
     const absent = parts.filter((p) => !text.includes(p))
     if (absent.length) {
@@ -65,8 +76,8 @@ for (const locale of ['en', 'vi', 'zh']) {
       console.log(`MISSING ${locale} ${key}: ${absent.join(' | ')}`)
     }
   }
-  // Only the language switcher may show Thai, and it marks that link lang="th".
-  const leftover = [...page.replace(/<(\w+)[^>]*\slang="th"[^>]*>[^<]*<\/\1>/g, '').matchAll(/[^<>"]{0,30}[฀-๿]+[^<>"]{0,30}/g)]
+  // Thai may appear only inside elements marked lang="th": the language switcher's link and the footer address.
+  const leftover = [...page.replace(/<(\w+)[^>]*\slang="th"[^>]*>[\s\S]*?<\/\1>/g, '').matchAll(/[^<>"]{0,30}[฀-๿]+[^<>"]{0,30}/g)]
   for (const [snippet] of leftover) {
     localeMissing++
     console.log(`THAI LEFT ON /${locale}/: ${snippet.trim()}`)
