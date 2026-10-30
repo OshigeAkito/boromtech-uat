@@ -43,8 +43,11 @@ const icons = [i1, i2, i3, i4, i5, i6, i7]
               <span class="symptom-icon" set:html={icons[i]} />
               <input type="checkbox" name="case" />
               <span class="symptom">{symptom}</span>
-              <span class="remedy">{remedy}</span>
             </label>
+            <button class="remedy-toggle" type="button" aria-expanded="false" aria-controls={`remedy-${i + 1}`} aria-label={c.remedyToggle} />
+            <div class="remedy" id={`remedy-${i + 1}`}>
+              <p>{remedy}</p>
+            </div>
           </li>
         ))
       }

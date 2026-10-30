@@ -37,6 +37,11 @@ function updateVerdict() {
 }
 boxes.forEach((b) => b.addEventListener('change', updateVerdict))
 
+// Remedies start folded; the plus beside each symptom opens its own, separate from ticking the box.
+document.querySelectorAll('.remedy-toggle').forEach((toggle) =>
+  toggle.addEventListener('click', () => toggle.setAttribute('aria-expanded', String(toggle.getAttribute('aria-expanded') !== 'true'))),
+)
+
 const tabs = [...document.querySelectorAll('.outputs [role="tab"]')]
 tabs.forEach((tab) =>
   tab.addEventListener('click', () => {

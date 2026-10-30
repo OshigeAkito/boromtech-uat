@@ -48,6 +48,7 @@ export default {
     title: '你遇到过这些问题吗？',
     intro: '勾选与你的项目相符的症状，看看我们从哪里入手。',
     photoAlt: '一栋建到一半就停工的豪宅，裸露的混凝土框架、未完工的泳池和被弃置的脚手架',
+    remedyToggle: '我们如何解决',
     photoCaption:
       '盖过房子的人都知道，预算往往一再超支，有时承包商还会半途撂挑子。软件也会这样：已经投入了很多，工作却停在半路，因为没有人接手。',
     symptoms: [
@@ -85,6 +86,9 @@ export default {
     yearsLabel: '年从业经验',
     pending: '经验与项目信息正在整理中。',
     back: '返回',
+    flipHintTap: '轻触查看',
+    projectsLabel: '项目示例',
+    consent: '客户名称经同意后才会展示',
     prev: '上一张',
     next: '下一张',
     desc: {

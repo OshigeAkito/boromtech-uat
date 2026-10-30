@@ -10,6 +10,7 @@ const experts = allExperts.filter((e) => !e.hidden)
 // One line icon per card, in the same family as the audit-layer icons; currentColor makes it orange.
 const icons = import.meta.glob<string>('/src/icons/experts/*.svg', { query: '?raw', import: 'default', eager: true })
 const icon = (name: string) => icons[`/src/icons/experts/${name}.svg`]
+const pad = (n: number) => String(n).padStart(2, '0')
 // The turn arrow is drawn, not typed: the text fonts have no ↻ glyph.
 const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4.5h-4.5"/></svg>'
 ---
@@ -32,20 +33,28 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
 
   <div class="experts-track" role="region" aria-roledescription="carousel" aria-labelledby="experts-title">
     {
-      experts.map((e) => {
+      experts.map((e, i) => {
         const { years, projects } = e.experience
         const empty = years === null && projects.length === 0
         return (
           <div class="expert">
             <button type="button" class="expert-card" aria-pressed="false" aria-label={e.title} aria-describedby={`expert-${e.id}-desc expert-${e.id}-back`}>
               <span class="face front">
-                <span class="expert-icon" set:html={icon(e.icon)} />
-                <span class="expert-title" lang="en">{e.title}</span>
+                <span class="expert-head">
+                  <span class="expert-icon" set:html={icon(e.icon)} />
+                  <span class="expert-name">
+                    <span class="expert-count" aria-hidden="true">{pad(i + 1)} / {pad(experts.length)}</span>
+                    <span class="expert-title" lang="en">{e.title}</span>
+                  </span>
+                </span>
                 <span class="expert-desc" id={`expert-${e.id}-desc`}>{desc[e.id]}</span>
                 <span class="expert-chips" lang="en">
                   {e.chips.map((c) => <span class="chip">{c}</span>)}
                 </span>
-                <span class="expert-hint" aria-hidden="true">{tr.flipHint}<span class="turn" set:html={turn} /></span>
+                <span class="expert-hint" aria-hidden="true">
+                  <span class="hint-see">{tr.flipHint}</span><span class="hint-tap">{tr.flipHintTap}</span>
+                  <span class="turn" set:html={turn} />
+                </span>
               </span>
               <span class="face back" id={`expert-${e.id}-back`}>
                 <span class="expert-back-title">{tr.backTitle}</span>
@@ -54,10 +63,21 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
                 ) : (
                   <span class="expert-experience">
                     {years !== null && <span class="expert-years">{years} {tr.yearsLabel}</span>}
-                    {projects.map((p) => <span class="expert-project">{p}</span>)}
+                    {projects.length > 0 && (
+                      <>
+                        <span class="expert-projects-label">{tr.projectsLabel}</span>
+                        <span class="expert-projects">
+                          {projects.map((p) => <span class="expert-project">{p}</span>)}
+                        </span>
+                        <span class="expert-consent">{tr.consent}</span>
+                      </>
+                    )}
                   </span>
                 )}
-                <span class="expert-hint" aria-hidden="true"><span class="turn" set:html={turn} />{tr.back}</span>
+                <span class="expert-foot" aria-hidden="true">
+                  <span class="expert-foot-title" lang="en">{e.title}</span>
+                  <span class="expert-hint"><span class="turn" set:html={turn} />{tr.back}</span>
+                </span>
               </span>
             </button>
           </div>
@@ -207,16 +227,19 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
   }
 
   .expert {
+    display: flex;
     flex: 0 0 calc((100% - 3 * 24px) / 3.5);
     scroll-snap-align: start;
     perspective: 1400px;
   }
 
+  /* Both faces share one grid cell, so a card is as tall as its taller face, and the track stretches every card to
+     the tallest one. 440px (340px on phones) is the design's height; longer text grows past it instead of clipping. */
   .expert-card {
     position: relative;
-    display: block;
-    width: 100%;
-    height: 500px;
+    display: grid;
+    flex: 1;
+    min-height: 440px;
     padding: 0;
     border: 0;
     background: none;
@@ -226,7 +249,7 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
     cursor: pointer;
     transform-style: preserve-3d;
     transition: transform 400ms ease-in-out;
-    border-radius: 16px;
+    border-radius: 20px;
   }
 
   .expert-card[aria-pressed='true'] {
@@ -234,13 +257,12 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
   }
 
   .face {
-    position: absolute;
-    inset: 0;
+    grid-area: 1 / 1;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 28px;
-    border-radius: 16px;
+    gap: 14px;
+    padding: 32px;
+    border-radius: 20px;
     backface-visibility: hidden;
     overflow: hidden;
   }
@@ -250,30 +272,48 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
     flex-shrink: 0;
   }
 
-  /* The front is orange; everything on it is ink (5.42:1), since the orange icon, grey text and rust hint would
-     vanish or fail contrast there. */
   .front {
-    background: var(--orange);
+    background: var(--sunken);
     color: var(--ink);
-  }
-
-  .front .expert-icon,
-  .front .expert-desc,
-  .front .expert-hint {
-    color: var(--ink);
-  }
-
-  .front .chip {
-    background: var(--soft);
   }
 
   .back {
+    gap: 12px;
     background: var(--night);
     color: var(--on-dark);
     transform: rotateY(180deg);
   }
 
+  /* Desktop: icon and the "06 / 11" pill share the top row, the title sits under them. Phones stack the count over
+     the title beside the icon instead (see the 900px query). */
+  .expert-head {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    align-items: center;
+    row-gap: 14px;
+  }
+
+  .expert-name {
+    display: contents;
+  }
+
+  .expert-count {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+  }
+
   .expert-icon {
+    grid-column: 1;
+    grid-row: 1;
     width: 48px;
     height: 48px;
     color: var(--orange);
@@ -286,8 +326,11 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
   }
 
   .expert-title {
-    font: 700 22px / 1.25 var(--font-display);
-    letter-spacing: -0.01em;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.3;
   }
 
   .expert-desc {
@@ -296,32 +339,43 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     color: var(--muted);
-    font-size: 15px;
-    line-height: 1.55;
+    font-size: 16px;
+    line-height: 1.5;
   }
 
   .expert-chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
   }
 
   .chip {
-    padding: 4px 10px;
+    padding: 4px 12px;
+    border: 1px solid #d5d8df;
     border-radius: 999px;
-    background: var(--sunken);
-    font-size: 13px;
-    line-height: 1.4;
+    background: var(--paper);
+    font-size: 14px;
+    font-weight: 500; /* Medium in the design; the site loads 400/600/700, so this renders at 400 */
+    line-height: 1.5;
   }
 
   .expert-hint {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-top: auto;
-    color: var(--rust); /* --orange-deep is 4.24:1 on paper at this size; --rust is 5.44:1 */
+    color: var(--rust); /* --orange-deep is under 4.5:1 on --sunken at this size; --rust passes */
     font-size: 14px;
     font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .front .expert-hint {
+    align-self: flex-end;
+    margin-top: auto;
+  }
+
+  .hint-tap {
+    display: none;
   }
 
   .turn :global(svg) {
@@ -335,28 +389,76 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
     stroke-linejoin: round;
   }
 
-  .back .expert-hint {
-    color: var(--on-dark-soft);
-  }
-
   .expert-back-title {
-    font: 700 22px / 1.25 var(--f-display);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.5;
   }
 
   .expert-pending,
   .expert-experience {
     display: grid;
-    gap: 8px;
-    font-size: 15px;
-    line-height: 1.55;
+    gap: 12px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .expert-pending,
+  .expert-years {
+    color: var(--on-dark-soft);
   }
 
   .expert-years {
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgb(242 241 238 / 0.15);
+    font-size: 17px;
+  }
+
+  .expert-projects-label {
+    font-size: 15px;
     font-weight: 600;
   }
 
+  .expert-projects {
+    display: grid;
+    gap: 2px;
+  }
+
   .expert-project {
+    position: relative;
+    padding-left: 16px;
+  }
+
+  .expert-project::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--orange);
+    font-weight: 700;
+  }
+
+  .expert-consent {
     color: var(--on-dark-soft);
+    font-size: 13px;
+  }
+
+  .expert-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
+    line-height: 1.5;
+  }
+
+  .expert-foot-title {
+    min-width: 0;
+    color: var(--on-dark-soft);
+    font-size: 13px;
+  }
+
+  .back .expert-hint {
+    color: var(--orange);
   }
 
   /* Under the track: a progress bar on desktop, dots on phones. */
@@ -446,46 +548,94 @@ const turn = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><pat
     }
 
     .expert-card {
-      height: 340px;
+      min-height: 340px;
+      border-radius: 16px;
     }
 
     .face {
-      gap: 8px;
-      padding: 18px 18px 16px;
+      gap: 10px;
+      padding: 20px;
+      border-radius: 16px;
     }
 
-    .expert-icon {
-      width: 36px;
-      height: 36px;
+    .back {
+      gap: 8px;
+    }
+
+    /* Phones: the count sits over the title, both beside the icon. */
+    .expert-head {
+      column-gap: 14px;
+    }
+
+    .expert-name {
+      display: flex;
+      flex-direction: column;
+      grid-column: 2;
+      grid-row: 1;
+      min-width: 0;
+    }
+
+    .expert-count {
+      padding: 0;
+      background: none;
+      font-size: 12px;
+    }
+
+    .expert-title {
+      font-size: 18px;
     }
 
     .expert-desc {
       -webkit-line-clamp: 2;
-    }
-
-    .expert-title,
-    .expert-back-title {
-      font-size: 19px;
-    }
-
-    /* The narrower cards: a two-line description and smaller chips keep every front inside the fixed 340px height. */
-    .expert-chips {
-      gap: 5px;
+      font-size: 14px;
     }
 
     .chip {
-      padding: 3px 9px;
+      padding: 4px 10px;
       font-size: 12px;
     }
-  }
 
-  /* Desktop: description and experience text at body size. */
-  @media (min-width: 901px) {
-    .expert-desc,
+    .front .expert-hint {
+      font-size: 13px;
+    }
+
+    .hint-see {
+      display: none;
+    }
+
+    .hint-tap {
+      display: inline;
+    }
+
+    .expert-back-title {
+      font-size: 18px;
+    }
+
     .expert-pending,
     .expert-experience {
-      font-size: 18px;
-      line-height: 1.55;
+      gap: 8px;
+      font-size: 13.6px;
+    }
+
+    .expert-years {
+      padding-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .expert-projects-label {
+      font-size: 13px;
+    }
+
+    .expert-consent {
+      font-size: 11px;
+    }
+
+    .expert-foot-title {
+      font-size: 12px;
+    }
+
+    .back .expert-hint {
+      font-size: 13px;
     }
   }
 </style>

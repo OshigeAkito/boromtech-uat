@@ -48,6 +48,7 @@ export default {
     title: 'Bạn đã từng gặp những vấn đề này chưa?',
     intro: 'Chọn các triệu chứng giống dự án của bạn để xem chúng tôi bắt đầu giúp từ đâu.',
     photoAlt: 'Một căn nhà sang trọng bị bỏ dở giữa chừng, với khung bê tông trơ trụi, bể bơi chưa hoàn thiện và giàn giáo bị bỏ lại',
+    remedyToggle: 'Cách chúng tôi xử lý',
     photoCaption:
       'Ai từng xây nhà đều biết ngân sách thường đội lên, và đôi khi nhà thầu bỏ dở giữa chừng. Phần mềm cũng có thể như vậy: đã đầu tư rất nhiều nhưng công việc vẫn dở dang vì không ai tiếp quản.',
     symptoms: [
@@ -85,6 +86,9 @@ export default {
     yearsLabel: 'năm trong nghề',
     pending: 'Thông tin kinh nghiệm và dự án đang được tổng hợp.',
     back: 'Quay lại',
+    flipHintTap: 'Chạm để xem',
+    projectsLabel: 'Dự án tiêu biểu',
+    consent: 'Tên khách hàng chỉ hiển thị khi được đồng ý',
     prev: 'Thẻ trước',
     next: 'Thẻ tiếp theo',
     desc: {

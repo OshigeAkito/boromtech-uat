@@ -48,6 +48,7 @@ export default {
     title: 'Have you run into these problems?',
     intro: 'Pick the symptoms that match your project and see where we step in.',
     photoAlt: 'A luxury house left unfinished mid-build, with a bare concrete shell, an unfinished swimming pool and abandoned scaffolding',
+    remedyToggle: 'How we fix it',
     photoCaption:
       'Anyone who has built a house knows the budget tends to balloon, and sometimes the contractor walks off halfway. Software can go the same way: a lot already invested, but the work is stuck halfway because no one takes it over.',
     symptoms: [
@@ -85,6 +86,9 @@ export default {
     yearsLabel: 'years in the field',
     pending: 'Experience and project details are being compiled.',
     back: 'Back',
+    flipHintTap: 'Tap to see',
+    projectsLabel: 'Example projects',
+    consent: 'Client names are shown only with their consent',
     prev: 'Previous card',
     next: 'Next card',
     desc: {
